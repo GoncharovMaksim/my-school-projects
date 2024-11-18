@@ -19,7 +19,7 @@ const dropdown1 = document.querySelector('.dropdown1');
 const timer = document.querySelector('.timer');
 const min = document.querySelector('.min');
 const sec = document.querySelector('.sec');
-const mSec = document.querySelector('.m-sec');
+//const mSec = document.querySelector('.m-sec');
 const settings = document.querySelector('.settings');
 const difficult = document.querySelector('.dropdown2');
 
@@ -118,7 +118,7 @@ answer.addEventListener('keydown', event => {
 		answerCheck();
 	}
 });
-async function answerCheck(params) {
+async function answerCheck() {
 	const userAnswer = await new Promise(userAnswer => {
 		userAnswer(answer.value);
 	});
