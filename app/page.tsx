@@ -14,7 +14,7 @@ export default function Home() {
 					</div>
 				</header>
 				<main>
-					<div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex flex-col items-center space-y-4'>
+					<div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex flex-col items-center space-y-8'>
 						<div>
 							<Link href='/english'>
 								<button className='btn btn-outline'>АНГЛИЙСКИЙ</button>
