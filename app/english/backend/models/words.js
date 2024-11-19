@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const wordSchema = new mongoose.Schema({
 	schoolClass: { type: Number, required: true },

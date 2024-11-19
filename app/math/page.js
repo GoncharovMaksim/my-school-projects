@@ -1,8 +1,7 @@
 // src/app/page.js
 
 import Head from 'next/head';
-import Image from 'next/image';
-import styles from './page.module.css';
+
 
 import './public/style.css';
 import Script from 'next/script';
