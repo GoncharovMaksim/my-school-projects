@@ -4,20 +4,29 @@ import BottomNavigation from './components/BottomNavigation';
 
 export default function Home() {
 	return (
-		<div className=''>
+		<div className='bg-gray-100 min-h-screen flex flex-col'>
 			<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
-				<div>
-					<Link href='/english'>
-						<button className='btn btn-ghost text-xl'>АНГЛИЙСКИЙ</button>
-					</Link>
-				</div>
-				<div>
-					<Link href='/math'>
-						<button className='btn btn-outline'>МАТЕМАТИКА</button>
-					</Link>
-				</div>
-
-				<BottomNavigation />
+				<header className=''>
+					<div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8'>
+						<h1 className='text-3xl text-center font-bold tracking-tight text-gray-900'>
+							"SHCOOL112" - Лучший проект для помощи ученику
+						</h1>
+					</div>
+				</header>
+				<main>
+					<div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex flex-col items-center space-y-4'>
+						<div>
+							<Link href='/english'>
+								<button className='btn btn-outline'>АНГЛИЙСКИЙ</button>
+							</Link>
+						</div>
+						<div>
+							<Link href='/math'>
+								<button className='btn btn-outline'>МАТЕМАТИКА</button>
+							</Link>
+						</div>
+					</div>
+				</main>
 			</div>
 		</div>
 	);

@@ -16,7 +16,7 @@ export default function BottomNavigation() {
 							strokeLinecap='round'
 							strokeLinejoin='round'
 							strokeWidth='2'
-							d='M9 5l7 7-7 7'
+							d='M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-10V5a2 2 0 114 0v1'
 						/>
 					</svg>
 					<span className='btm-nav-label text-gray-400'>Выход</span>
