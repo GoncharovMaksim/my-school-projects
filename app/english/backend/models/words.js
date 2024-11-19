@@ -14,4 +14,4 @@ const wordSchema = new mongoose.Schema({
 // Проверяем, существует ли уже модель, чтобы избежать повторного определения
 const Word = mongoose.models.Word || mongoose.model('Word', wordSchema);
 
-module.exports = Word;
+export default Word;
