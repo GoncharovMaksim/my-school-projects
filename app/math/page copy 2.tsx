@@ -1,5 +1,5 @@
-'use client';
-import DropdownMenu from '../components/DropdownMenu';
+'use client'
+import DropdownMenu from "../components/DropdownMenu";
 
 export default function Home() {
 	const handleAccountSettings = () => alert('Account settings clicked!');
@@ -20,15 +20,25 @@ export default function Home() {
 					]}
 				/>
 			</div>
-			<button className='btn btn-outline'>Начать</button>
+			<button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
+				Button
+			</button>
 			<div>
-				
+				<button className='px-4 py-2 border border-gray-300 text-gray-700 bg-transparent rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500'>
+					МАТЕМАТИКА
+				</button>
 				<input
 					type='text'
 					placeholder='Type here'
 					className='input input-bordered w-full max-w-xs'
 				/>
-				
+				<select className='select select-bordered w-full max-w-xs bg-gray-200'>
+					<option disabled selected>
+						Who shot first?
+					</option>
+					<option>Han Solo</option>
+					<option>Greedo</option>
+				</select>
 			</div>
 		</div>
 	);
