@@ -21,13 +21,12 @@ export default function Home() {
 				/>
 			</div>
 			<button className='btn btn-outline w-full max-w-xs'>Начать</button>
-		
-				<input
-					type='text'
-					placeholder='Type here'
-					className='input input-bordered w-full max-w-xs'
-				/>
-			
+
+			<input
+				type='text'
+				placeholder='Type here'
+				className='input input-bordered w-full max-w-xs'
+			/>
 		</div>
 	);
 }
