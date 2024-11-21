@@ -8,8 +8,8 @@ export default function Home() {
 
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
-			<div className='p-8'>
-				<h1 className='text-2xl text-center font-bold mb-4'>Математика</h1>
+			<div className='p-8 flex flex-col items-center '>
+				<h1 className='text-4xl text-center font-bold mb-4'>Математика</h1>
 				<DropdownMenu
 					defaultLabel='Выберите действие'
 					options={[
@@ -20,16 +20,14 @@ export default function Home() {
 					]}
 				/>
 			</div>
-			<button className='btn btn-outline'>Начать</button>
-			<div>
-				
+			<button className='btn btn-outline w-full max-w-xs'>Начать</button>
+		
 				<input
 					type='text'
 					placeholder='Type here'
 					className='input input-bordered w-full max-w-xs'
 				/>
-				
-			</div>
+			
 		</div>
 	);
 }
