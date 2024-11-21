@@ -1,7 +1,28 @@
 'use client';
+import { useState } from 'react';
+import Settings from './components/Settings';
+import Game from './components/Game';
+export default function App() {
 
-import StartSettings from './components/StartSettings';
+	const [gameSettings, setGameSettings] = useState( {
+		operator: '*',
+		difficultyLevel: 1,
+	});
 
-export default function Home() {
-	return <StartSettings />;
+const [startGame, setStartGame]= useState(false);
+///const[endGame, setEndGame]= useState(false)
+
+
+	return (
+		<div>
+			{!startGame ? (
+				<Settings
+					setGameSettings={setGameSettings}
+					setStartGame={setStartGame}
+				/>
+			) : (
+				<Game gameSettings={gameSettings} />
+			)}
+		</div>
+	);
 }
