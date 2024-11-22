@@ -14,15 +14,20 @@ const [startGame, setStartGame]= useState(false);
 
 
 	return (
-		<div>
-			{!startGame ? (
-				<Settings
-					setGameSettings={setGameSettings}
-					setStartGame={setStartGame}
-				/>
-			) : (
-				<Game gameSettings={gameSettings} />
-			)}
+		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
+			<div className='p-8 flex flex-col items-center space-y-6'>
+				<h1 className='text-4xl text-center font-bold mb-4'>Математика</h1>
+				
+					{!startGame ? (
+						<Settings
+							setGameSettings={setGameSettings}
+							setStartGame={setStartGame}
+						/>
+					) : (
+						<Game gameSettings={gameSettings} />
+					)}
+				
+			</div>
 		</div>
 	);
 }
