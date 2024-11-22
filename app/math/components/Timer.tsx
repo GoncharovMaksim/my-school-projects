@@ -28,7 +28,7 @@ export default function Timer() {
 		<div className=''>
 			<div className=''>
 				<div className=''>
-					<span className='countdown font-mono text-5xl'>
+					<span className='countdown font-mono text-2xl'>
 						<span
 							style={{ '--value': elapsedTime } as React.CSSProperties}
 						></span>
@@ -37,7 +37,7 @@ export default function Timer() {
 				</div>
 			</div>
 			<div className='flex space-x-4'>
-				<button
+				{/* <button
 					onClick={startTimer}
 					className='btn btn-success'
 					disabled={!!startTime}
@@ -50,7 +50,7 @@ export default function Timer() {
 					disabled={!startTime}
 				>
 					Stop
-				</button>
+				</button> */}
 			</div>
 		</div>
 	);

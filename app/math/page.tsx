@@ -28,6 +28,7 @@ const [startGame, setStartGame]= useState(false);
 					)}
 				
 			</div>
+			
 		</div>
 	);
 }

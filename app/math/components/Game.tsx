@@ -1,15 +1,12 @@
 import { useState } from "react";
 import Timer from "./Timer";
-export default function StartGame({ gameSettings }: { gameSettings: { operator: string; difficultyLevel: number } }) {
+import Accordion from "./Accordion";
+export default function StartGame({ gameSettings }: { gameSettingssh: { operator: string; difficultyLevel: number } }) {
 	console.log(gameSettings);
 	const { operator, difficultyLevel } = gameSettings;
 	const [question, setQuestion] = useState('2 + 2 =');
 	return (
 		<>
-			
-			<p>Operator: {operator}</p>
-			<p>Difficulty Level: {difficultyLevel}</p>
-			<div></div>
 			<div className='text-5xl '>{question}</div>
 			<input
 				type='number'
@@ -26,7 +23,22 @@ export default function StartGame({ gameSettings }: { gameSettings: { operator: 
 			>
 				Продолжить
 			</button>
-			<Timer />
+			<progress className='progress w-56' value='25' max='100'></progress>
+
+			<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm'>
+				<div className='collapse collapse-arrow bg-base-200'>
+					<input type='checkbox' name='my-accordion-2' />
+					<div className='collapse-title text-xl font-medium'>
+						Параметры игры
+					</div>
+					<div className='collapse-content'>
+						<p>Уровень сложности: {difficultyLevel}</p>
+						<div>
+							Затрачено времени: <Timer />
+						</div>
+					</div>
+				</div>
+			</div>
 		</>
 	);
 }
