@@ -1,17 +1,34 @@
 import { useState } from "react";
 import Accordion from "./Accordion";
-export default function StartGame({
+export default function Game({
 	gameSettings,
+	setGameSettings,
 }: {
 	gameSettings: {
 		operator: string;
 		difficultyLevel: number;
 		gameStatus: boolean;
+		stepGame: number;
 	};
+	setGameSettings: React.Dispatch<
+		React.SetStateAction<{
+			operator: string;
+			difficultyLevel: number;
+			gameStatus: boolean;
+			stepGame: number;
+		}>
+	>;
 }) {
-
 	//const { operator, difficultyLevel } = gameSettings;
 	const [question, setQuestion] = useState('2 + 2 =');
+	const handleNextQuestion = () => {
+		setGameSettings({
+			...gameSettings, // сохраняем текущие значения
+			stepGame: gameSettings.stepGame + 1, // увеличиваем шаг игры
+		});
+
+		setQuestion('5 + 5 ='); // обновляем вопрос
+	};
 	return (
 		<>
 			<div className='text-5xl '>{question}</div>
@@ -24,9 +41,9 @@ export default function StartGame({
 				className='btn btn-outline w-full max-w-xs'
 				onClick={() => {
 					setQuestion('5+5');
-				// 	setGameSettings(settingsGame);
-				// 	setStartGame(true);
-				// 	console.log(settingsGame);
+					handleNextQuestion();
+					// 	setStartGame(true);
+					// 	console.log(settingsGame);
 				}}
 			>
 				Продолжить

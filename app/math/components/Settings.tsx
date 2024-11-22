@@ -3,14 +3,17 @@ import { useState } from 'react';
 
 export default function StartSettings({
 	setGameSettings,
+	stepGame, // Получаем stepGame как пропс
 }: {
 	setGameSettings: React.Dispatch<
 		React.SetStateAction<{
 			operator: string;
 			difficultyLevel: number;
 			gameStatus: boolean;
+			stepGame: number;
 		}>
 	>;
+	stepGame: number; // Тип пропса для stepGame
 }) {
 	// Локальное состояние для временных значений
 	const [operator, setOperator] = useState('*');
@@ -31,9 +34,8 @@ export default function StartSettings({
 			operator,
 			difficultyLevel,
 			gameStatus: true,
+			stepGame,
 		});
-
-
 	};
 
 	return (

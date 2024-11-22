@@ -6,9 +6,10 @@ export default function Accordion({
 		operator: string;
 		difficultyLevel: number;
 		gameStatus: boolean;
+		stepGame: number;
 	};
 }) {
-	const { operator, difficultyLevel } = gameSettings;
+	const { stepGame, difficultyLevel } = gameSettings;
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm'>
 			<div className='collapse collapse-arrow bg-base-200'>
@@ -16,7 +17,7 @@ export default function Accordion({
 				<div className='collapse-title text-xl font-medium'>Параметры игры</div>
 				<div className='collapse-content text-xl'>
 					<p>Уровень сложности: {difficultyLevel}</p>
-					<p>Действие: {operator}</p>
+					<p>Шаг игры: {stepGame}</p>
 					<div>
 						Затрачено времени: <Timer isRunning={gameSettings.gameStatus} />
 					</div>

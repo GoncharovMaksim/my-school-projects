@@ -10,6 +10,7 @@ export default function App() {
 		operator: '*',
 		difficultyLevel: 1,
 		gameStatus: false,
+		stepGame:1,
 	});
 	
 
@@ -24,12 +25,11 @@ export default function App() {
 				{!gameSettings.gameStatus ? (
 					<Settings
 						setGameSettings={setGameSettings}
-						
+						stepGame={gameSettings.stepGame}
 					/>
 				) : (
 					<>
-						<Game gameSettings={gameSettings} />
-						
+						<Game gameSettings={gameSettings} setGameSettings={setGameSettings} />
 					</>
 				)}
 			</div>
