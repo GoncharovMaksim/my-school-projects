@@ -25,20 +25,7 @@ export default function StartGame({ gameSettings }: { gameSettingssh: { operator
 			</button>
 			<progress className='progress w-56' value='25' max='100'></progress>
 
-			<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm'>
-				<div className='collapse collapse-arrow bg-base-200'>
-					<input type='checkbox' name='my-accordion-2' />
-					<div className='collapse-title text-xl font-medium'>
-						Параметры игры
-					</div>
-					<div className='collapse-content'>
-						<p>Уровень сложности: {difficultyLevel}</p>
-						<div>
-							Затрачено времени: <Timer />
-						</div>
-					</div>
-				</div>
-			</div>
+				<Accordion gameSettings={gameSettings}/>
 		</>
 	);
 }
