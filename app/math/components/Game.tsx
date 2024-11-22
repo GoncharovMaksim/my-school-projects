@@ -1,9 +1,16 @@
 import { useState } from "react";
-import Timer from "./Timer";
 import Accordion from "./Accordion";
-export default function StartGame({ gameSettings }: { gameSettingssh: { operator: string; difficultyLevel: number } }) {
-	console.log(gameSettings);
-	const { operator, difficultyLevel } = gameSettings;
+export default function StartGame({
+	gameSettings,
+}: {
+	gameSettings: {
+		operator: string;
+		difficultyLevel: number;
+		gameStatus: boolean;
+	};
+}) {
+
+	//const { operator, difficultyLevel } = gameSettings;
 	const [question, setQuestion] = useState('2 + 2 =');
 	return (
 		<>
@@ -15,17 +22,18 @@ export default function StartGame({ gameSettings }: { gameSettingssh: { operator
 			/>
 			<button
 				className='btn btn-outline w-full max-w-xs'
-				// onClick={() => {
+				onClick={() => {
+					setQuestion('5+5');
 				// 	setGameSettings(settingsGame);
 				// 	setStartGame(true);
 				// 	console.log(settingsGame);
-				// }}
+				}}
 			>
 				Продолжить
 			</button>
 			<progress className='progress w-56' value='25' max='100'></progress>
 
-				<Accordion gameSettings={gameSettings}/>
+			<Accordion gameSettings={gameSettings} />
 		</>
 	);
 }

@@ -2,8 +2,7 @@
 import { useState } from 'react';
 import Settings from './components/Settings';
 import Game from './components/Game';
-import Timer from './components/Timer';
-import Accordion from './components/Accordion';
+
 export default function App() {
 	
 
@@ -30,7 +29,7 @@ export default function App() {
 				) : (
 					<>
 						<Game gameSettings={gameSettings} />
-						{/* <Timer isRunning={startGame} /> */}
+						
 					</>
 				)}
 			</div>

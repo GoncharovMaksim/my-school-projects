@@ -1,17 +1,13 @@
 import { useState, useEffect } from 'react';
 
 export default function Timer({ isRunning }: { isRunning: boolean }) {
-	const [elapsedTime, setElapsedTime] = useState(0); // Время, прошедшее с момента старта
+	const [elapsedTime, setElapsedTime] = useState(0);
 
-	// Управление запуском и остановкой таймера
 	useEffect(() => {
-		let interval: NodeJS.Timeout;
+		let interval: NodeJS.Timeout | null = null; 
 
-		// Если таймер запускается
 		if (isRunning) {
-			const startTime = new Date(); // Время старта при запуске
-
-			// Обновление времени каждую секунду
+			const startTime = new Date(); 
 			interval = setInterval(() => {
 				const now = new Date();
 				setElapsedTime(
@@ -19,15 +15,17 @@ export default function Timer({ isRunning }: { isRunning: boolean }) {
 				);
 			}, 1000);
 		} else {
-			// Если таймер остановлен, очищаем интервал
-			clearInterval(interval);
+			if (interval) {
+				clearInterval(interval);
+			}
 		}
 
-		// Очистка интервала при размонтировании компонента или смене состояния
-		return () => clearInterval(interval);
-	}, [isRunning]); // Следим только за состоянием isRunning
-
-	return (
-		<span className='countdown font-mono text-xl'>{elapsedTime}сек</span>
-	);
+		
+		return () => {
+			if (interval) {
+				clearInterval(interval);
+			}
+		};
+	}, [isRunning]); 
+	return <span className='countdown font-mono text-xl'>{elapsedTime} сек</span>;
 }
