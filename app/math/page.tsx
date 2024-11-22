@@ -25,7 +25,7 @@ export default function App() {
 				{!gameSettings.gameStatus ? (
 					<Settings
 						setGameSettings={setGameSettings}
-						stepGame={gameSettings.stepGame}
+						
 					/>
 				) : (
 					<>
