@@ -1,37 +1,33 @@
 import { useState, useEffect } from 'react';
 
-export default function Timer() {
-	const [startTime, setStartTime] = useState<Date | null>(null); // Время старта
+export default function Timer({ isRunning }: { isRunning: boolean }) {
 	const [elapsedTime, setElapsedTime] = useState(0); // Время, прошедшее с момента старта
 
+	// Управление запуском и остановкой таймера
 	useEffect(() => {
-		if (!startTime) return;
+		let interval: NodeJS.Timeout;
 
-		const interval = setInterval(() => {
-			const now = new Date();
-			setElapsedTime(Math.floor((now.getTime() - startTime.getTime()) / 1000));
-		}, 1000);
+		// Если таймер запускается
+		if (isRunning) {
+			const startTime = new Date(); // Время старта при запуске
 
+			// Обновление времени каждую секунду
+			interval = setInterval(() => {
+				const now = new Date();
+				setElapsedTime(
+					Math.floor((now.getTime() - startTime.getTime()) / 1000)
+				);
+			}, 1000);
+		} else {
+			// Если таймер остановлен, очищаем интервал
+			clearInterval(interval);
+		}
+
+		// Очистка интервала при размонтировании компонента или смене состояния
 		return () => clearInterval(interval);
-	}, [startTime]);
-
-	const startTimer = () => {
-		setStartTime(new Date());
-		setElapsedTime(0);
-	};
-
-	const stopTimer = () => {
-		setStartTime(null);
-	};
+	}, [isRunning]); // Следим только за состоянием isRunning
 
 	return (
-	
-					<span className='countdown font-mono text-2xl'>
-						<span
-							style={{ '--value': elapsedTime } as React.CSSProperties}
-						></span>
-					</span>
-				
-				
+		<span className='countdown font-mono text-xl'>{elapsedTime}сек</span>
 	);
 }

@@ -3,9 +3,12 @@ import Timer from './Timer';
 export default function Accordion({
 	gameSettings,
 }: {
-	gameSettingssh: { operator: string; difficultyLevel: number };
+	gameSettings: {
+		operator: string;
+		difficultyLevel: number;
+		gameStatus: boolean;
+	};
 }) {
-
 	const { operator, difficultyLevel } = gameSettings;
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm'>
@@ -16,7 +19,7 @@ export default function Accordion({
 					<p>Уровень сложности: {difficultyLevel}</p>
 					<p>Действие: {operator}</p>
 					<div>
-						Затрачено времени: <Timer />
+						Затрачено времени: <Timer isRunning={gameSettings.gameStatus} />
 					</div>
 				</div>
 			</div>
