@@ -29,7 +29,7 @@ export default function Game({
 	let coefficient = 10;
 
 	const [result, setResult] = useState<number | null>(null);
-const [arrTasks, setArrTasks] = useState<string[]>([]); 
+	const [arrTasks, setArrTasks] = useState<string[]>([]);
 	function randomNumber(a: number, b: number) {
 		return Math.floor(Math.random() * (b - a + 1)) + a;
 	}
@@ -87,8 +87,6 @@ const [arrTasks, setArrTasks] = useState<string[]>([]);
 			return console.log('не введен ответ');
 		}
 		if (stepGame >= limGame) {
-			
-			
 			return handleStopGame();
 		} else {
 			setArrTasks(prev => [
@@ -136,7 +134,11 @@ const [arrTasks, setArrTasks] = useState<string[]>([]);
 				{result} и ответ пользователя {userAnswer}
 			</div>
 			<div>весь массив{arrTasks}</div>
-			<div>{arrTasks.map(el=> <p>{el}</p>) }</div>
+			<div>
+				{arrTasks.map((el,index) => (
+					<p key={index}>{el}</p>
+				))}
+			</div>
 		</>
 	);
 }
