@@ -25,11 +25,35 @@ export default function Game({
 	const { difficultyLevel } = gameSettings;
 	const { stepGame } = gameSettings;
 	const limGame = 5;
-	const [question, setQuestion] = useState('');
+
 	let coefficient = 10;
 
-	const [result, setResult] = useState<number | null>(null);
+	const inputUserName = document.querySelector('[name="user-name"]');
+	const answer = document.querySelector('[name="answer"]');
+	const btnStart = document.querySelector('.btn-start');
+	const btnCheck = document.querySelector('.btn-check');
+	const output = document.querySelector('.output');
+	const grade = document.querySelector('.big-number');
+	const gameOver = document.querySelector('.end-game');
+	const dropdown1 = document.querySelector('.dropdown1');
+	//const dropdown2 = document.querySelector('.dropdown2');
+	const timer = document.querySelector('.timer');
+	const min = document.querySelector('.min');
+	const sec = document.querySelector('.sec');
+	//const mSec = document.querySelector('.m-sec');
+	const settings = document.querySelector('.settings');
 
+	let a;
+	let b;
+	let result;
+	let counter = 0;
+	let errorCounter = 0;
+	//let time;
+	let intervalId;
+	let count = 0;
+	let countGame = 0;
+	let second = 0;
+	let minute = 0;
 	function randomNumber(a: number, b: number) {
 		return Math.floor(Math.random() * (b - a + 1)) + a;
 	}
@@ -47,22 +71,22 @@ export default function Game({
 			coefficient = 30;
 		}
 
-		let a = randomNumber(minNumber, maxNumber);
-		let b = randomNumber(minNumber, maxNumber);
+		a = randomNumber(minNumber, maxNumber);
+		b = randomNumber(minNumber, maxNumber);
 		if (operator === '*') {
-			setResult(a * b);
+			result = a * b;
 		} else if (operator === '/') {
 			a = a * b;
-			setResult(a / b);
+			result = a / b;
 		} else if (operator === '-') {
 			a = randomNumber(minNumber, maxNumber * coefficient);
 			b = randomNumber(minNumber, maxNumber * coefficient);
 			a += 50;
-			setResult(a - b);
+			result = a - b;
 		} else {
 			a = randomNumber(minNumber, maxNumber * coefficient);
 			b = randomNumber(minNumber, maxNumber * coefficient);
-			setResult(a + b);
+			result = a + b;
 		}
 
 		setQuestion(`${a} ${operator} ${b} =`);
@@ -72,35 +96,22 @@ export default function Game({
 		});
 	}
 
-	const handleStopGame = () => {
-		setGameSettings(prevSettings => ({
-			...prevSettings,
-			operator,
-			difficultyLevel,
-			gameStatus: false,
-			stepGame: 0,
-		}));
-	};
-	function userAnswerCheck() {
-		if (!userAnswer) {
-			alert('не введен ответ');
-			return console.log('не введен ответ');
-		}
-		if (stepGame >= limGame) {
-			return handleStopGame();
-		} else {
-			return startGame();
-		}
-	}
-
+	// btnCheck.addEventListener('click', answerCheck);
+	// answer.addEventListener('keydown', event => {
+	// 	if (event.key == 'Enter') {
+	// 		answerCheck();
+	// 	}
+	// });
+	const [question, setQuestion] = useState('');
 	const handleNextQuestion = () => {
-		userAnswerCheck();
-	};
-	const [userAnswer, setUserAnswer] = useState('');
-
-	useEffect(() => {
+		
 		startGame();
-	}, []);
+	};
+	
+
+useEffect(()=>{
+	startGame()
+},[])
 	return (
 		<>
 			<div className='text-5xl '>{question}</div>
@@ -108,7 +119,6 @@ export default function Game({
 				type='number'
 				placeholder='Ваш ответ'
 				className='input input-bordered w-full max-w-xs text-3xl'
-				onChange={event => setUserAnswer(event.target.value)}
 			/>
 			<button
 				className='btn btn-outline w-full max-w-xs'
@@ -121,8 +131,6 @@ export default function Game({
 			<progress className='progress w-56' value='25' max='100'></progress>
 
 			<Accordion gameSettings={gameSettings} />
-			<div>правильный ответ {result}</div>
-			<div>ответ пользователя {userAnswer}</div>
 		</>
 	);
 }

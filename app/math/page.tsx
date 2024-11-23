@@ -10,7 +10,7 @@ export default function App() {
 		operator: '*',
 		difficultyLevel: 1,
 		gameStatus: false,
-		stepGame:1,
+		stepGame:0,
 	});
 	
 

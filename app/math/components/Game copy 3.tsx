@@ -28,8 +28,32 @@ export default function Game({
 	const [question, setQuestion] = useState('');
 	let coefficient = 10;
 
-	const [result, setResult] = useState<number | null>(null);
+	const inputUserName = document.querySelector('[name="user-name"]');
+	const answer = document.querySelector('[name="answer"]');
+	const btnStart = document.querySelector('.btn-start');
+	const btnCheck = document.querySelector('.btn-check');
+	const output = document.querySelector('.output');
+	const grade = document.querySelector('.big-number');
+	const gameOver = document.querySelector('.end-game');
+	const dropdown1 = document.querySelector('.dropdown1');
+	//const dropdown2 = document.querySelector('.dropdown2');
+	const timer = document.querySelector('.timer');
+	const min = document.querySelector('.min');
+	const sec = document.querySelector('.sec');
+	//const mSec = document.querySelector('.m-sec');
+	const settings = document.querySelector('.settings');
 
+	let a;
+	let b;
+	const [result, setResult]=useState(null);
+	let counter = 0;
+	let errorCounter = 0;
+	//let time;
+	let intervalId;
+	let count = 0;
+	let countGame = 0;
+	let second = 0;
+	let minute = 0;
 	function randomNumber(a: number, b: number) {
 		return Math.floor(Math.random() * (b - a + 1)) + a;
 	}
@@ -47,8 +71,8 @@ export default function Game({
 			coefficient = 30;
 		}
 
-		let a = randomNumber(minNumber, maxNumber);
-		let b = randomNumber(minNumber, maxNumber);
+		a = randomNumber(minNumber, maxNumber);
+		b = randomNumber(minNumber, maxNumber);
 		if (operator === '*') {
 			setResult(a * b);
 		} else if (operator === '/') {
@@ -72,29 +96,48 @@ export default function Game({
 		});
 	}
 
-	const handleStopGame = () => {
-		setGameSettings(prevSettings => ({
-			...prevSettings,
-			operator,
-			difficultyLevel,
-			gameStatus: false,
-			stepGame: 0,
-		}));
-	};
+	// btnCheck.addEventListener('click', answerCheck);
+	// answer.addEventListener('keydown', event => {
+	// 	if (event.key == 'Enter') {
+	// 		answerCheck();
+	// 	}
+	// });
 	function userAnswerCheck() {
+		
+		let tempAnswer = '';
 		if (!userAnswer) {
-			alert('не введен ответ');
+					alert('не введен ответ');
 			return console.log('не введен ответ');
 		}
-		if (stepGame >= limGame) {
-			return handleStopGame();
-		} else {
-			return startGame();
+		if (userAnswer == result) {
+			
+			tempAnswer = `${question} (${userAnswer}) `;
+		console.log(tempAnswer);
+			if (stepGame >= limGame) {
+				return alert('игры закончились');
+				// endGame();
+			} else {
+				return startGame();
+			}
+		} 
+			tempAnswer = `${a} ${operator} ${b} = ${result} (${userAnswer})`;
+			errorCounter += 1;
+			console.log(result);
+			counter += 1;
+			if (stepGame >= limGame) {
+				return alert('игры закончились');
+				//endGame();
+			} else {
+				return startGame();
+			}
 		}
-	}
+		
+	
+
 
 	const handleNextQuestion = () => {
 		userAnswerCheck();
+		//startGame();
 	};
 	const [userAnswer, setUserAnswer] = useState('');
 
