@@ -93,9 +93,8 @@ export default function Game({
 				...prev,
 				`${question} ${result}  Ваш ответ: ${userAnswer}`,
 			]);
-
+			//setArrTasks(`${question} ${result} Ваш ответ: ${userAnswer}`);
 			console.log(arrTasks);
-			setUserAnswer('');
 			return startGame();
 		}
 	}
@@ -115,7 +114,6 @@ export default function Game({
 				type='number'
 				placeholder='Ваш ответ'
 				className='input input-bordered w-full max-w-xs text-3xl'
-				value={userAnswer}
 				onChange={event => setUserAnswer(event.target.value)}
 			/>
 			<button
