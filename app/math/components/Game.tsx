@@ -29,7 +29,7 @@ export default function Game({
 	let coefficient = 10;
 
 	const [result, setResult] = useState<number | null>(null);
-
+const [arrTasks, setArrTasks] = useState<string[]>([]); 
 	function randomNumber(a: number, b: number) {
 		return Math.floor(Math.random() * (b - a + 1)) + a;
 	}
@@ -87,8 +87,16 @@ export default function Game({
 			return console.log('не введен ответ');
 		}
 		if (stepGame >= limGame) {
+			
+			
 			return handleStopGame();
 		} else {
+			setArrTasks(prev => [
+				...prev,
+				`${question} ${result}  Ваш ответ: ${userAnswer}`,
+			]);
+			//setArrTasks(`${question} ${result} Ваш ответ: ${userAnswer}`);
+			console.log(arrTasks);
 			return startGame();
 		}
 	}
@@ -123,6 +131,12 @@ export default function Game({
 			<Accordion gameSettings={gameSettings} />
 			<div>правильный ответ {result}</div>
 			<div>ответ пользователя {userAnswer}</div>
+			<div>
+				весь пример {question}
+				{result} и ответ пользователя {userAnswer}
+			</div>
+			<div>весь массив{arrTasks}</div>
+			<div>{arrTasks.map(el=> <li>{el}</li>) }</div>
 		</>
 	);
 }
