@@ -135,7 +135,7 @@ export default function Game({
 			</div>
 			<div>весь массив{arrTasks}</div>
 			<div>
-				{arrTasks.map((el,index) => (
+				{arrTasks.map((el, index) => (
 					<p key={index}>{el}</p>
 				))}
 			</div>
