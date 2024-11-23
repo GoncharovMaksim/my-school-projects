@@ -136,7 +136,7 @@ const [arrTasks, setArrTasks] = useState<string[]>([]);
 				{result} и ответ пользователя {userAnswer}
 			</div>
 			<div>весь массив{arrTasks}</div>
-			<div>{arrTasks.map(el=> <li>{el}</li>) }</div>
+			<div>{arrTasks.map(el=> <p>{el}</p>) }</div>
 		</>
 	);
 }
