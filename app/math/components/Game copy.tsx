@@ -113,7 +113,7 @@ export default function Game({
 		if (inputRef.current) {
 			inputRef.current.focus(); // Установка фокуса
 		}
-	}, [startGame]);
+	}, [stepGame]);
 
 	useEffect(() => {
 		startGame();
@@ -128,6 +128,11 @@ export default function Game({
 				className='input input-bordered w-full max-w-xs text-3xl'
 				value={userAnswer}
 				onChange={event => setUserAnswer(event.target.value)}
+				onKeyDown={event => {
+					if (event.key === 'Enter') {
+						handleNextQuestion();
+					}
+				}}
 			/>
 			<button
 				className='btn btn-outline w-full max-w-xs'
@@ -149,7 +154,7 @@ export default function Game({
 			<div>весь массив{arrTasks}</div>
 			<div>
 				{arrTasks.map((el, index) => (
-					<p key={index}>{el}</p>
+					<p key={`${el}-${index}`}>{el}</p>
 				))}
 			</div>
 		</>
