@@ -85,11 +85,17 @@ export default function Game({
 			stepGame: 0,
 		}));
 	};
+	const [bgNoUserAnswer, setBgNoUserAnswer] = useState(false); // состояние для управления цветом
+
 	function userAnswerCheck() {
 		if (!userAnswer) {
-			alert('не введен ответ');
-			return console.log('не введен ответ');
+			setBgNoUserAnswer(true); // установить красный фон
+
+			return;
 		}
+
+		setBgNoUserAnswer(false); // сбросить фон при вводе ответа
+
 		if (stepGame >= limGame) {
 			return handleStopGame();
 		} else {
@@ -97,11 +103,11 @@ export default function Game({
 				...prev,
 				`${question} ${result}  Ваш ответ: ${userAnswer}`,
 			]);
-
 			setUserAnswer('');
 			return startGame();
 		}
 	}
+
 
 	const handleNextQuestion = () => {
 		userAnswerCheck();
@@ -128,7 +134,11 @@ export default function Game({
 				ref={inputRef}
 				type='number'
 				placeholder='Ваш ответ'
-				className='input input-bordered w-full max-w-xs text-3xl'
+				className={
+					bgNoUserAnswer
+						? 'input input-bordered w-full max-w-xs text-3xl bg-red-500'
+						: 'input input-bordered w-full max-w-xs text-3xl'
+				}
 				value={userAnswer}
 				onChange={event => setUserAnswer(event.target.value)}
 				onKeyDown={event => {
