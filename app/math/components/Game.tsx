@@ -128,6 +128,11 @@ export default function Game({
 				className='input input-bordered w-full max-w-xs text-3xl'
 				value={userAnswer}
 				onChange={event => setUserAnswer(event.target.value)}
+				onKeyDown={event => {
+					if (event.key === 'Enter') {
+						handleNextQuestion();
+					}
+				}}
 			/>
 			<button
 				className='btn btn-outline w-full max-w-xs'
