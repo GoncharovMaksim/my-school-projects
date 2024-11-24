@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Accordion from './Accordion';
 export default function Game({
 	gameSettings,
@@ -9,6 +9,7 @@ export default function Game({
 		difficultyLevel: number;
 		gameStatus: boolean;
 		stepGame: number;
+		limGame: number;
 	};
 	setGameSettings: React.Dispatch<
 		React.SetStateAction<{
@@ -16,17 +17,16 @@ export default function Game({
 			difficultyLevel: number;
 			gameStatus: boolean;
 			stepGame: number;
+			limGame: number;
 		}>
 	>;
 }) {
-	const minNumber = 1;
-	let maxNumber = 10;
 	const { operator } = gameSettings;
 	const { difficultyLevel } = gameSettings;
 	const { stepGame } = gameSettings;
-	const limGame = 5;
+	const { limGame } = gameSettings;
 	const [question, setQuestion] = useState('');
-	let coefficient = 10;
+	const [userAnswer, setUserAnswer] = useState('');
 
 	const [result, setResult] = useState<number | null>(null);
 	const [arrTasks, setArrTasks] = useState<string[]>([]);
@@ -35,6 +35,10 @@ export default function Game({
 	}
 
 	function startGame() {
+		let maxNumber = 10;
+		const minNumber = 1;
+		let coefficient = 10;
+
 		if (difficultyLevel === 1) {
 			maxNumber = 10;
 		}
@@ -93,8 +97,8 @@ export default function Game({
 				...prev,
 				`${question} ${result}  Ваш ответ: ${userAnswer}`,
 			]);
-			//setArrTasks(`${question} ${result} Ваш ответ: ${userAnswer}`);
-			console.log(arrTasks);
+
+			setUserAnswer('');
 			return startGame();
 		}
 	}
@@ -102,7 +106,11 @@ export default function Game({
 	const handleNextQuestion = () => {
 		userAnswerCheck();
 	};
-	const [userAnswer, setUserAnswer] = useState('');
+const inputRef = useRef(null);
+
+useEffect(() => {
+	inputRef.current.focus();
+}, []);
 
 	useEffect(() => {
 		startGame();
@@ -111,9 +119,11 @@ export default function Game({
 		<>
 			<div className='text-5xl '>{question}</div>
 			<input
+				ref={inputRef}
 				type='number'
 				placeholder='Ваш ответ'
 				className='input input-bordered w-full max-w-xs text-3xl'
+				value={userAnswer}
 				onChange={event => setUserAnswer(event.target.value)}
 			/>
 			<button
