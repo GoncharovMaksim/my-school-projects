@@ -7,6 +7,7 @@ export default function Accordion({
 		difficultyLevel: number;
 		gameStatus: boolean;
 		stepGame: number;
+		limGame: number;
 	};
 }) {
 	const { stepGame, difficultyLevel } = gameSettings;

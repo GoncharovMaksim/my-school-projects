@@ -10,6 +10,7 @@ export default function StartSettings({
 			difficultyLevel: number;
 			gameStatus: boolean;
 			stepGame: number;
+			limGame: number;
 		}>
 	>;
 }) {
@@ -27,7 +28,6 @@ export default function StartSettings({
 	};
 
 	const handleStartGame = () => {
-	
 		setGameSettings(prevSettings => ({
 			...prevSettings,
 			operator,

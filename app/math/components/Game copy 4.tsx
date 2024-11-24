@@ -9,7 +9,6 @@ export default function Game({
 		difficultyLevel: number;
 		gameStatus: boolean;
 		stepGame: number;
-		limGame: number;
 	};
 	setGameSettings: React.Dispatch<
 		React.SetStateAction<{
@@ -17,16 +16,14 @@ export default function Game({
 			difficultyLevel: number;
 			gameStatus: boolean;
 			stepGame: number;
-			limGame: number;
 		}>
 	>;
 }) {
 	const { operator } = gameSettings;
 	const { difficultyLevel } = gameSettings;
 	const { stepGame } = gameSettings;
-	const { limGame } = gameSettings;
+	const limGame = 5;
 	const [question, setQuestion] = useState('');
-	const [userAnswer, setUserAnswer] = useState('');
 
 	const [result, setResult] = useState<number | null>(null);
 	const [arrTasks, setArrTasks] = useState<string[]>([]);
@@ -38,7 +35,7 @@ export default function Game({
 		let maxNumber = 10;
 		const minNumber = 1;
 		let coefficient = 10;
-
+		
 		if (difficultyLevel === 1) {
 			maxNumber = 10;
 		}
@@ -98,6 +95,7 @@ export default function Game({
 				`${question} ${result}  Ваш ответ: ${userAnswer}`,
 			]);
 
+			console.log(arrTasks);
 			setUserAnswer('');
 			return startGame();
 		}
@@ -106,6 +104,7 @@ export default function Game({
 	const handleNextQuestion = () => {
 		userAnswerCheck();
 	};
+	const [userAnswer, setUserAnswer] = useState('');
 
 	useEffect(() => {
 		startGame();
