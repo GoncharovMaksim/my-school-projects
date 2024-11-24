@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Accordion from './Accordion';
 export default function Game({
 	gameSettings,
@@ -21,7 +21,10 @@ export default function Game({
 		}>
 	>;
 }) {
-	const { operator, difficultyLevel, stepGame, limGame } = gameSettings;
+	const { operator } = gameSettings;
+	const { difficultyLevel } = gameSettings;
+	const { stepGame } = gameSettings;
+	const { limGame } = gameSettings;
 	const [question, setQuestion] = useState('');
 	const [userAnswer, setUserAnswer] = useState('');
 
@@ -31,7 +34,7 @@ export default function Game({
 		return Math.floor(Math.random() * (b - a + 1)) + a;
 	}
 
-	const startGame = useCallback(() => {
+	function startGame() {
 		let maxNumber = 10;
 		const minNumber = 1;
 		let coefficient = 10;
@@ -71,7 +74,7 @@ export default function Game({
 			...gameSettings,
 			stepGame: gameSettings.stepGame + 1,
 		});
-	}, [operator, difficultyLevel, setGameSettings, gameSettings]);
+	}
 
 	const handleStopGame = () => {
 		setGameSettings(prevSettings => ({
@@ -82,7 +85,7 @@ export default function Game({
 			stepGame: 0,
 		}));
 	};
-	const userAnswerCheck = useCallback(() => {
+	function userAnswerCheck() {
 		if (!userAnswer) {
 			alert('не введен ответ');
 			return console.log('не введен ответ');
@@ -98,15 +101,7 @@ export default function Game({
 			setUserAnswer('');
 			return startGame();
 		}
-	}, [
-		userAnswer,
-		question,
-		result,
-		stepGame,
-		limGame,
-		startGame,
-		handleStopGame,
-	]);
+	}
 
 	const handleNextQuestion = () => {
 		userAnswerCheck();
@@ -119,13 +114,13 @@ export default function Game({
 			inputRef.current.focus(); // Установка фокуса
 		}
 	}, [stepGame]);
-const firstRender = useRef(true); 
+
+	const startGameRef = useRef(startGame);
+
 	useEffect(() => {
-		if (firstRender.current) {
-			startGame(); // Вызовем startGame только на первом рендере
-			firstRender.current = false; // Помечаем, что первый рендер уже прошел
-		}
-	}, [startGame]); 
+		startGameRef.current();
+	}, []);
+
 	return (
 		<>
 			<div className='text-5xl '>{question}</div>

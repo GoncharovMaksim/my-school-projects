@@ -115,9 +115,12 @@ export default function Game({
 		}
 	}, [stepGame]);
 
+	const startGameRef = useRef(startGame);
+
 	useEffect(() => {
-		startGame();
+		startGameRef.current();
 	}, []);
+
 	return (
 		<>
 			<div className='text-5xl '>{question}</div>
