@@ -19,14 +19,11 @@ export default function Game({
 		}>
 	>;
 }) {
-	const minNumber = 1;
-	let maxNumber = 10;
 	const { operator } = gameSettings;
 	const { difficultyLevel } = gameSettings;
 	const { stepGame } = gameSettings;
 	const limGame = 5;
 	const [question, setQuestion] = useState('');
-	let coefficient = 10;
 
 	const [result, setResult] = useState<number | null>(null);
 	const [arrTasks, setArrTasks] = useState<string[]>([]);
@@ -35,6 +32,10 @@ export default function Game({
 	}
 
 	function startGame() {
+		let maxNumber = 10;
+		const minNumber = 1;
+		let coefficient = 10;
+		
 		if (difficultyLevel === 1) {
 			maxNumber = 10;
 		}
