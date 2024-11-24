@@ -107,13 +107,13 @@ export default function Game({
 		userAnswerCheck();
 	};
 
-const inputRef = useRef<HTMLInputElement | null>(null); // фокус на поле input
+	const inputRef = useRef<HTMLInputElement | null>(null); // фокус на поле input
 
 	useEffect(() => {
 		if (inputRef.current) {
 			inputRef.current.focus(); // Установка фокуса
 		}
-	}, []);
+	}, [startGame]);
 
 	useEffect(() => {
 		startGame();
