@@ -136,7 +136,7 @@ export default function Game({
 				placeholder='Ваш ответ'
 				className={
 					bgNoUserAnswer
-						? 'input input-bordered w-full max-w-xs text-3xl border-red-500'
+						? 'input input-bordered w-full max-w-xs text-3xl input-bordered-red-500'
 						: 'input input-bordered w-full max-w-xs text-3xl'
 				}
 				value={userAnswer}
