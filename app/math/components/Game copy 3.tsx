@@ -106,11 +106,14 @@ export default function Game({
 	const handleNextQuestion = () => {
 		userAnswerCheck();
 	};
-const inputRef = useRef(null);
 
-useEffect(() => {
-	inputRef.current.focus();
-}, []);
+const inputRef = useRef<HTMLInputElement | null>(null); // фокус на поле input
+
+	useEffect(() => {
+		if (inputRef.current) {
+			inputRef.current.focus(); // Установка фокуса
+		}
+	}, []);
 
 	useEffect(() => {
 		startGame();
