@@ -154,7 +154,7 @@ export default function Game({
 			>
 				Продолжить
 			</button>
-			<progress className='progress w-56' value='25' max='100'></progress>
+			<progress className='progress w-56' value={stepGame} max='5'></progress>
 
 			<Accordion gameSettings={gameSettings} />
 			<div>правильный ответ {result}</div>
