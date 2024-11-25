@@ -36,11 +36,11 @@ export default function Game({
 
 	function startGame() {
 		let maxNumber = 10;
-		const minNumber = 1;
+		const minNumber = 2;
 		let coefficient = 10;
 
 		if (difficultyLevel === 1) {
-			maxNumber = 10;
+			maxNumber = 9;
 		}
 		if (difficultyLevel === 2) {
 			maxNumber = 20;
