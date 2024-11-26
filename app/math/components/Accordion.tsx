@@ -38,6 +38,7 @@ export default function Accordion({
 						<Timer
 							isRunning={gameSettings.timerStatus}
 							setGameSettings={setGameSettings}
+							gameSettings={gameSettings}
 						/>
 					</div>
 				</div>

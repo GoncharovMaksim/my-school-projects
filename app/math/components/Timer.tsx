@@ -2,9 +2,20 @@ import { useState, useEffect } from 'react';
 
 export default function Timer({
 	isRunning,
+	gameSettings,
 	setGameSettings,
 }: {
 	isRunning: boolean;
+	
+	gameSettings: {
+		operator: string;
+		difficultyLevel: number;
+		gameStatus: boolean;
+		stepGame: number;
+		limGame: number;
+		timerStatus: boolean;
+		timeSpent: number;
+	};
 	setGameSettings: React.Dispatch<
 		React.SetStateAction<{
 			operator: string;
@@ -17,7 +28,7 @@ export default function Timer({
 		}>
 	>;
 }) {
-	const [elapsedTime, setElapsedTime] = useState(0);
+	const [elapsedTime, setElapsedTime] = useState(gameSettings.timeSpent);
 
 	useEffect(() => {
 		let interval: NodeJS.Timeout | null = null;
@@ -43,6 +54,7 @@ export default function Timer({
 
 	// Обновление timeSpent в gameSettings
 	useEffect(() => {
+		console.log('Elapsed Time:', elapsedTime);
 		setGameSettings(prevSettings => ({
 			...prevSettings,
 			timeSpent: elapsedTime,
@@ -51,3 +63,4 @@ export default function Timer({
 
 	return <span className='countdown font-mono text-xl'>{elapsedTime} сек</span>;
 }
+//

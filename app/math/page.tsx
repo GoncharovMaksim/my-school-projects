@@ -16,7 +16,7 @@ export default function App() {
 		timeSpent:0
 	});
 	
-console.log('Current gameSettings:', gameSettings.timeSpent);
+console.log('Current gameSettings timerStatus:', gameSettings.timerStatus);
 
 
 
