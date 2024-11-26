@@ -1,6 +1,7 @@
 import Timer from './Timer';
 export default function Accordion({
 	gameSettings,
+	setGameSettings,
 }: {
 	gameSettings: {
 		operator: string;
@@ -8,7 +9,20 @@ export default function Accordion({
 		gameStatus: boolean;
 		stepGame: number;
 		limGame: number;
+		timerStatus: boolean;
+		timeSpent: number;
 	};
+	setGameSettings: React.Dispatch<
+		React.SetStateAction<{
+			operator: string;
+			difficultyLevel: number;
+			gameStatus: boolean;
+			stepGame: number;
+			limGame: number;
+			timerStatus: boolean;
+			timeSpent: number;
+		}>
+	>;
 }) {
 	const { stepGame, difficultyLevel } = gameSettings;
 	return (
@@ -20,7 +34,11 @@ export default function Accordion({
 					<p>Уровень сложности: {difficultyLevel}</p>
 					<p>Шаг игры: {stepGame}</p>
 					<div>
-						Затрачено времени: <Timer isRunning={gameSettings.gameStatus} />
+						Затрачено времени:{' '}
+						<Timer
+							isRunning={gameSettings.timerStatus}
+							setGameSettings={setGameSettings}
+						/>
 					</div>
 				</div>
 			</div>

@@ -10,6 +10,8 @@ export default function Game({
 		gameStatus: boolean;
 		stepGame: number;
 		limGame: number;
+		timerStatus: boolean;
+		timeSpent: number;
 	};
 	setGameSettings: React.Dispatch<
 		React.SetStateAction<{
@@ -18,6 +20,8 @@ export default function Game({
 			gameStatus: boolean;
 			stepGame: number;
 			limGame: number;
+			timerStatus: boolean;
+			timeSpent: number;
 		}>
 	>;
 }) {
@@ -72,6 +76,7 @@ export default function Game({
 		setQuestion(`${a} ${operator} ${b} =`);
 		setGameSettings({
 			...gameSettings,
+			timerStatus: true,
 			stepGame: gameSettings.stepGame + 1,
 		});
 	}
@@ -83,6 +88,7 @@ export default function Game({
 			difficultyLevel,
 			gameStatus: false,
 			stepGame: 0,
+			timeSpent: 0,
 		}));
 	};
 	const [bgNoUserAnswer, setBgNoUserAnswer] = useState(false); // состояние для управления цветом
@@ -94,21 +100,21 @@ export default function Game({
 			setBadAnswer(prev => prev - 1);
 		}
 	}, [result, userAnswer]);
-useEffect(() => {
-	const percentAnswer = 100 - (badAnswer / limGame) * 100;
-	console.log(percentAnswer);
-	if (percentAnswer > 89) {
-		setGradeAnswer(5);
-	} else if (percentAnswer > 69) {
-		setGradeAnswer(4);
-	} else if (percentAnswer > 49) {
-		setGradeAnswer(3);
-	} else if (percentAnswer > 29) {
-		setGradeAnswer(2);
-	} else {
-		setGradeAnswer(1);
-	}
-}, [badAnswer, limGame]);
+	useEffect(() => {
+		const percentAnswer = 100 - (badAnswer / limGame) * 100;
+		console.log(percentAnswer);
+		if (percentAnswer > 89) {
+			setGradeAnswer(5);
+		} else if (percentAnswer > 69) {
+			setGradeAnswer(4);
+		} else if (percentAnswer > 49) {
+			setGradeAnswer(3);
+		} else if (percentAnswer > 29) {
+			setGradeAnswer(2);
+		} else {
+			setGradeAnswer(1);
+		}
+	}, [badAnswer, limGame]);
 
 	function userAnswerCheck() {
 		if (!userAnswer) {
@@ -126,6 +132,10 @@ useEffect(() => {
 		]);
 		setUserAnswer('');
 		if (stepGame === limGame) {
+			setGameSettings(prevSettings => ({
+				...prevSettings,
+				timerStatus: false,
+			}));
 			return setEndGame(true);
 		} else {
 			return startGame();
@@ -166,7 +176,7 @@ useEffect(() => {
 				})}
 			</div>
 			<div>Ваша оценка: {gradeAnswer}</div>
-
+			<div>Затрачено времени: {gameSettings.timeSpent}</div>
 			<button
 				className='btn btn-outline w-full max-w-xs'
 				onClick={() => {
@@ -210,7 +220,10 @@ useEffect(() => {
 				max={limGame}
 			></progress>
 
-			<Accordion gameSettings={gameSettings} />
+			<Accordion
+				gameSettings={gameSettings}
+				setGameSettings={setGameSettings}
+			/>
 		</>
 	);
 }

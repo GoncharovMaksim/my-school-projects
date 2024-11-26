@@ -11,6 +11,8 @@ export default function StartSettings({
 			gameStatus: boolean;
 			stepGame: number;
 			limGame: number;
+			timerStatus: boolean;
+			timeSpent: number;
 		}>
 	>;
 }) {

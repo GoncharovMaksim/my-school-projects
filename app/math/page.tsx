@@ -12,9 +12,11 @@ export default function App() {
 		gameStatus: false,
 		stepGame: 0,
 		limGame: 5,
+		timerStatus: false,
+		timeSpent:0
 	});
 	
-
+console.log('Current gameSettings:', gameSettings.timeSpent);
 
 
 
