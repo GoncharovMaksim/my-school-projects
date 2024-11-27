@@ -35,11 +35,11 @@ export default function Accordion({
 					<p>Шаг игры: {stepGame}</p>
 					<div>
 						Затрачено времени:{' '}
-						<Timer
+						{/* <Timer
 							isRunning={gameSettings.timerStatus}
 							setGameSettings={setGameSettings}
 							gameSettings={gameSettings}
-						/>
+						/> */}
 					</div>
 				</div>
 			</div>

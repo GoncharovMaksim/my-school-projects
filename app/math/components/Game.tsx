@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import Accordion from './Accordion';
+import Timer from './Timer';
 export default function Game({
 	gameSettings,
 	setGameSettings,
@@ -160,70 +161,84 @@ export default function Game({
 		startGameRef.current();
 	}, []);
 
-	return endGame ? (
+	return (
 		<>
-			<div>
-				{arrTasks.map((el, index) => {
-					const isNoCorrect = el.includes('Не верно:');
-					return (
-						<p
-							key={`${el}-${index}`}
-							className={isNoCorrect ? 'text-red-500' : 'text-green-500'}
-						>
-							{el}
-						</p>
-					);
-				})}
-			</div>
-			<div>Ваша оценка: {gradeAnswer}</div>
-			<div>Затрачено времени: {(gameSettings.timeSpent / 1000).toFixed(2)} сек</div>
-			<button
-				className='btn btn-outline w-full max-w-xs'
-				onClick={() => {
-					handleStopGame();
-				}}
-			>
-				Продолжить
-			</button>
-		</>
-	) : (
-		<>
-			<div className='text-5xl '>{question}</div>
-			<input
-				ref={inputRef}
-				type='number'
-				placeholder='Ваш ответ'
-				className={
-					bgNoUserAnswer
-						? 'input input-bordered w-full max-w-xs text-3xl bg-red-500'
-						: 'input input-bordered w-full max-w-xs text-3xl'
-				}
-				value={userAnswer}
-				onChange={event => setUserAnswer(event.target.value)}
-				onKeyDown={event => {
-					if (event.key === 'Enter') {
-						handleNextQuestion();
-					}
-				}}
-			/>
-			<button
-				className='btn btn-outline w-full max-w-xs'
-				onClick={() => {
-					handleNextQuestion();
-				}}
-			>
-				Продолжить
-			</button>
-			<progress
-				className='progress w-56'
-				value={stepGame}
-				max={limGame}
-			></progress>
-
-			<Accordion
-				gameSettings={gameSettings}
+			<Timer
+				isRunning={gameSettings.timerStatus}
 				setGameSettings={setGameSettings}
+				gameSettings={gameSettings}
 			/>
+			<div>
+				Затрачено времени: {(gameSettings.timeSpent / 1000).toFixed(2)} сек
+			</div>
+			{endGame ? (
+				<>
+					<div>
+						{arrTasks.map((el, index) => {
+							const isNoCorrect = el.includes('Не верно:');
+							return (
+								<p
+									key={`${el}-${index}`}
+									className={isNoCorrect ? 'text-red-500' : 'text-green-500'}
+								>
+									{el}
+								</p>
+							);
+						})}
+					</div>
+					<div>Ваша оценка: {gradeAnswer}</div>
+					<div>
+						Затрачено времени: {(gameSettings.timeSpent / 1000).toFixed(2)} сек
+					</div>
+					<button
+						className='btn btn-outline w-full max-w-xs'
+						onClick={() => {
+							handleStopGame();
+						}}
+					>
+						Продолжить
+					</button>
+				</>
+			) : (
+				<>
+					<div className='text-5xl '>{question}</div>
+					<input
+						ref={inputRef}
+						type='number'
+						placeholder='Ваш ответ'
+						className={
+							bgNoUserAnswer
+								? 'input input-bordered w-full max-w-xs text-3xl bg-red-500'
+								: 'input input-bordered w-full max-w-xs text-3xl'
+						}
+						value={userAnswer}
+						onChange={event => setUserAnswer(event.target.value)}
+						onKeyDown={event => {
+							if (event.key === 'Enter') {
+								handleNextQuestion();
+							}
+						}}
+					/>
+					<button
+						className='btn btn-outline w-full max-w-xs'
+						onClick={() => {
+							handleNextQuestion();
+						}}
+					>
+						Продолжить
+					</button>
+					<progress
+						className='progress w-56'
+						value={stepGame}
+						max={limGame}
+					></progress>
+
+					<Accordion
+						gameSettings={gameSettings}
+						setGameSettings={setGameSettings}
+					/>
+				</>
+			)}
 		</>
 	);
 }

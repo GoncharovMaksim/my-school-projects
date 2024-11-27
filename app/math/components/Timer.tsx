@@ -59,11 +59,11 @@ export default function Timer({
 			...prevSettings,
 			timeSpent: elapsedTime,
 		}));
-	}, [elapsedTime, setGameSettings]);
+	}, [isRunning]);
 
 	return (
 		<span className='countdown font-mono text-xl'>
-			{(elapsedTime / 1000).toFixed(2)} сек
+			{(elapsedTime / 1000).toFixed(0)} сек
 		</span>
 	); // Отображаем время в секундах с точностью до тысячных
 }
