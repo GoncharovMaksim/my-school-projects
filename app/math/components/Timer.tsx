@@ -6,7 +6,7 @@ export default function Timer({
 	setGameSettings,
 }: {
 	isRunning: boolean;
-	
+
 	gameSettings: {
 		operator: string;
 		difficultyLevel: number;
@@ -28,17 +28,17 @@ export default function Timer({
 		}>
 	>;
 }) {
-	const [elapsedTime, setElapsedTime] = useState(gameSettings.timeSpent);
+	const [elapsedTime, setElapsedTime] = useState(gameSettings.timeSpent); // будет хранить время в миллисекундах
 
 	useEffect(() => {
 		let interval: NodeJS.Timeout | null = null;
 
 		if (isRunning) {
-			const startTime = Date.now(); // Используйте timestamp для упрощения
+			const startTime = Date.now(); // Начало отсчета в миллисекундах
 			interval = setInterval(() => {
 				const now = Date.now();
-				setElapsedTime(Math.floor((now - startTime) / 1000));
-			}, 1000);
+				setElapsedTime(now - startTime); // Обновляем время в миллисекундах
+			}, 10);
 		} else {
 			if (interval) {
 				clearInterval(interval);
@@ -61,6 +61,9 @@ export default function Timer({
 		}));
 	}, [elapsedTime, setGameSettings]);
 
-	return <span className='countdown font-mono text-xl'>{elapsedTime} сек</span>;
+	return (
+		<span className='countdown font-mono text-xl'>
+			{(elapsedTime / 1000).toFixed(2)} сек
+		</span>
+	); // Отображаем время в секундах с точностью до тысячных
 }
-//

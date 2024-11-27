@@ -176,7 +176,7 @@ export default function Game({
 				})}
 			</div>
 			<div>Ваша оценка: {gradeAnswer}</div>
-			<div>Затрачено времени: {gameSettings.timeSpent}</div>
+			<div>Затрачено времени: {(gameSettings.timeSpent / 1000).toFixed(2)} сек</div>
 			<button
 				className='btn btn-outline w-full max-w-xs'
 				onClick={() => {
