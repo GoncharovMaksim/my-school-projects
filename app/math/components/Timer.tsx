@@ -28,16 +28,16 @@ export default function Timer({
 		}>
 	>;
 }) {
-	const [elapsedTime, setElapsedTime] = useState(gameSettings.timeSpent); // будет хранить время в миллисекундах
+	const [elapsedTime, setElapsedTime] = useState(gameSettings.timeSpent); 
 
 	useEffect(() => {
 		let interval: NodeJS.Timeout | null = null;
 
 		if (isRunning) {
-			const startTime = Date.now(); // Начало отсчета в миллисекундах
+			const startTime = Date.now(); 
 			interval = setInterval(() => {
 				const now = Date.now();
-				setElapsedTime(now - startTime); // Обновляем время в миллисекундах
+				setElapsedTime(now - startTime); 
 			}, 10);
 		} else {
 			if (interval) {
@@ -52,7 +52,7 @@ export default function Timer({
 		};
 	}, [isRunning]);
 
-	// Обновление timeSpent в gameSettings
+
 	useEffect(() => {
 		console.log('Elapsed Time:', elapsedTime);
 		setGameSettings(prevSettings => ({
@@ -63,7 +63,7 @@ export default function Timer({
 
 	return (
 		<span className='countdown font-mono text-xl'>
-			{(elapsedTime / 1000).toFixed(0)} сек
+			{(elapsedTime / 1000).toFixed(1)} сек
 		</span>
-	); // Отображаем время в секундах с точностью до тысячных
+	); 
 }

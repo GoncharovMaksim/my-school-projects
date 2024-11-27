@@ -163,14 +163,15 @@ export default function Game({
 
 	return (
 		<>
-			<Timer
+			{/* <Timer
 				isRunning={gameSettings.timerStatus}
 				setGameSettings={setGameSettings}
 				gameSettings={gameSettings}
-			/>
-			<div>
+			/> */}
+
+			{/* <div>
 				Затрачено времени: {(gameSettings.timeSpent / 1000).toFixed(2)} сек
-			</div>
+			</div> */}
 			{endGame ? (
 				<>
 					<div>
@@ -233,12 +234,16 @@ export default function Game({
 						max={limGame}
 					></progress>
 
-					<Accordion
+					{/* <Accordion
 						gameSettings={gameSettings}
 						setGameSettings={setGameSettings}
-					/>
+					/> */}
 				</>
 			)}
+			<Accordion
+				gameSettings={gameSettings}
+				setGameSettings={setGameSettings}
+			/>
 		</>
 	);
 }
