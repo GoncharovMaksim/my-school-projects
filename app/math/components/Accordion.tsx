@@ -9,7 +9,7 @@ export default function Accordion({ gameSettings, setGameSettings }: GameProps) 
 				<div className='collapse-title text-xl font-medium'>Параметры</div>
 				<div className='collapse-content text-xl'>
 					<p>Уровень сложности: {difficultyLevel}</p>
-					<p>Шаг: {stepGame}</p>
+					<p>Вопросов задано: {stepGame}</p>
 					<div>
 						Затрачено времени:{' '}
 						<Timer
