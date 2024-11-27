@@ -138,28 +138,26 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		<>
 			{endGame ? (
 				<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm text-xl'>
-					<h1>Ваш результат:</h1>
-					<div>
-						{arrTasks.map((el, index) => {
-							const isNoCorrect = el.includes('Не верно:');
-							return (
-								<p
-									key={`${el}-${index}`}
-									className={isNoCorrect ? 'text-red-500' : 'text-green-500'}
-								>
-									{el}
-								</p>
-							);
-						})}
+					<div className='container mx-auto px-4 flex flex-col space-y-4 max-w-screen-sm text-xl'>
+						<h1>Результат:</h1>
+						<div>
+							{arrTasks.map((el, index) => {
+								const isNoCorrect = el.includes('Не верно:');
+								return (
+									<p
+										key={`${el}-${index}`}
+										className={isNoCorrect ? 'text-red-500' : 'text-green-500'}
+									>
+										{el}
+									</p>
+								);
+							})}
+						</div>
+						<div>
+							Оценка: <span className='text-2xl font-bold'>{gradeAnswer}</span>
+						</div>
+						<div>Время: {(gameSettings.timeSpent / 1000).toFixed(2)} сек</div>
 					</div>
-					<div>
-						Ваша оценка:{' '}
-						<span className='text-2xl font-bold'>{gradeAnswer}</span>
-					</div>
-					<div>
-						Затрачено времени: {(gameSettings.timeSpent / 1000).toFixed(2)} сек
-					</div>
-
 					<button
 						className='btn btn-outline w-full max-w-xs'
 						onClick={() => {
