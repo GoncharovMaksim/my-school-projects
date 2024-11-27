@@ -15,8 +15,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-	title: 'Проекты для школы',
-	description: 'Помощник в освоении школьной программы',
+	title: 'Школа112',
+	description: 'Проекты для школы',
 };
 
 export default function RootLayout({
