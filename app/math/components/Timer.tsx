@@ -1,43 +1,17 @@
 import { useState, useEffect } from 'react';
+import { GameProps } from './types';
 
-export default function Timer({
-	isRunning,
-	gameSettings,
-	setGameSettings,
-}: {
-	isRunning: boolean;
-
-	gameSettings: {
-		operator: string;
-		difficultyLevel: number;
-		gameStatus: boolean;
-		stepGame: number;
-		limGame: number;
-		timerStatus: boolean;
-		timeSpent: number;
-	};
-	setGameSettings: React.Dispatch<
-		React.SetStateAction<{
-			operator: string;
-			difficultyLevel: number;
-			gameStatus: boolean;
-			stepGame: number;
-			limGame: number;
-			timerStatus: boolean;
-			timeSpent: number;
-		}>
-	>;
-}) {
+export default function Timer({ gameSettings, setGameSettings }: GameProps) {
 	const [elapsedTime, setElapsedTime] = useState(gameSettings.timeSpent); 
 
 	useEffect(() => {
 		let interval: NodeJS.Timeout | null = null;
 
-		if (isRunning) {
-			const startTime = Date.now(); 
+		if (gameSettings.timerStatus) {
+			const startTime = Date.now();
 			interval = setInterval(() => {
 				const now = Date.now();
-				setElapsedTime(now - startTime); 
+				setElapsedTime(now - startTime);
 			}, 10);
 		} else {
 			if (interval) {
@@ -49,8 +23,8 @@ export default function Timer({
 			if (interval) {
 				clearInterval(interval);
 			}
-		};
-	}, [isRunning]);
+		}; 
+	}, [gameSettings.timerStatus]);
 
 
 	useEffect(() => {
@@ -59,7 +33,7 @@ export default function Timer({
 			...prevSettings,
 			timeSpent: elapsedTime,
 		}));
-	}, [isRunning]);
+	}, [gameSettings.timerStatus]);
 
 	return (
 		<span className='countdown font-mono text-xl'>

@@ -1,29 +1,6 @@
 import Timer from './Timer';
-export default function Accordion({
-	gameSettings,
-	setGameSettings,
-}: {
-	gameSettings: {
-		operator: string;
-		difficultyLevel: number;
-		gameStatus: boolean;
-		stepGame: number;
-		limGame: number;
-		timerStatus: boolean;
-		timeSpent: number;
-	};
-	setGameSettings: React.Dispatch<
-		React.SetStateAction<{
-			operator: string;
-			difficultyLevel: number;
-			gameStatus: boolean;
-			stepGame: number;
-			limGame: number;
-			timerStatus: boolean;
-			timeSpent: number;
-		}>
-	>;
-}) {
+import { GameProps } from './types';
+export default function Accordion({ gameSettings, setGameSettings }: GameProps) {
 	const { stepGame, difficultyLevel } = gameSettings;
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm'>
@@ -36,7 +13,6 @@ export default function Accordion({
 					<div>
 						Затрачено времени:{' '}
 						<Timer
-							isRunning={gameSettings.timerStatus}
 							setGameSettings={setGameSettings}
 							gameSettings={gameSettings}
 						/>

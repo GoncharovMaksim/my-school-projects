@@ -1,21 +1,8 @@
 import DropdownMenu from '../../components/DropdownMenu';
 import { useState } from 'react';
+import { GameProps } from './types';
 
-export default function StartSettings({
-	setGameSettings,
-}: {
-	setGameSettings: React.Dispatch<
-		React.SetStateAction<{
-			operator: string;
-			difficultyLevel: number;
-			gameStatus: boolean;
-			stepGame: number;
-			limGame: number;
-			timerStatus: boolean;
-			timeSpent: number;
-		}>
-	>;
-}) {
+export default function Settings({ setGameSettings }: GameProps) {
 	// Локальное состояние для временных значений
 	const [operator, setOperator] = useState('*');
 	const [difficultyLevel, setDifficultyLevel] = useState(1);

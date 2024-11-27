@@ -4,8 +4,6 @@ import Settings from './components/Settings';
 import Game from './components/Game';
 
 export default function App() {
-	
-
 	const [gameSettings, setGameSettings] = useState({
 		operator: '*',
 		difficultyLevel: 1,
@@ -13,12 +11,8 @@ export default function App() {
 		stepGame: 0,
 		limGame: 5,
 		timerStatus: false,
-		timeSpent:0
+		timeSpent: 0,
 	});
-	
-console.log('Current gameSettings timerStatus:', gameSettings.timerStatus);
-
-
 
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
@@ -27,12 +21,15 @@ console.log('Current gameSettings timerStatus:', gameSettings.timerStatus);
 
 				{!gameSettings.gameStatus ? (
 					<Settings
+						gameSettings={gameSettings}
 						setGameSettings={setGameSettings}
-						
 					/>
 				) : (
 					<>
-						<Game gameSettings={gameSettings} setGameSettings={setGameSettings} />
+						<Game
+							gameSettings={gameSettings}
+							setGameSettings={setGameSettings}
+						/>
 					</>
 				)}
 			</div>

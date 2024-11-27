@@ -1,31 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import Accordion from './Accordion';
-import Timer from './Timer';
-export default function Game({
-	gameSettings,
-	setGameSettings,
-}: {
-	gameSettings: {
-		operator: string;
-		difficultyLevel: number;
-		gameStatus: boolean;
-		stepGame: number;
-		limGame: number;
-		timerStatus: boolean;
-		timeSpent: number;
-	};
-	setGameSettings: React.Dispatch<
-		React.SetStateAction<{
-			operator: string;
-			difficultyLevel: number;
-			gameStatus: boolean;
-			stepGame: number;
-			limGame: number;
-			timerStatus: boolean;
-			timeSpent: number;
-		}>
-	>;
-}) {
+import { GameProps } from './types';
+export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const { operator } = gameSettings;
 	const { difficultyLevel } = gameSettings;
 	const { stepGame } = gameSettings;
