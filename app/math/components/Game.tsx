@@ -2,20 +2,28 @@ import { useEffect, useState, useRef } from 'react';
 import Accordion from './Accordion';
 import { GameProps } from './types';
 export default function Game({ gameSettings, setGameSettings }: GameProps) {
-	const { operator } = gameSettings;
-	const { difficultyLevel } = gameSettings;
-	const { stepGame } = gameSettings;
-	const { limGame } = gameSettings;
+	const { operator, difficultyLevel, stepGame, limGame } = gameSettings;
+
 	const [question, setQuestion] = useState('');
 	const [userAnswer, setUserAnswer] = useState('');
 
 	const [result, setResult] = useState<number | null>(null);
 	const [arrTasks, setArrTasks] = useState<string[]>([]);
+	const [bgNoUserAnswer, setBgNoUserAnswer] = useState(false);
+	const [endGame, setEndGame] = useState(false);
+	const [badAnswer, setBadAnswer] = useState(limGame);
+	const [gradeAnswer, setGradeAnswer] = useState(0);
+	const inputRef = useRef<HTMLInputElement | null>(null);
+
 	function randomNumber(a: number, b: number) {
 		return Math.floor(Math.random() * (b - a + 1)) + a;
 	}
 
 	function startGame() {
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
+
 		let maxNumber = 10;
 		const minNumber = 2;
 		let coefficient = 10;
@@ -34,6 +42,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 
 		let a = randomNumber(minNumber, maxNumber);
 		let b = randomNumber(minNumber, maxNumber);
+
 		if (operator === '*') {
 			setResult(a * b);
 		} else if (operator === '/') {
@@ -68,18 +77,16 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 			timeSpent: 0,
 		}));
 	};
-	const [bgNoUserAnswer, setBgNoUserAnswer] = useState(false); // состояние для управления цветом
-	const [endGame, setEndGame] = useState(false);
-	const [badAnswer, setBadAnswer] = useState(limGame);
-	const [gradeAnswer, setGradeAnswer] = useState(0);
+
 	useEffect(() => {
 		if (result === Number(userAnswer)) {
 			setBadAnswer(prev => prev - 1);
 		}
 	}, [result, userAnswer]);
+
 	useEffect(() => {
 		const percentAnswer = 100 - (badAnswer / limGame) * 100;
-		console.log(percentAnswer);
+
 		if (percentAnswer > 89) {
 			setGradeAnswer(5);
 		} else if (percentAnswer > 69) {
@@ -94,13 +101,16 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	}, [badAnswer, limGame]);
 
 	function userAnswerCheck() {
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
 		if (!userAnswer) {
-			setBgNoUserAnswer(true); // установить красный фон
+			setBgNoUserAnswer(true);
 
 			return;
 		}
 
-		setBgNoUserAnswer(false); // сбросить фон при вводе ответа
+		setBgNoUserAnswer(false);
 		setArrTasks(prev => [
 			...prev,
 			result === Number(userAnswer)
@@ -119,37 +129,16 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		}
 	}
 
-	const handleNextQuestion = () => {
-		userAnswerCheck();
-	};
-
-	const inputRef = useRef<HTMLInputElement | null>(null); // фокус на поле input
-
 	useEffect(() => {
-		if (inputRef.current) {
-			inputRef.current.focus(); // Установка фокуса
-		}
-	}, [stepGame]);
-
-	const startGameRef = useRef(startGame);
-
-	useEffect(() => {
-		startGameRef.current();
+		startGame();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
 		<>
-			{/* <Timer
-				isRunning={gameSettings.timerStatus}
-				setGameSettings={setGameSettings}
-				gameSettings={gameSettings}
-			/> */}
-
-			{/* <div>
-				Затрачено времени: {(gameSettings.timeSpent / 1000).toFixed(2)} сек
-			</div> */}
 			{endGame ? (
-				<>
+				<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm text-xl'>
+					<h1>Ваш результат:</h1>
 					<div>
 						{arrTasks.map((el, index) => {
 							const isNoCorrect = el.includes('Не верно:');
@@ -163,10 +152,14 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 							);
 						})}
 					</div>
-					<div>Ваша оценка: {gradeAnswer}</div>
+					<div>
+						Ваша оценка:{' '}
+						<span className='text-2xl font-bold'>{gradeAnswer}</span>
+					</div>
 					<div>
 						Затрачено времени: {(gameSettings.timeSpent / 1000).toFixed(2)} сек
 					</div>
+
 					<button
 						className='btn btn-outline w-full max-w-xs'
 						onClick={() => {
@@ -175,7 +168,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 					>
 						Продолжить
 					</button>
-				</>
+				</div>
 			) : (
 				<>
 					<div className='text-5xl '>{question}</div>
@@ -192,14 +185,14 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 						onChange={event => setUserAnswer(event.target.value)}
 						onKeyDown={event => {
 							if (event.key === 'Enter') {
-								handleNextQuestion();
+								userAnswerCheck();
 							}
 						}}
 					/>
 					<button
 						className='btn btn-outline w-full max-w-xs'
 						onClick={() => {
-							handleNextQuestion();
+							userAnswerCheck();
 						}}
 					>
 						Продолжить
@@ -209,11 +202,6 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 						value={stepGame}
 						max={limGame}
 					></progress>
-
-					{/* <Accordion
-						gameSettings={gameSettings}
-						setGameSettings={setGameSettings}
-					/> */}
 				</>
 			)}
 			<Accordion

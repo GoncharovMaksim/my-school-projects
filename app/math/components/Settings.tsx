@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { GameProps } from './types';
 
 export default function Settings({ setGameSettings }: GameProps) {
-	// Локальное состояние для временных значений
+
 	const [operator, setOperator] = useState('*');
 	const [difficultyLevel, setDifficultyLevel] = useState(1);
 
-	// Обработчики для обновления состояния
+
 	const handleOperatorChange = (newOperator: string) => {
 		setOperator(newOperator);
 	};

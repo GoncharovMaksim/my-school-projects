@@ -33,6 +33,7 @@ export default function Timer({ gameSettings, setGameSettings }: GameProps) {
 			...prevSettings,
 			timeSpent: elapsedTime,
 		}));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [gameSettings.timerStatus]);
 
 	return (
