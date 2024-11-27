@@ -138,7 +138,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		<>
 			{endGame ? (
 				<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm text-xl'>
-					<div className='container mx-auto px-4 flex flex-col space-y-4 max-w-screen-sm text-xl'>
+					<div className='space-y-4 max-w-screen-sm text-xl flex flex-col items-center'>
 						<h1>Результат:</h1>
 						<div>
 							{arrTasks.map((el, index) => {
