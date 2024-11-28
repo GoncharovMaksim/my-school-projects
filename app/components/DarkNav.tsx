@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import {
 	Disclosure,
 	DisclosureButton,
@@ -9,28 +9,15 @@ import {
 	MenuItems,
 } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 
 
-
-const user = {
-	name: 'Tom Cook',
-	email: 'tom@example.com',
-	imageUrl:
-		'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-};
 const navigation = [
 	{ name: 'Главное меню', href: '/', current: true },
 	{ name: 'Математика', href: '/math', current: false },
 	{ name: 'Английский', href: '/english', current: false },
 	{ name: 'Статистика', href: '#', current: false },
-	
-];
-const userNavigation = [
-	{ name: 'Your Profile', href: '#' },
-	{ name: 'Settings', href: '#' },
-	{ name: 'Sign out', href: '#' },
 ];
 
 function classNames(...classes: string[]) {
@@ -38,12 +25,29 @@ function classNames(...classes: string[]) {
 }
 
 export default function DarkNav() {
-const session = useSession();
+	const session = useSession();
 
-console.log(session);
-
-
-
+	console.log(session);
+	const userNavigation = session.data
+		? [
+				{ name: 'Your Profile', href: '/profile' },
+				{ name: 'Settings', href: '#' },
+				{
+					name: 'Sign out',
+					href: '#',
+					onClick: () => signOut({ callbackUrl: '/' }),
+				},
+		  ]
+		: [
+				{ name: 'Sign in', href: '/api/auth/signin' },
+				{ name: 'Register', href: '/register' },
+		  ];
+const user = {
+	name: session.data?.user?.name,
+	email: session.data?.user?.email,
+	imageUrl:
+		session.data?.user?.image,
+};
 	return (
 		<>
 			{/*
@@ -119,6 +123,13 @@ console.log(session);
 													<a
 														href={item.href}
 														className='block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none'
+														onClick={e => {
+															// Если есть onClick, выполнить его и предотвратить переход по ссылке
+															if (item.onClick) {
+																e.preventDefault();
+																item.onClick();
+															}
+														}}
 													>
 														{item.name}
 													</a>
