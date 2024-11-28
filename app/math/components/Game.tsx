@@ -2,8 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import Accordion from './Accordion';
 import { GameProps } from './types';
 
-import { getServerSession } from 'next-auth';
-import { authConfig } from '../configs/auth';
+// import { getServerSession } from 'next-auth';
+// import { authConfig } from '../configs/auth';
 import TgApi from '@/app/components/TgApi';
 
 export default function Game({ gameSettings, setGameSettings }: GameProps) {
@@ -79,6 +79,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
     ${arrTasks
 			.map((el, index) => {
 				const isNoCorrect = el.includes('Не верно:');
+				console.log(isNoCorrect);
 				return `Задание ${index + 1}: ${el}`;
 			})
 			.join('\n')}
