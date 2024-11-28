@@ -195,13 +195,9 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 					>
 						Продолжить
 					</button>
-					<progress
-						className='progress w-56'
-						value={stepGame}
-						max={limGame}
-					></progress>
 				</>
 			)}
+			<progress className='progress w-56' value={arrTasks.length} max={limGame} />
 			<Accordion
 				gameSettings={gameSettings}
 				setGameSettings={setGameSettings}
