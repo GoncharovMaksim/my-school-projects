@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import DarkNav from './components/DarkNav';
 import BottomNavigation from './components/BottomNavigation';
+import { Providers } from './components/Providers';
 const geistSans = localFont({
 	src: './fonts/GeistVF.woff',
 	variable: '--font-geist-sans',
@@ -29,12 +30,14 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100 min-h-screen flex flex-col`}
 			>
-				<DarkNav />
-				<main className='flex-1 pb-[60px]'>
-					{/* отступ равен высоте меню */}
-					{children}
-				</main>
-				<BottomNavigation />
+				<Providers>
+					<DarkNav />
+					<main className='flex-1 pb-[60px]'>
+						{/* отступ равен высоте меню */}
+						{children}
+					</main>
+					<BottomNavigation />
+				</Providers>
 			</body>
 		</html>
 	);
