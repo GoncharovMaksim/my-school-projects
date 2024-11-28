@@ -1,12 +1,43 @@
 import DropdownMenu from '../../components/DropdownMenu';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GameProps } from './types';
 
 export default function Settings({ setGameSettings }: GameProps) {
-
-	const [operator, setOperator] = useState('*');
+	const [operator, setOperator] = useState('*'); // Значение по умолчанию '*'
 	const [difficultyLevel, setDifficultyLevel] = useState(1);
+	const [isLoading, setIsLoading] = useState(true); // Флаг загрузки данных
 
+	// Функция для получения текста оператора по его значению
+	const getOperatorLabel = (operator: string) => {
+		switch (operator) {
+			case '*':
+				return 'Умножение';
+			case '+':
+				return 'Сложение';
+			case '-':
+				return 'Вычитание';
+			case '/':
+				return 'Деление';
+			default:
+				return 'Выберите действие';
+		}
+	};
+
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			const operatorLocalStorage = localStorage.getItem('operator') || '*'; // По умолчанию '*'
+			const difficultyLevelLocalStorage =
+				localStorage.getItem('difficultyLevel');
+
+			setOperator(operatorLocalStorage); // Обновляем значение оператора
+			setDifficultyLevel(
+				difficultyLevelLocalStorage ? Number(difficultyLevelLocalStorage) : 1
+			); // Устанавливаем уровень сложности
+
+			// После загрузки данных, снимаем флаг загрузки
+			setIsLoading(false);
+		}
+	}, []);
 
 	const handleOperatorChange = (newOperator: string) => {
 		setOperator(newOperator);
@@ -23,12 +54,20 @@ export default function Settings({ setGameSettings }: GameProps) {
 			difficultyLevel,
 			gameStatus: true,
 		}));
+		localStorage.setItem('operator', operator); // Сохраняем значение оператора
+		localStorage.setItem('difficultyLevel', difficultyLevel.toString()); // Сохраняем уровень сложности
 	};
+
+	if (isLoading) {
+		// Пока идет загрузка данных, показываем индикатор
+		return <div>Загрузка...</div>;
+	}
 
 	return (
 		<>
+			<div>Настройки:</div>
 			<DropdownMenu
-				defaultLabel='Выберите действие'
+				defaultLabel={getOperatorLabel(operator)} // Отображаем правильную метку
 				options={[
 					{
 						label: 'Умножение',
@@ -49,7 +88,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 				]}
 			/>
 			<DropdownMenu
-				defaultLabel='Выберите сложность'
+				defaultLabel={`Уровень ${difficultyLevel}`}
 				options={[
 					{
 						label: 'Уровень 1',
