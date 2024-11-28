@@ -6,7 +6,7 @@ export default async function Profile(){
 		<div>
 			<h1> Профиль {session?.user?.name}</h1>
 			<h3>{session?.user?.email}</h3>
-			{session?.user?.image && <img src='session.user.image' alt='' />}
+			{session?.user?.image && <img src={session.user?.image} alt='' />}
 		</div>
 	);
 }
