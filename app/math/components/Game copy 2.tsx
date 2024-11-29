@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import Accordion from './Accordion';
 import { GameProps } from './types';
-import { useSession } from 'next-auth/react';
-
+import { useSession, } from 'next-auth/react';
+// import { getServerSession } from 'next-auth';
+// import { authConfig } from '../configs/auth';
 import TgApi from '@/app/components/TgApi';
 
 export default function Game({ gameSettings, setGameSettings }: GameProps) {
@@ -74,6 +75,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	}
 
 	const handleStopGame = () => {
+		setStatisticUserGame();
 		setGameSettings(prevSettings => ({
 			...prevSettings,
 			operator,
@@ -164,11 +166,17 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		TgApi(resultText);
 	}
 
-	useEffect(() => {
-		if (gameSettings.timeSpent > 0) {
-			setStatisticUserGame();
-		}
-	}, [gameSettings.timeSpent]);
+	// useEffect(() => {
+	// 	const handleEndGame = async () => {
+	// 		if (endGame) {
+	// 			// Ждём 10 секунд перед выполнением функции
+	// 			await new Promise(resolve => setTimeout(resolve, 10000));
+	// 			setStatisticUserGame(); // Вызываем функцию после задержки
+	// 		}
+	// 	};
+
+	// 	handleEndGame(); // Запускаем асинхронную функцию
+	// }, [endGame]);
 
 	return (
 		<>
