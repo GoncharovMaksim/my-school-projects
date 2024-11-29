@@ -13,7 +13,7 @@ import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 
 const navigation = [
-	{ name: 'Главное меню', href: '/', current: true },
+	{ name: 'Главное меню', href: '/', current: false },
 	{ name: 'Английский', href: '/english', current: false },
 	{ name: 'Математика', href: '/math', current: false },
 	{ name: 'Статистика', href: '/statistics', current: false },
