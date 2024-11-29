@@ -243,7 +243,6 @@ ${session.data?.user?.email || ''}
 				gameSettings={gameSettings}
 				setGameSettings={setGameSettings}
 			/>
-			<div>{session.data?.user?.name || 'Гость'}</div>
 		</>
 	);
 }
