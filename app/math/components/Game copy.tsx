@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import Accordion from './Accordion';
 import { GameProps } from './types';
-import { useSession, } from 'next-auth/react';
+
 // import { getServerSession } from 'next-auth';
 // import { authConfig } from '../configs/auth';
 import TgApi from '@/app/components/TgApi';
@@ -20,8 +20,8 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const [gradeAnswer, setGradeAnswer] = useState(0);
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
-	const session = useSession();
 
+	
 	function randomNumber(a: number, b: number) {
 		return Math.floor(Math.random() * (b - a + 1)) + a;
 	}
@@ -75,7 +75,23 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	}
 
 	const handleStopGame = () => {
-		setStatisticUserGame();
+		// Создаем строку с результатами игры
+		const resultText = `
+    Результат игры:
+    ${arrTasks
+			.map((el, index) => {
+				const isNoCorrect = el.includes('Не верно:');
+				console.log(isNoCorrect);
+				return `Задание ${index + 1}: ${el}`;
+			})
+			.join('\n')}
+    
+    Оценка: ${gradeAnswer}
+    Время: ${(gameSettings.timeSpent / 1000).toFixed(2)} сек
+  `;
+
+		// Передаем эту строку в TgApi
+		TgApi(resultText);
 		setGameSettings(prevSettings => ({
 			...prevSettings,
 			operator,
@@ -131,7 +147,6 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 				...prevSettings,
 				timerStatus: false,
 			}));
-
 			return setEndGame(true);
 		} else {
 			return startGame();
@@ -142,41 +157,6 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		startGame();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
-	function setStatisticUserGame() {
-		// Создаем строку с результатами игры
-		const resultText = `
-		${session.data?.user?.name || 'Гость'}
-    Результат игры:
-    ${arrTasks
-			.map((el, index) => {
-				const isNoCorrect = el.includes('Не верно:');
-				console.log(isNoCorrect);
-				return `Задание ${index + 1}: ${el}`;
-			})
-			.join('\n')}
-    
-    Оценка: ${gradeAnswer}
-    Время: ${(gameSettings.timeSpent / 1000).toFixed(2)} сек
-		Сложность: ${gameSettings.difficultyLevel}
-		${session.data?.user?.email || ''}
-  `;
-
-		// Передаем эту строку в TgApi
-		TgApi(resultText);
-	}
-
-	// useEffect(() => {
-	// 	const handleEndGame = async () => {
-	// 		if (endGame) {
-	// 			// Ждём 10 секунд перед выполнением функции
-	// 			await new Promise(resolve => setTimeout(resolve, 10000));
-	// 			setStatisticUserGame(); // Вызываем функцию после задержки
-	// 		}
-	// 	};
-
-	// 	handleEndGame(); // Запускаем асинхронную функцию
-	// }, [endGame]);
 
 	return (
 		<>
@@ -250,7 +230,6 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 				gameSettings={gameSettings}
 				setGameSettings={setGameSettings}
 			/>
-			<div>{session.data?.user?.name || 'Гость'}</div>
 		</>
 	);
 }
