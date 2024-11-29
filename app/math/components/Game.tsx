@@ -144,21 +144,21 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	function setStatisticUserGame() {
 		// Создаем строку с результатами игры
 		const resultText = `
-		${session.data?.user?.name || 'Гость'}
-    Результат игры:
-    ${arrTasks
-			.map((el, index) => {
-				const isNoCorrect = el.includes('Не верно:');
-				console.log(isNoCorrect);
-				return `Задание ${index + 1}: ${el}`;
-			})
-			.join('\n')}
-    
-    Оценка: ${gradeAnswer}
-    Время: ${(gameSettings.timeSpent / 1000).toFixed(2)} сек
-		Сложность: ${gameSettings.difficultyLevel}
-		${session.data?.user?.email || ''}
-  `;
+${session.data?.user?.name || 'Гость'}
+
+Результат игры:
+${arrTasks
+	.map((el, index) => {
+		el.includes('Не верно:');
+		return `Задание ${index + 1}:   ${el}`;
+	})
+	.join('\n')}
+
+Оценка:  ${gradeAnswer}
+Время:   ${(gameSettings.timeSpent / 1000).toFixed(2)} сек
+Сложность:  ${gameSettings.difficultyLevel}
+${session.data?.user?.email || ''}
+`;
 
 		// Передаем эту строку в TgApi
 		TgApi(resultText);
