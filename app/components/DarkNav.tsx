@@ -14,9 +14,9 @@ import Link from 'next/link';
 
 const navigation = [
 	{ name: 'Главное меню', href: '/', current: true },
-	{ name: 'Математика', href: '/math', current: false },
 	{ name: 'Английский', href: '/english', current: false },
-	{ name: 'Статистика', href: '#', current: false },
+	{ name: 'Математика', href: '/math', current: false },
+	{ name: 'Статистика', href: '/statistics', current: false },
 ];
 
 function classNames(...classes: string[]) {
@@ -36,10 +36,7 @@ export default function DarkNav() {
 					onClick: () => signOut({ callbackUrl: '/' }),
 				},
 		  ]
-		: [
-				{ name: 'Вход', href: '/api/auth/signin' },
-				{ name: 'Регистрация', href: '/register' },
-		  ];
+		: [{ name: 'Вход', href: '/api/auth/signin' }];
 	const user = {
 		name: session.data?.user?.name || 'Гость',
 		email: session.data?.user?.email || '',

@@ -168,6 +168,7 @@ ${session.data?.user?.email || ''}
 		if (gameSettings.timeSpent > 0) {
 			setStatisticUserGame();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [gameSettings.timeSpent]);
 
 	return (
