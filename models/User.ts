@@ -24,4 +24,4 @@ const userSchema = new Schema<IUser>(
 export default mongoose.models.User ||
 	mongoose.model<IUser>('User', userSchema);
   //
-  
+  //
