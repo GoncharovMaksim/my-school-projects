@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-import DarkNav from './components/DarkNav';
-import BottomNavigation from './components/BottomNavigation';
-import { Providers } from './components/Providers';
+import DarkNav from '../components/DarkNav';
+import BottomNavigation from '../components/BottomNavigation';
+import { Providers } from '../components/Providers';
 const geistSans = localFont({
 	src: './fonts/GeistVF.woff',
 	variable: '--font-geist-sans',

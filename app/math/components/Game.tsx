@@ -3,7 +3,7 @@ import Accordion from './Accordion';
 import { GameProps } from './types';
 import { useSession } from 'next-auth/react';
 
-import TgApi from '@/app/components/TgApi';
+import TgApi from '@/lib/tgApi';
 
 export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const { operator, difficultyLevel, stepGame, limGame } = gameSettings;

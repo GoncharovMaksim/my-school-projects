@@ -1,4 +1,4 @@
-import DropdownMenu from '../../components/DropdownMenu';
+import DropdownMenu from '../../../components/DropdownMenu';
 import { useEffect, useState } from 'react';
 import { GameProps } from './types';
 
