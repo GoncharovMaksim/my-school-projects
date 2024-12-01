@@ -1,18 +1,18 @@
 import { AuthOptions } from 'next-auth';
-import Google from 'next-auth/providers/google';
+import GoogleProvider from 'next-auth/providers/google';
 import connectDB from '@/configs/connectDB';
-import User from '@/models/User'
+import User from '@/models/User';
 
 export const authConfig: AuthOptions = {
 	providers: [
-		Google({
+		GoogleProvider({
 			clientId: process.env.GOOGLE_CLIENT_ID as string,
 			clientSecret: process.env.GOOGLE_SECRET as string,
 		}),
 	],
 	callbacks: {
 		// Колбэк срабатывает после успешного входа пользователя
-		async signIn({ user, account }) {
+		async signIn({ user }) {
 			try {
 				// Подключаемся к базе данных
 				await connectDB();
@@ -24,9 +24,9 @@ export const authConfig: AuthOptions = {
 					// Добавляем пользователя в базу данных
 					await User.create({
 						email: user.email,
-						name: user.name,
+						name: user.name || 'Без имени',
 						profilePicture: user.image,
-						});
+					});
 				}
 
 				return true; // Успешный вход
@@ -37,12 +37,24 @@ export const authConfig: AuthOptions = {
 		},
 
 		// Колбэк срабатывает при создании сессии
-		async session({ session, token }) {
-			// Добавляем ID пользователя из базы данных в сессию
-			if (token?.sub) {
-				session.user.id = token.sub;
+		async session({ session }) {
+			try {
+				// Подключаемся к базе данных
+				await connectDB();
+
+				if (session.user) {
+					// Получаем данные пользователя из базы
+					const dbUser = await User.findOne({ email: session.user.email });
+					if (dbUser) {
+						session.user.id = dbUser._id.toString(); // Добавляем ID пользователя
+					}
+				}
+
+				return session;
+			} catch (error) {
+				console.error('Ошибка при обработке session:', error);
+				return session;
 			}
-			return session;
 		},
 	},
 };
