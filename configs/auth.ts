@@ -20,12 +20,17 @@ export const authConfig: AuthOptions = {
 				// Проверяем, есть ли пользователь в базе данных
 				const existingUser = await User.findOne({ email: user.email });
 
-				if (!existingUser) {
-					// Добавляем пользователя в базу данных
+				if (existingUser) {
+					// Обновляем дату последнего визита
+					existingUser.lastVisit = new Date();
+					await existingUser.save();
+				} else {
+					// Создаем нового пользователя
 					await User.create({
 						email: user.email,
 						name: user.name || 'Без имени',
 						image: user.image,
+						lastVisit: new Date(), // Устанавливаем дату визита
 					});
 				}
 
@@ -39,24 +44,30 @@ export const authConfig: AuthOptions = {
 		// Колбэк срабатывает при создании сессии
 		async session({ session }) {
 			try {
-				// Подключаемся к базе данных
 				await connectDB();
-
 				if (session.user) {
-					// Получаем данные пользователя из базы
 					const dbUser = await User.findOne({ email: session.user.email });
+
+					const now = new Date();
+					const oneHour = 60 * 60 * 1000; // Один час в миллисекундах
+					if (
+						dbUser &&
+						(!dbUser.lastVisit ||
+							now.getTime() - dbUser.lastVisit.getTime() > oneHour)
+					) {
+						dbUser.lastVisit = now;
+						await dbUser.save();
+					}
+
 					if (dbUser) {
-						session.user.id = dbUser._id.toString(); // Добавляем ID пользователя
+						session.user.id = dbUser._id.toString();
 					}
 				}
-
 				return session;
 			} catch (error) {
-				console.error('Ошибка при обработке session:', error);
+				console.error('Ошибка при обновлении lastVisit:', error);
 				return session;
 			}
 		},
 	},
 };
-//
-//

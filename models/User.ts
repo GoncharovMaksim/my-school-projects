@@ -7,6 +7,7 @@ interface IUser extends Document {
 	image?: string; // Ссылка на аватар
 	createdAt: Date;
 	updatedAt: Date;
+	lastVisit: Date; // Поле для даты последнего визита
 }
 
 const userSchema = new Schema<IUser>(
@@ -15,13 +16,24 @@ const userSchema = new Schema<IUser>(
 		email: { type: String, required: true, unique: true },
 		password: { type: String }, // Поле для хранения пароля, если используется регистрация через email/пароль
 		image: { type: String }, // Ссылка на аватар пользователя
+		lastVisit: { type: Date, default: Date.now }, // Поле с текущей датой по умолчанию
 	},
 	{
 		timestamps: true, // Автоматически добавляет поля createdAt и updatedAt
 	}
 );
 
+// Middleware для обновления lastVisit при сохранении пользователя
+userSchema.pre('save', function (next) {
+	this.lastVisit = new Date(); // Устанавливаем текущую дату
+	next();
+});
+
+// Middleware для обновления lastVisit при каждом запросе
+userSchema.methods.updateLastVisit = async function () {
+	this.lastVisit = new Date();
+	await this.save();
+};
+
 export default mongoose.models.User ||
 	mongoose.model<IUser>('User', userSchema);
-  //
-  //
