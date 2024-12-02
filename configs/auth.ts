@@ -25,7 +25,7 @@ export const authConfig: AuthOptions = {
 					await User.create({
 						email: user.email,
 						name: user.name || 'Без имени',
-						profilePicture: user.image,
+						image: user.image,
 					});
 				}
 
