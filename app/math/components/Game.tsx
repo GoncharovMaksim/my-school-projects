@@ -7,9 +7,13 @@ import TgApi from '@/lib/tgApi';
 
 export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const { operator, difficultyLevel, stepGame, limGame } = gameSettings;
-
+	const [argumentA, setArgumentA] = useState<number | null>(null);
+	const [argumentB, setArgumentB] = useState<number | null>(null);
 	const [question, setQuestion] = useState('');
 	const [userAnswer, setUserAnswer] = useState('');
+	const [percentCorrectAnswer, setPercentCorrectAnswer] = useState<
+		number | null
+	>(null);
 
 	const [result, setResult] = useState<number | null>(null);
 	const [arrTasks, setArrTasks] = useState<Task[]>([]);
@@ -64,7 +68,8 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 			b = randomNumber(minNumber, maxNumber * coefficient);
 			setResult(a + b);
 		}
-
+		setArgumentA(a);
+		setArgumentB(b);
 		setQuestion(`${a} ${operator} ${b}`);
 		setGameSettings({
 			...gameSettings,
@@ -92,7 +97,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 
 	useEffect(() => {
 		const percentAnswer = 100 - (badAnswer / limGame) * 100;
-
+		setPercentCorrectAnswer(percentAnswer);
 		if (percentAnswer > 89) {
 			setGradeAnswer(5);
 		} else if (percentAnswer > 69) {
@@ -120,6 +125,9 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 			...prev,
 			{
 				question,
+				argumentA,
+				argumentB,
+				operator,
 				result: result!,
 				userAnswer,
 				checkUserAnswer: result === Number(userAnswer),
@@ -141,6 +149,22 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const getOperatorLabel = (operator: string) => {
+		switch (operator) {
+			case '*':
+				return 'Умножение';
+			case '+':
+				return 'Сложение';
+			case '-':
+				return 'Вычитание';
+			case '/':
+				return 'Деление';
+			default:
+				return 'Выберите действие';
+		}
+	};
+
+
 	async function setStatisticUserGame() {
 		try {
 			const results = arrTasks.map((el, index) => ({
@@ -154,6 +178,8 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 				userName: session.data?.user?.name || 'Гость',
 				userEmail: session.data?.user?.email || '',
 				appComponent: 'math',
+				operator: getOperatorLabel(operator),
+				percentCorrectAnswer,
 				results,
 				grade: gradeAnswer,
 				timeSpent: gameSettings.timeSpent / 1000,

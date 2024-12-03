@@ -4,6 +4,9 @@ import mongoose from 'mongoose';
 const TaskSchema = new mongoose.Schema(
 	{
 		question: { type: String, required: true }, // Вопрос
+		argumentA: { type: Number, required: true },
+		operator: { type: String, required: true },
+		argumentB: { type: Number, required: true },
 		result: { type: Number, required: true }, // Ожидаемый результат
 		userAnswer: { type: String, required: true }, // Ответ пользователя
 		checkUserAnswer: { type: Boolean, required: true }, // Проверка правильности ответа
@@ -18,6 +21,11 @@ const MathStatisticsSchema = new mongoose.Schema(
 		userName: { type: String, required: true, default: 'Гость' }, // Имя пользователя
 		userEmail: { type: String, required: false, default: '' }, // Email пользователя
 		appComponent: { type: String, required: true },
+		operator: { type: String, required: true },
+		grade: { type: Number, required: true }, // Оценка пользователя (1-5)
+		percentCorrectAnswer: { type: Number, required: true },
+		timeSpent: { type: Number, required: true }, // Затраченное время в секундах
+		difficultyLevel: { type: Number, required: true }, // Уровень сложности игры (1, 2, 3)
 		results: [
 			{
 				taskIndex: { type: Number, required: true }, // Индекс задания
@@ -29,9 +37,6 @@ const MathStatisticsSchema = new mongoose.Schema(
 				}, // Результат задания
 			},
 		],
-		grade: { type: Number, required: true }, // Оценка пользователя (1-5)
-		timeSpent: { type: Number, required: true }, // Затраченное время в секундах
-		difficultyLevel: { type: Number, required: true }, // Уровень сложности игры (1, 2, 3)
 	},
 	{ timestamps: true } // Автоматическое добавление времени создания и обновления
 );
