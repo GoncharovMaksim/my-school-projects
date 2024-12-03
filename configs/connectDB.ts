@@ -1,17 +1,21 @@
 // config/connectDB.ts
+
+
 import mongoose from 'mongoose';
 
-export default async function connectDB() {
-	if (mongoose.connection.readyState >= 1) {
-		console.log('Подключение уже установлено');
-		return;
+const connectDB = async () => {
+	if (mongoose.connection.readyState === 0) {
+		// Если соединение не установлено
+		try {
+			await mongoose.connect(process.env.MONGO_DB as string);
+			console.log('Подключение к MongoDB успешно установлено');
+		} catch (error) {
+			console.error('Ошибка подключения к базе данных:', error);
+			throw new Error('Не удалось подключиться к MongoDB');
+		}
+	} else {
+		console.log('Подключение к MongoDB уже установлено');
 	}
+};
 
-	try {
-		await mongoose.connect(process.env.MONGO_DB as string);
-		console.log('Подключено к MongoDB school112');
-	} catch (error) {
-		console.error('Ошибка подключения к MongoDB', error);
-		process.exit(1);
-	}
-}
+export default connectDB;

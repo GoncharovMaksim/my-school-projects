@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import Accordion from './Accordion';
-import { GameProps } from './types';
+import { GameProps, Task } from './types';
 import { useSession } from 'next-auth/react';
 
 import TgApi from '@/lib/tgApi';
@@ -12,7 +12,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const [userAnswer, setUserAnswer] = useState('');
 
 	const [result, setResult] = useState<number | null>(null);
-	const [arrTasks, setArrTasks] = useState<string[]>([]);
+	const [arrTasks, setArrTasks] = useState<Task[]>([]);
 	const [bgNoUserAnswer, setBgNoUserAnswer] = useState(false);
 	const [endGame, setEndGame] = useState(false);
 	const [badAnswer, setBadAnswer] = useState(limGame);
@@ -21,7 +21,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 
 	const session = useSession();
 
-	function randomNumber(a: number, b: number) {
+	function randomNumber(a: number, b: number): number {
 		return Math.floor(Math.random() * (b - a + 1)) + a;
 	}
 
@@ -65,7 +65,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 			setResult(a + b);
 		}
 
-		setQuestion(`${a} ${operator} ${b} =`);
+		setQuestion(`${a} ${operator} ${b}`);
 		setGameSettings({
 			...gameSettings,
 			timerStatus: true,
@@ -112,16 +112,18 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		}
 		if (!userAnswer) {
 			setBgNoUserAnswer(true);
-
 			return;
 		}
 
 		setBgNoUserAnswer(false);
 		setArrTasks(prev => [
 			...prev,
-			result === Number(userAnswer)
-				? `${question} ${result}`
-				: `${question} ${userAnswer}  Не верно: ${result}`,
+			{
+				question,
+				result: result!,
+				userAnswer,
+				checkUserAnswer: result === Number(userAnswer),
+			},
 		]);
 		setUserAnswer('');
 		if (stepGame === limGame) {
@@ -129,39 +131,71 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 				...prevSettings,
 				timerStatus: false,
 			}));
-
-			return setEndGame(true);
+			setEndGame(true);
 		} else {
-			return startGame();
+			startGame();
 		}
 	}
-
 	useEffect(() => {
 		startGame();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	function setStatisticUserGame() {
-		// Создаем строку с результатами игры
-		const resultText = `
-${session.data?.user?.name || 'Гость'}
+	async function setStatisticUserGame() {
+		try {
+			const results = arrTasks.map((el, index) => ({
+				taskIndex: index + 1,
+				task: el,
+				taskResult: el.checkUserAnswer ? 'Верно' : 'Неверно',
+			}));
 
+			const gameData = {
+				userId: session.data?.user?.id || '',
+				userName: session.data?.user?.name || 'Гость',
+				userEmail: session.data?.user?.email || '',
+				appComponent: 'math',
+				results,
+				grade: gradeAnswer,
+				timeSpent: gameSettings.timeSpent / 1000,
+				difficultyLevel: gameSettings.difficultyLevel,
+			};
+
+			const response = await fetch('/api/gameStatistics/math', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(gameData),
+			});
+
+			if (!response.ok) {
+				throw new Error(
+					`Ошибка при отправке статистики: ${response.statusText}`
+				);
+			}
+
+			const result = await response.json();
+			console.log('Статистика успешно сохранена:', result);
+
+			// Telegram API
+			const resultText = `
+${session.data?.user?.name || 'Гость'}
 Результат игры:
 ${arrTasks
-	.map((el, index) => {
-		el.includes('Не верно:');
-		return `Задание ${index + 1}:   ${el}`;
-	})
+	.map(
+		el =>
+			`${el.question} = ${el.result} ${
+				el.checkUserAnswer ? '' : `Ваш ответ: ${el.userAnswer}`
+			}`
+	)
 	.join('\n')}
+Оценка: ${gradeAnswer}
+Время: ${(gameSettings.timeSpent / 1000).toFixed(2)} сек
+Сложность: ${gameSettings.difficultyLevel}
+${session.data?.user?.email || ''}`;
 
-Оценка:  ${gradeAnswer}
-Время:   ${(gameSettings.timeSpent / 1000).toFixed(2)} сек
-Сложность:  ${gameSettings.difficultyLevel}
-${session.data?.user?.email || ''}
-`;
-
-		// Передаем эту строку в TgApi
-		TgApi(resultText);
+			TgApi(resultText);
+		} catch (error) {
+			console.error('Ошибка при сохранении статистики:', error);
+		}
 	}
 
 	useEffect(() => {
@@ -179,13 +213,15 @@ ${session.data?.user?.email || ''}
 						<h1>Результат:</h1>
 						<div>
 							{arrTasks.map((el, index) => {
-								const isNoCorrect = el.includes('Не верно:');
+								const isCorrect = el.checkUserAnswer;
 								return (
 									<p
 										key={`${el}-${index}`}
-										className={isNoCorrect ? 'text-red-500' : 'text-green-500'}
+										className={isCorrect ? 'text-green-500' : 'text-red-500'}
 									>
-										{el}
+										{`${el.question} = ${el.result} ${
+											el.checkUserAnswer ? '' : `Ваш ответ: ${el.userAnswer}`
+										}`}
 									</p>
 								);
 							})}
