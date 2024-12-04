@@ -5,14 +5,14 @@ import { Filters } from './Filters';
 interface UserStatistics {
 	userId: string;
 	timeSpent: number;
-	grade: string;
+	grade: number;
 	percentCorrectAnswer: number;
 	operator: string;
 	difficultyLevel: number;
 	createdAt: string;
 }
 
-type SearchParams = Promise<Record<string, string | undefined>>;
+type SearchParams = Record<string, string | undefined>;
 
 export default async function App(props: { searchParams: SearchParams }) {
 	const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/gameStatistics/math`;
@@ -25,7 +25,6 @@ export default async function App(props: { searchParams: SearchParams }) {
 		return <p>Вы не авторизованы.</p>;
 	}
 
-	// Ожидаем обработки searchParams
 	const searchParams = await props.searchParams;
 	const operator = (await searchParams.operator) || null;
 	const difficultyLevel = (await searchParams.difficultyLevel) || null;
@@ -58,15 +57,45 @@ export default async function App(props: { searchParams: SearchParams }) {
 		);
 	}
 
+	const checkMinTimeSpent = (
+		statistics: UserStatistics[]
+	): number | undefined => {
+		const arrUserTimeSpent: number[] = [];
+		statistics.forEach(el => {
+			if (el.grade === 5) {
+				arrUserTimeSpent.push(el.timeSpent);
+			}
+		});
+
+		if (arrUserTimeSpent.length === 0) {
+			console.log('Массив пуст, минимального значения нет');
+			return undefined;
+		}
+
+		let minUserTimeSpent = arrUserTimeSpent[0];
+		for (let i = 1; i < arrUserTimeSpent.length; i++) {
+			if (arrUserTimeSpent[i] < minUserTimeSpent) {
+				minUserTimeSpent = arrUserTimeSpent[i];
+			}
+		}
+
+		console.log('Минимальное значение времени:', minUserTimeSpent);
+		return minUserTimeSpent;
+	};
+
+	const minUserTimeSpent = checkMinTimeSpent(filteredStatistics);
+	const minAllUserTimeSpent = checkMinTimeSpent(userStatistics);
+
 	return (
-		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
+		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<div className='p-8 flex flex-col items-center space-y-6'>
 				<h1 className='text-4xl text-center font-bold mb-4'>Статистика</h1>
 				<Filters />
-			</div>
-
-			<div className='bg-gray-200 p-2 rounded text-1xl'>
-				<p>Игр сыграно: {filteredStatistics.length}</p>
+				<div>
+					<p>Игр сыграно: {filteredStatistics.length}</p>
+					<p>Ваше лучшее время: {minUserTimeSpent ?? 'Не доступно'}</p>
+					<p>Рекордное время: {minAllUserTimeSpent ?? 'Не доступно'}</p>
+				</div>
 			</div>
 
 			<div>
@@ -89,5 +118,3 @@ export default async function App(props: { searchParams: SearchParams }) {
 		</div>
 	);
 }
-
-//1
