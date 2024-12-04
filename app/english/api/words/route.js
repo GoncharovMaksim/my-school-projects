@@ -1,8 +1,8 @@
-import connectBD from '../../backend/config/db';
+import connectDB from '@/configs/connectDB';
 import Word from '../../backend/models/words';
 
 export async function GET(req) {
-	await connectBD(); // Подключаемся к базе данных
+	await connectDB(); // Подключаемся к базе данных
 
 	// Используем URL для извлечения параметров запроса
 	const { searchParams } = new URL(req.url);
