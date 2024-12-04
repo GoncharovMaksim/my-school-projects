@@ -12,9 +12,14 @@ interface UserStatistics {
 	createdAt: string;
 }
 
-type SearchParams = Promise<Record<string, string | undefined>>;
+interface Props {
+	searchParams: {
+		operator?: string;
+		difficultyLevel?: string;
+	};
+}
 
-export default async function App(props: { searchParams: SearchParams }) {
+export default async function App({ searchParams }: Props) {
 	const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/gameStatistics/math`;
 	const session = (await getServerSession(authConfig)) as {
 		user?: { id?: string };
@@ -25,12 +30,8 @@ export default async function App(props: { searchParams: SearchParams }) {
 		return <p>Вы не авторизованы.</p>;
 	}
 
-	// Ожидаем обработки searchParams
-	const searchParams = await props.searchParams;
-	const operator = (await searchParams.operator) || null;
-	const difficultyLevel = (await searchParams.difficultyLevel) || null;
-
 	let userStatistics: UserStatistics[] = [];
+
 	try {
 		const response = await fetch(url, { cache: 'no-store' });
 		if (!response.ok) {
@@ -45,16 +46,15 @@ export default async function App(props: { searchParams: SearchParams }) {
 		el => el.userId === session.user?.id
 	);
 
-	if (operator) {
+	if (searchParams.operator) {
 		filteredStatistics = filteredStatistics.filter(
-			el => el.operator === operator
+			el => el.operator === searchParams.operator
 		);
 	}
-
-	if (difficultyLevel) {
-		const numDifficultyLevel = Number(difficultyLevel);
+	if (searchParams.difficultyLevel) {
+		const difficultyLevel = Number(searchParams.difficultyLevel);
 		filteredStatistics = filteredStatistics.filter(
-			el => el.difficultyLevel === numDifficultyLevel
+			el => el.difficultyLevel === difficultyLevel
 		);
 	}
 
@@ -89,5 +89,3 @@ export default async function App(props: { searchParams: SearchParams }) {
 		</div>
 	);
 }
-
-//1
