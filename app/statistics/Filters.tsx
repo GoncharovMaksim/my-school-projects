@@ -52,6 +52,10 @@ export function Filters() {
 						label: 'Деление',
 						onClick: () => setOperator('Деление'),
 					},
+					{
+						label: 'Все действия',
+						onClick: () => setOperator(''),
+					},
 				]}
 			/>
 
@@ -70,6 +74,10 @@ export function Filters() {
 					{
 						label: 'Уровень 3',
 						onClick: () => setDifficulty(3),
+					},
+					{
+						label: 'Все уровни',
+						onClick: () => setDifficulty(0),
 					},
 				]}
 			/>
