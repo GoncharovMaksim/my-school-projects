@@ -12,7 +12,7 @@ interface UserStatistics {
 	createdAt: string;
 }
 
-type SearchParams = Record<string, string | undefined>;
+type SearchParams = Promise<Record<string, string | undefined>>;
 
 export default async function App(props: { searchParams: SearchParams }) {
 	const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/gameStatistics/math`;
