@@ -2,7 +2,6 @@ import { authConfig } from '@/configs/auth';
 import { getServerSession } from 'next-auth';
 import { Filters } from './Filters';
 
-
 interface UserStatistics {
 	userId: string;
 	timeSpent: number;
@@ -10,7 +9,7 @@ interface UserStatistics {
 	percentCorrectAnswer: number;
 	operator: string;
 	difficultyLevel: number;
-	createdAt: Date;
+	createdAt: string;
 }
 
 type SearchParams = Promise<Record<string, string | undefined>>;
@@ -57,20 +56,6 @@ export default async function App(props: { searchParams: SearchParams }) {
 			el => el.difficultyLevel === numDifficultyLevel
 		);
 	}
-	const filterDate = new Date();
-	filterDate.setFullYear(2024); 
-	filterDate.setMonth(11); 
-	filterDate.setDate(5); 
-	filterDate.setHours(0, 0, 0, 0); 
-
-	filteredStatistics = filteredStatistics.filter(el => {
-		if (!el.createdAt) return false;
-
-		const createdAtDate = new Date(el.createdAt);
-		if (isNaN(createdAtDate.getTime())) return false;
-		createdAtDate.setHours(0, 0, 0, 0);
-		return createdAtDate.getTime() === filterDate.getTime();
-	});
 
 	const checkMinTimeSpent = (
 		statistics: UserStatistics[]
@@ -116,7 +101,7 @@ export default async function App(props: { searchParams: SearchParams }) {
 			<div>
 				{filteredStatistics.length > 0 ? (
 					filteredStatistics.map(el => (
-						<pre key={el.timeSpent} className='bg-gray-200 p-2 rounded'>
+						<pre key={el.createdAt} className='bg-gray-200 p-2 rounded'>
 							<div>Игра № {filteredStatistics.indexOf(el) + 1}</div>
 							<p>Время: {el.timeSpent} сек.</p>
 							<p>Оценка: {el.grade}</p>
