@@ -2,7 +2,7 @@
 
 import DropdownMenu from '@/components/DropdownMenu';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // // Определяем типы для опций DropdownMenu
 // interface DropdownOption {
@@ -33,6 +33,11 @@ export function Filters() {
 			params.append('isCheckedFilterDate', isCheckedFilterDate.toString());
 		router.push(`/statistics?${params.toString()}`);
 	};
+	useEffect(()=>{
+		setOperator('');
+		setDifficulty('');
+		handleFilterChange();
+	},[])
 
 	return (
 		<>
