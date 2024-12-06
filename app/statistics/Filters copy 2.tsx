@@ -82,6 +82,16 @@ export function Filters() {
 				]}
 			/>
 
+			<DropdownMenu
+				defaultLabel='Выберите дату'
+				options={[
+					{
+						label: 'Сегодня',
+						onClick: () => setDifficulty(1),
+					},
+				]}
+			/>
+
 			<button
 				className='btn btn-outline w-full max-w-xs'
 				onClick={handleFilterChange}

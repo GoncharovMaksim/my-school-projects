@@ -58,9 +58,10 @@ export default async function App(props: { searchParams: SearchParams }) {
 		);
 	}
 	const filterDate = new Date();
-	filterDate.setFullYear(2024); 
-	filterDate.setMonth(11); 
-	filterDate.setDate(5); 
+	// filterDate.setFullYear(2024); 
+	// filterDate.setMonth(11); 
+	// filterDate.setDate(5); 
+	console.log('filterDate', filterDate);
 	filterDate.setHours(0, 0, 0, 0); 
 
 	filteredStatistics = filteredStatistics.filter(el => {
