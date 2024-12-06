@@ -29,6 +29,7 @@ export default async function App(props: { searchParams: SearchParams }) {
 	const searchParams = await props.searchParams;
 	const operator = (await searchParams.operator) || null;
 	const difficultyLevel = (await searchParams.difficultyLevel) || null;
+	const isCheckedFilterDate = (await searchParams.isCheckedFilterDate) || null;
 
 	let userStatistics: UserStatistics[] = [];
 	try {
@@ -57,12 +58,14 @@ export default async function App(props: { searchParams: SearchParams }) {
 			el => el.difficultyLevel === numDifficultyLevel
 		);
 	}
+
+	if (!isCheckedFilterDate) {
 	const filterDate = new Date();
 	// filterDate.setFullYear(2024); 
 	// filterDate.setMonth(11); 
 	// filterDate.setDate(5); 
 	console.log('filterDate', filterDate);
-	//filterDate.setHours(0, 0, 0, 0); 
+	filterDate.setHours(0, 0, 0, 0); 
 
 	filteredStatistics = filteredStatistics.filter(el => {
 		if (!el.createdAt) return false;
@@ -72,7 +75,7 @@ export default async function App(props: { searchParams: SearchParams }) {
 		createdAtDate.setHours(0, 0, 0, 0);
 		return createdAtDate.getTime() === filterDate.getTime();
 	});
-
+}
 	const checkMinTimeSpent = (
 		statistics: UserStatistics[]
 	): number | undefined => {
@@ -108,7 +111,7 @@ export default async function App(props: { searchParams: SearchParams }) {
 				<h1 className='text-4xl text-center font-bold mb-4'>Статистика</h1>
 				<Filters />
 				<div>
-					<p>Время сервера: {filterDate.toString()}</p>
+					{/* <p>Время сервера: {filterDate.toString()}</p> */}
 					<p>Игр сыграно: {filteredStatistics.length}</p>
 					<p>Ваше лучшее время: {minUserTimeSpent ?? 'Не доступно'}</p>
 					<p>Рекордное время: {minAllUserTimeSpent ?? 'Не доступно'}</p>

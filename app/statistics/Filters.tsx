@@ -20,17 +20,32 @@ export function Filters() {
 	const router = useRouter();
 	const [operator, setOperator] = useState<string>(''); // Оператор: строка
 	const [difficulty, setDifficulty] = useState<number | ''>(''); // Сложность: число или пустая строка
+	const [isCheckedFilterDate, setIsCheckedFilterDate] = useState(true);
 
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setIsCheckedFilterDate(event.target.checked);
+	};
 	const handleFilterChange = () => {
 		const params = new URLSearchParams();
 		if (operator) params.append('operator', operator);
 		if (difficulty) params.append('difficultyLevel', difficulty.toString());
+		if (isCheckedFilterDate === false)
+			params.append('isCheckedFilterDate', isCheckedFilterDate.toString());
 		router.push(`/statistics?${params.toString()}`);
 	};
 
 	return (
 		<>
 			<h3 className='text-lg font-bold'>Фильтры:</h3>
+			<label className='flex items-center gap-2'>
+				<input
+					type='checkbox'
+					checked={isCheckedFilterDate}
+					onChange={handleChange}
+					className='checkbox'
+				/>
+				<span>Статистика за сегодня</span>
+			</label>
 
 			{/* DropdownMenu для оператора */}
 			<DropdownMenu
