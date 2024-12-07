@@ -37,6 +37,7 @@ export function Filters() {
 		setOperator('');
 		setDifficulty('');
 		handleFilterChange();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
