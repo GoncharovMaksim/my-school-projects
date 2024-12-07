@@ -2,6 +2,7 @@ import { authConfig } from '@/configs/auth';
 import { getServerSession } from 'next-auth';
 import { Filters } from './Filters';
 
+
 interface UserStatistics {
 	userId: string;
 	timeSpent: number;
@@ -40,12 +41,11 @@ export default async function App(props: { searchParams: SearchParams }) {
 	} catch (error) {
 		console.error('Ошибка при получении данных:', error);
 	}
-	// let filteredCurrentUserStatistics=userStatistics.filter(
-	// 		el => el.userId === session.user?.id
-	// 	);
 
-const filteredStatisticsSearch = (statistics: UserStatistics[]) => {
-	let filteredStatistics = [...statistics];
+	let filteredStatistics = userStatistics.filter(
+		el => el.userId === session.user?.id
+	);
+
 	if (operator) {
 		filteredStatistics = filteredStatistics.filter(
 			el => el.operator === operator
@@ -60,24 +60,23 @@ const filteredStatisticsSearch = (statistics: UserStatistics[]) => {
 	}
 
 	if (!isCheckedFilterDate) {
-		const filterDate = new Date();
-		// filterDate.setFullYear(2024);
-		// filterDate.setMonth(11);
-		// filterDate.setDate(5);
-		console.log('filterDate', filterDate);
-		filterDate.setHours(0, 0, 0, 0);
+	const filterDate = new Date();
+	// filterDate.setFullYear(2024); 
+	// filterDate.setMonth(11); 
+	// filterDate.setDate(5); 
+	console.log('filterDate', filterDate);
+	filterDate.setHours(0, 0, 0, 0); 
 
-		filteredStatistics = filteredStatistics.filter(el => {
-			if (!el.createdAt) return false;
+	filteredStatistics = filteredStatistics.filter(el => {
+		if (!el.createdAt) return false;
 
-			const createdAtDate = new Date(el.createdAt);
-			if (isNaN(createdAtDate.getTime())) return false;
-			createdAtDate.setHours(0, 0, 0, 0);
-			return createdAtDate.getTime() === filterDate.getTime();
-		});
-	}
-	return filteredStatistics;
-};
+		const createdAtDate = new Date(el.createdAt);
+		if (isNaN(createdAtDate.getTime())) return false;
+		createdAtDate.setHours(0, 0, 0, 0);
+		return createdAtDate.getTime() === filterDate.getTime();
+	});
+}
+
 	const checkMinTimeSpent = (
 		statistics: UserStatistics[]
 	): number | undefined => {
@@ -104,17 +103,8 @@ const filteredStatisticsSearch = (statistics: UserStatistics[]) => {
 		return minUserTimeSpent;
 	};
 
-	let filteredCurrentUserStatistics = filteredStatisticsSearch(userStatistics);
-
-	filteredCurrentUserStatistics = filteredCurrentUserStatistics.filter(
-		el => el.userId === session.user?.id
-	);
-
-	const filteredAllUserStatistics =
-			filteredStatisticsSearch(userStatistics);
-
-	const minUserTimeSpent = checkMinTimeSpent(filteredCurrentUserStatistics);
-	const minAllUserTimeSpent = checkMinTimeSpent(filteredAllUserStatistics);
+	const minUserTimeSpent = checkMinTimeSpent(filteredStatistics);
+	const minAllUserTimeSpent = checkMinTimeSpent(userStatistics);
 
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
@@ -123,17 +113,17 @@ const filteredStatisticsSearch = (statistics: UserStatistics[]) => {
 				<Filters />
 				<div>
 					{/* <p>Время сервера: {filterDate.toString()}</p> */}
-					<p>Игр сыграно: {filteredCurrentUserStatistics.length}</p>
+					<p>Игр сыграно: {filteredStatistics.length}</p>
 					<p>Ваше лучшее время: {minUserTimeSpent ?? 'Не доступно'}</p>
 					<p>Рекордное время: {minAllUserTimeSpent ?? 'Не доступно'}</p>
 				</div>
 			</div>
 
 			<div>
-				{filteredCurrentUserStatistics.length > 0 ? (
-					filteredCurrentUserStatistics.map(el => (
+				{filteredStatistics.length > 0 ? (
+					filteredStatistics.map(el => (
 						<pre key={el.timeSpent} className='bg-gray-200 p-2 rounded'>
-							<div>Игра № {filteredCurrentUserStatistics.indexOf(el) + 1}</div>
+							<div>Игра № {filteredStatistics.indexOf(el) + 1}</div>
 							<p>Время: {el.timeSpent} сек.</p>
 							<p>Оценка: {el.grade}</p>
 							<p>Процент правильных ответов: {el.percentCorrectAnswer}%</p>

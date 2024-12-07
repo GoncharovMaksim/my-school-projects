@@ -33,11 +33,11 @@ export function Filters() {
 			params.append('isCheckedFilterDate', isCheckedFilterDate.toString());
 		router.push(`/statistics?${params.toString()}`);
 	};
-	useEffect(() => {
+	useEffect(()=>{
 		setOperator('');
 		setDifficulty('');
 		handleFilterChange();
-	}, []);
+	},[])
 
 	return (
 		<>
@@ -111,4 +111,3 @@ export function Filters() {
 		</>
 	);
 }
-//1
