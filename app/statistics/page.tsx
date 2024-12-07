@@ -116,6 +116,9 @@ const filteredStatisticsSearch = (statistics: UserStatistics[]) => {
 	const minUserTimeSpent = checkMinTimeSpent(filteredCurrentUserStatistics);
 	const minAllUserTimeSpent = checkMinTimeSpent(filteredAllUserStatistics);
 
+
+
+	
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<div className='p-8 flex flex-col items-center space-y-6'>
@@ -124,7 +127,14 @@ const filteredStatisticsSearch = (statistics: UserStatistics[]) => {
 				<div>
 					{/* <p>Время сервера: {filterDate.toString()}</p> */}
 					<p>Игр сыграно: {filteredCurrentUserStatistics.length}</p>
-					<p>Ваше лучшее время: {minUserTimeSpent ?? 'Не доступно'}</p>
+					<p>
+						Ваше лучшее время:{' '}
+						{minUserTimeSpent !== undefined &&
+						minAllUserTimeSpent !== undefined &&
+						minUserTimeSpent <= minAllUserTimeSpent
+							? `${minUserTimeSpent} 🥇`
+							: minUserTimeSpent ?? 'Не доступно'}
+					</p>
 					<p>Рекордное время: {minAllUserTimeSpent ?? 'Не доступно'}</p>
 				</div>
 			</div>
