@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import fetchWords from './api';
+import { fetchWords, fetchAvailableOptions } from './api';
 import LessonList from './LessonList';
 import LessonSelect from './LessonSelect';
 

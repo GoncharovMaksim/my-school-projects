@@ -29,7 +29,7 @@
 		".next/types/**/*.ts",
 		"types/**/*.d.ts",
 		"models/**/*",
-		"configs/**/*",
+		"configs/**/*", "app/english/page.tsx",
 	],
 	"exclude": ["node_modules"]
 }
