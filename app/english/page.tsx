@@ -39,7 +39,7 @@ export default async function App() {
 										<td>{el.translation}</td>
 										<td>
 											{el.englishAudio ? (
-												<audio controls>
+												<audio >
 													<source src={el.englishAudio} type='audio/mpeg' />
 													Ваш браузер не поддерживает воспроизведение аудио.
 												</audio>
