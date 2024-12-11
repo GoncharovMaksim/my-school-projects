@@ -18,14 +18,13 @@ export default async function App() {
 			<div className='p-8 flex flex-col items-center space-y-6'>
 				<h1 className='text-4xl text-center font-bold mb-4'>Английский</h1>
 
-				<div className='overflow-x-auto'>
-					<table className='table table-xs'>
+				<div className='overflow-x-auto max-w-full'>
+					<table className='table-auto text-lg w-full border-collapse'>
 						<thead>
 							<tr>
-								<th></th>
-								<th>Слово</th>
-								<th>Транскрипция</th>
-								<th>Перевод</th>
+								<th >Слово</th>
+								<th >Транскрипция</th>
+								<th >Перевод</th>
 								{/* <th>Аудио</th> */}
 							</tr>
 						</thead>
@@ -33,7 +32,6 @@ export default async function App() {
 							{wordsList.length > 0 ? (
 								wordsList.map((el, index) => (
 									<tr key={index}>
-										<th></th>
 										<td>{el.englishWord}</td>
 										<td>{el.transcriptionRu}</td>
 										<td>{el.translation}</td>
