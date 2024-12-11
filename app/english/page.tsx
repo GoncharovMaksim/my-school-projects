@@ -49,16 +49,22 @@ export default async function App() {
 					</table>
 
 					{/* Адаптация для мобильных устройств */}
-					<div className='sm:hidden flex flex-col space-y-4'>
+					<div className='sm:hidden flex flex-col space-y-4 w-full'>
 						{wordsList.length > 0 ? (
 							wordsList.map((el, index) => (
 								<div
 									key={index}
-									className='border p-4 rounded-lg flex flex-col space-y-2 bg-gray-200 shadow-md text-4xl'
+									className='border p-4 rounded-lg flex flex-col space-y-2 bg-gray-200 shadow-md w-full'
 								>
-									<div>{el.englishWord}</div>
-									<div>{el.transcriptionRu}</div>
-									<div>{el.translation}</div>
+									<div className='text-lg font-bold break-words'>
+										{el.englishWord}
+									</div>
+									<div className='text-base text-gray-700 break-words'>
+										{el.transcriptionRu}
+									</div>
+									<div className='text-base text-gray-600 break-words'>
+										{el.translation}
+									</div>
 								</div>
 							))
 						) : (
