@@ -14,7 +14,7 @@ export default async function App() {
 
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
-			<div className='p-8 flex flex-col items-center space-y-6'>
+			<div className='p-2 flex flex-col items-center space-y-6'>
 				<h1 className='text-4xl text-center font-bold mb-4'>Английский</h1>
 
 				<div className='w-full'>
@@ -59,7 +59,7 @@ export default async function App() {
 							wordsList.map((el, index) => (
 								<div
 									key={index}
-									className='border p-4 rounded-lg grid grid-cols-2 gap-4 place-content-center bg-gray-200 shadow-md w-full items-center'
+									className='border p-1 rounded-lg grid grid-cols-2 gap-4 place-content-center bg-gray-200 shadow-md w-full items-center'
 								>
 									<div className='text-lg font-bold break-words overflow-hidden text-ellipsis'>
 										{el.englishWord}
