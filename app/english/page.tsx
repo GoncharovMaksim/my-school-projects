@@ -26,7 +26,7 @@ export default async function App() {
 								<th>Слово</th>
 								<th>Транскрипция</th>
 								<th>Перевод</th>
-								<th>Аудио</th>
+								{/* <th>Аудио</th> */}
 							</tr>
 						</thead>
 						<tbody>
@@ -37,7 +37,7 @@ export default async function App() {
 										<td>{el.englishWord}</td>
 										<td>{el.transcriptionRu}</td>
 										<td>{el.translation}</td>
-										<td>
+										{/* <td>
 											{el.englishAudio ? (
 												<audio >
 													<source src={el.englishAudio} type='audio/mpeg' />
@@ -46,7 +46,7 @@ export default async function App() {
 											) : (
 												'Нет аудио'
 											)}
-										</td>
+										</td> */}
 									</tr>
 								))
 							) : (
