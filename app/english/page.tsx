@@ -18,34 +18,24 @@ export default async function App() {
 			<div className='p-8 flex flex-col items-center space-y-6'>
 				<h1 className='text-4xl text-center font-bold mb-4'>Английский</h1>
 
-				<div className='overflow-x-auto w-full'>
-					<table className='table-auto text-sm sm:text-base w-full border-collapse'>
+				<div className='w-full'>
+					<table className='hidden sm:table table-auto text-sm sm:text-base w-full border-collapse'>
 						<thead className='border-b'>
 							<tr>
-								<th className='px-2 sm:px-4 py-2 text-left min-w-[100px]'>
-									Слово
-								</th>
-								<th className='px-2 sm:px-4 py-2 text-left min-w-[120px]'>
+								<th className='px-4 py-2 text-left min-w-[100px]'>Слово</th>
+								<th className='px-4 py-2 text-left min-w-[120px]'>
 									Транскрипция
 								</th>
-								<th className='px-2 sm:px-4 py-2 text-left min-w-[100px]'>
-									Перевод
-								</th>
+								<th className='px-4 py-2 text-left min-w-[100px]'>Перевод</th>
 							</tr>
 						</thead>
 						<tbody>
 							{wordsList.length > 0 ? (
 								wordsList.map((el, index) => (
 									<tr key={index} className='border-b'>
-										<td className='px-2 sm:px-4 py-2 text-left'>
-											{el.englishWord}
-										</td>
-										<td className='px-2 sm:px-4 py-2 text-left'>
-											{el.transcriptionRu}
-										</td>
-										<td className='px-2 sm:px-4 py-2 text-left'>
-											{el.translation}
-										</td>
+										<td className='px-4 py-2'>{el.englishWord}</td>
+										<td className='px-4 py-2'>{el.transcriptionRu}</td>
+										<td className='px-4 py-2'>{el.translation}</td>
 									</tr>
 								))
 							) : (
@@ -57,6 +47,24 @@ export default async function App() {
 							)}
 						</tbody>
 					</table>
+
+					{/* Адаптация для мобильных устройств */}
+					<div className='sm:hidden flex flex-col space-y-4'>
+						{wordsList.length > 0 ? (
+							wordsList.map((el, index) => (
+								<div
+									key={index}
+									className='border p-4 rounded-lg flex flex-col space-y-2 bg-gray-200 shadow-md text-4xl'
+								>
+									<div>{el.englishWord}</div>
+									<div>{el.transcriptionRu}</div>
+									<div>{el.translation}</div>
+								</div>
+							))
+						) : (
+							<div className='text-center py-4'>Слова не найдены.</div>
+						)}
+					</div>
 				</div>
 			</div>
 		</div>
