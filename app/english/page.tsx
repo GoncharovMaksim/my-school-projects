@@ -19,8 +19,8 @@ export default async function App() {
 
 				<div className='w-full'>
 					{/* Таблица для больших экранов */}
-					<div className='hidden sm:block'>
-						<table className='table-auto text-4xl w-auto mx-auto border-collapse '>
+					<div className='hidden lg:block'>
+						<table className='table-auto text-3xl w-auto mx-auto border-collapse '>
 							<thead className='border-b'>
 								<tr>
 									<th className='px-4 py-2 text-left'>Слово</th>
@@ -51,7 +51,7 @@ export default async function App() {
 						</table>
 					</div>
 					{/* Карточки для мобильных устройств */}
-					<div className='sm:hidden flex flex-col space-y-4 w-full '>
+					<div className='lg:hidden flex flex-col space-y-4 w-full '>
 						{error ? (
 							<div className='text-center py-4 text-red-500'>
 								Ошибка загрузки слов.
@@ -60,15 +60,15 @@ export default async function App() {
 							wordsList.map((el, index) => (
 								<div
 									key={index}
-									className='border p-1 rounded-lg grid grid-cols-2 gap-4 place-content-center bg-gray-200 shadow-md w-full items-center'
+									className='border p-4 rounded-lg grid grid-cols-2 gap-4 place-content-center bg-gray-200 shadow-md w-full items-start'
 								>
-									<div className='text-3xl font-bold break-words overflow-hidden text-ellipsis'>
+									<div className='text-2xl font-bold break-words overflow-hidden text-ellipsis'>
 										{el.englishWord}
 									</div>
-									<div className='text-3xl text-gray-600 break-words overflow-hidden text-ellipsis'>
+									<div className='text-2xl text-gray-600 break-words overflow-hidden text-ellipsis'>
 										{el.translation}
 									</div>
-									<div className='text-1xl text-gray-700 break-words overflow-hidden text-ellipsis'>
+									<div className='text-lg text-gray-400 break-words overflow-hidden text-ellipsis'>
 										{el.transcriptionRu}
 									</div>
 								</div>
