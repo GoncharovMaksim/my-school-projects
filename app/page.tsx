@@ -21,6 +21,13 @@ export default function Home() {
 							</Link>
 						</div>
 						<div>
+							<Link href='/englishClient'>
+								<button className='btn btn-outline min-w-[200px]'>
+									АНГЛИЙСКИЙ НЕ НАЖИМАТЬ
+								</button>
+							</Link>
+						</div>
+						<div>
 							<Link href='/math'>
 								<button className='btn btn-outline min-w-[200px]'>
 									МАТЕМАТИКА
