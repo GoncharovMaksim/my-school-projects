@@ -18,39 +18,38 @@ export default async function App() {
 			<div className='p-8 flex flex-col items-center space-y-6'>
 				<h1 className='text-4xl text-center font-bold mb-4'>Английский</h1>
 
-				<div className='overflow-x-auto w-full'>
-					<table className='table-auto text-sm sm:text-base w-full border-collapse'>
-						<thead className='border-b'>
+				<div className='overflow-x-auto max-w-full'>
+					<table className='table-auto text-lg w-full border-collapse'>
+						<thead>
 							<tr>
-								<th className='px-2 sm:px-4 py-2 text-left min-w-[100px]'>
-									Слово
-								</th>
-								<th className='px-2 sm:px-4 py-2 text-left min-w-[120px]'>
-									Транскрипция
-								</th>
-								<th className='px-2 sm:px-4 py-2 text-left min-w-[100px]'>
-									Перевод
-								</th>
+								<th >Слово</th>
+								<th >Транскрипция</th>
+								<th >Перевод</th>
+								{/* <th>Аудио</th> */}
 							</tr>
 						</thead>
 						<tbody>
 							{wordsList.length > 0 ? (
 								wordsList.map((el, index) => (
-									<tr key={index} className='border-b'>
-										<td className='px-2 sm:px-4 py-2 text-left'>
-											{el.englishWord}
-										</td>
-										<td className='px-2 sm:px-4 py-2 text-left'>
-											{el.transcriptionRu}
-										</td>
-										<td className='px-2 sm:px-4 py-2 text-left'>
-											{el.translation}
-										</td>
+									<tr key={index}>
+										<td>{el.englishWord}</td>
+										<td>{el.transcriptionRu}</td>
+										<td>{el.translation}</td>
+										{/* <td>
+											{el.englishAudio ? (
+												<audio >
+													<source src={el.englishAudio} type='audio/mpeg' />
+													Ваш браузер не поддерживает воспроизведение аудио.
+												</audio>
+											) : (
+												'Нет аудио'
+											)}
+										</td> */}
 									</tr>
 								))
 							) : (
 								<tr>
-									<td colSpan={3} className='text-center py-4'>
+									<td colSpan={5} className='text-center'>
 										Слова не найдены.
 									</td>
 								</tr>
@@ -62,4 +61,4 @@ export default async function App() {
 		</div>
 	);
 }
-////
+//
