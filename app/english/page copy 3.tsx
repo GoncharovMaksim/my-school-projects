@@ -59,18 +59,17 @@ export default async function App() {
 							wordsList.map((el, index) => (
 								<div
 									key={index}
-									className='border p-4 rounded-lg grid grid-cols-2 gap-4 place-content-center bg-gray-200 shadow-md w-full items-center'
+									className='border p-4 rounded-lg flex flex-col space-y-2 bg-gray-200 shadow-md w-full'
 								>
 									<div className='text-lg font-bold break-words overflow-hidden text-ellipsis'>
 										{el.englishWord}
 									</div>
-									<div className='text-base text-gray-600 break-words overflow-hidden text-ellipsis'>
-										{el.translation}
-									</div>
 									<div className='text-base text-gray-700 break-words overflow-hidden text-ellipsis'>
 										{el.transcriptionRu}
 									</div>
-									
+									<div className='text-base text-gray-600 break-words overflow-hidden text-ellipsis'>
+										{el.translation}
+									</div>
 								</div>
 							))
 						) : (
