@@ -10,11 +10,11 @@ export default function App() {
 	const [error, setError] = useState(false);
 	const [wordsList, setWordsList] = useState<Word[]>([]);
 	const [filterWordsList, setFilterWordsList] = useState<Word[]>([]);
-	const [schoolClass, setSchoolClass] = useState<number | ''>(''); // Выбранный класс
-	const [lessonUnit, setLessonUnit] = useState<number | ''>(''); // Выбранный урок
-	const [unitStep, setUnitStep] = useState<number | ''>(''); // Выбранный шаг
-	const [listLessonUnit, setListLessonUnit] = useState<number[]>([]); // Список уроков
-	const [listUnitStep, setListUnitStep] = useState<number[]>([]); // Список шагов
+	const [schoolClass, setSchoolClass] = useState<number | ''>('');
+	const [lessonUnit, setLessonUnit] = useState<number | ''>('');
+	const [unitStep, setUnitStep] = useState<number | ''>('');
+	const [listLessonUnit, setListLessonUnit] = useState<number[]>([]);
+	const [listUnitStep, setListUnitStep] = useState<number[]>([]);
 
 	useEffect(() => {
 		async function getWords() {
@@ -40,8 +40,6 @@ export default function App() {
 					...new Set(tempFilter.map(el => el.lessonUnit)),
 				];
 				setListLessonUnit(uniqTempListLessonUnit);
-			} else {
-				setListLessonUnit([]);
 			}
 
 			if (lessonUnit) {
@@ -50,8 +48,6 @@ export default function App() {
 					...new Set(tempFilter.map(el => el.unitStep)),
 				];
 				setListUnitStep(uniqTempListUnitStep);
-			} else {
-				setListUnitStep([]);
 			}
 
 			if (unitStep) {
@@ -63,7 +59,6 @@ export default function App() {
 
 		handleFilterChange();
 	}, [wordsList, schoolClass, lessonUnit, unitStep]);
-
 	useEffect(() => {
 		// Сбрасываем значения урока и шага при изменении класса
 		setLessonUnit('');
@@ -82,7 +77,6 @@ export default function App() {
 						</div>
 						<div className='collapse-content flex flex-col items-center text-xl space-y-2'>
 							<DropdownMenu
-								// key={`schoolClass-${schoolClass}`}
 								defaultLabel='Выберите класс'
 								options={[
 									{ label: 'Класс: 2', onClick: () => setSchoolClass(2) },
@@ -91,21 +85,26 @@ export default function App() {
 								]}
 							/>
 							<DropdownMenu
-								key={`lessonUnit-${schoolClass}`}
 								defaultLabel='Выберите урок'
 								options={[
-									{ label: 'Все уроки', onClick: () => setLessonUnit('') },
+									{
+										label: 'Все уроки',
+										onClick: () => setLessonUnit(''),
+									},
 									...listLessonUnit.map((el: number) => ({
 										label: `Выбран урок: ${el}`,
 										onClick: () => setLessonUnit(el),
 									})),
 								]}
 							/>
+
 							<DropdownMenu
-								key={`unitStep-${lessonUnit}`}
 								defaultLabel='Выберите шаг'
 								options={[
-									{ label: 'Все шаги', onClick: () => setUnitStep('') },
+									{
+										label: 'Все шаги',
+										onClick: () => setUnitStep(''),
+									},
 									...listUnitStep.map((el: number) => ({
 										label: `Выбран шаг: ${el}`,
 										onClick: () => setUnitStep(el),
