@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Word } from '@/types/word'; // Предполагается, что интерфейс Word определен в этом файле
+import { Word } from '@/types/word';
 import fetchWords from '../englishClient/components/api';
 import LoadingBars from '@/components/LoadingBars';
 import DropdownMenu from '@/components/DropdownMenu';
@@ -12,14 +12,15 @@ export default function App() {
 	const [filterWordsList, setFilterWordsList] = useState<Word[]>([]);
 	const [schoolClass, setSchoolClass] = useState<number | ''>('');
 	const [lessonUnit, setLessonUnit] = useState<number | ''>('');
-	const [unitStep, setUnitStep] = useState<number | ''>(''); //
+	const [unitStep, setUnitStep] = useState<number | ''>('');
+	const [listLessonUnit, setListLessonUnit] = useState<number[]>([]);
+	const [listUnitStep, setListUnitStep] = useState<number[]>([]);
 
 	useEffect(() => {
 		async function getWords() {
 			try {
 				const words = await fetchWords();
 				setWordsList(words);
-				//setFilterWordsList(words);
 			} catch (err) {
 				console.error('Ошибка загрузки слов:', err);
 				setError(true);
@@ -29,19 +30,33 @@ export default function App() {
 		getWords();
 	}, []);
 
-
 	useEffect(() => {
 		const handleFilterChange = () => {
 			let tempFilter = wordsList;
-			if (schoolClass)
+
+			if (schoolClass) {
 				tempFilter = tempFilter.filter(el => el.schoolClass === schoolClass);
-			if (lessonUnit)
+				const uniqTempListLessonUnit = [
+					...new Set(tempFilter.map(el => el.lessonUnit)),
+				];
+				setListLessonUnit(uniqTempListLessonUnit);
+			}
+
+			if (lessonUnit) {
 				tempFilter = tempFilter.filter(el => el.lessonUnit === lessonUnit);
-			if (unitStep)
+				const uniqTempListUnitStep = [
+					...new Set(tempFilter.map(el => el.unitStep)),
+				];
+				setListUnitStep(uniqTempListUnitStep);
+			}
+
+			if (unitStep) {
 				tempFilter = tempFilter.filter(el => el.unitStep === unitStep);
+			}
+
 			setFilterWordsList(tempFilter);
-			console.log('tempFilter', tempFilter);
 		};
+
 		handleFilterChange();
 	}, [wordsList, schoolClass, lessonUnit, unitStep]);
 
@@ -56,82 +71,33 @@ export default function App() {
 							Параметры:
 						</div>
 						<div className='collapse-content flex flex-col items-center text-xl space-y-2'>
-							{/* DropdownMenu для оператора */}
 							<DropdownMenu
 								defaultLabel='Выберите класс'
 								options={[
-									{
-										label: 'Класс: 2',
-										onClick: () => setSchoolClass(2),
-									},
-									{
-										label: 'Класс: 3',
-										onClick: () => setSchoolClass(3),
-									},
-									{
-										label: 'Все классы',
-										onClick: () => setSchoolClass(''),
-									},
+									{ label: 'Класс: 2', onClick: () => setSchoolClass(2) },
+									{ label: 'Класс: 3', onClick: () => setSchoolClass(3) },
+									{ label: 'Все классы', onClick: () => setSchoolClass('') },
 								]}
 							/>
-
-							{/* DropdownMenu для уровня сложности */}
 							<DropdownMenu
 								defaultLabel='Выберите урок'
-								options={[
-									{
-										label: 'Урок: 1',
-										onClick: () => setLessonUnit(1),
-									},
-									{
-										label: 'Урок: 2',
-										onClick: () => setLessonUnit(2),
-									},
-									{
-										label: 'Урок: 3',
-										onClick: () => setLessonUnit(3),
-									},
-									{
-										label: 'Все уровни',
-										onClick: () => setLessonUnit(''),
-									},
-								]}
+								options={listLessonUnit.map((el: number) => ({
+									label: `Выбран урок: ${el}`,
+									onClick: () => setLessonUnit(el),
+								}))}
 							/>
-							{/* DropdownMenu для уровня сложности */}
 							<DropdownMenu
 								defaultLabel='Выберите шаг'
-								options={[
-									{
-										label: 'Шаг: 1',
-										onClick: () => setUnitStep(1),
-									},
-									{
-										label: 'Шаг: 2',
-										onClick: () => setUnitStep(2),
-									},
-									{
-										label: 'Шаг: 3',
-										onClick: () => setUnitStep(3),
-									},
-									{
-										label: 'Все шаги',
-										onClick: () => setUnitStep(''),
-									},
-								]}
+								options={listUnitStep.map((el: number) => ({
+									label: `Выбран шаг: ${el}`,
+									onClick: () => setUnitStep(el),
+								}))}
 							/>
-							{/* <button
-								className='btn btn-outline w-full max-w-xs'
-								onClick={handleFilterChange}
-							>
-								Применить
-							</button> */}
 						</div>
 					</div>
 				</div>
 			</div>
-
 			<div className='w-full'>
-				{/* Карточки для мобильных устройств */}
 				<div className='flex flex-col space-y-4 w-full'>
 					{error ? (
 						<div className='text-center py-4 text-red-500'>
@@ -140,7 +106,7 @@ export default function App() {
 					) : wordsList.length > 0 ? (
 						filterWordsList.map((el, index) => (
 							<div
-								key={index}
+								key={`${el.englishWord}-${index}`}
 								className='border p-4 rounded-lg grid grid-cols-2 gap-4 place-content-center bg-gray-200 shadow-md w-full items-start'
 							>
 								<div className='text-2xl font-bold break-words overflow-hidden text-ellipsis'>
