@@ -130,7 +130,7 @@ export default function App() {
 						filterWordsList.map((el, index) => (
 							<div
 								key={`${el.englishWord}-${index}`}
-								className='border p-4 rounded-lg grid grid-cols-2 gap-4 place-content-center bg-gray-200 shadow-md w-full items-start'
+								className='border p-4 rounded-lg grid grid-cols-2 gap-4 place-content-center bg-gray-200 shadow-md w-full h-full'
 							>
 								<div className='text-2xl font-bold break-words overflow-hidden text-ellipsis'>
 									{el.englishWord}
@@ -138,15 +138,14 @@ export default function App() {
 								<div className='text-2xl text-gray-600 break-words overflow-hidden text-ellipsis'>
 									{el.translation}
 								</div>
-								<div className='text-lg text-gray-400 break-words overflow-hidden text-ellipsis'>
+								<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis h-12'>
 									{el.transcriptionRu}
 								</div>
-								<div>
+								<div className='flex items-end'>
 									<button
-										className='btn text-lg text-gray-400 break-words overflow-hidden text-ellipsis'
+										className='btn btn-outline text-lg text-gray-400 w-24 h-8 flex items-center justify-center p-0 min-h-0'
 										onClick={() => speak(el.englishWord, 'en-US')}
 									>
-										
 										<svg
 											xmlns='http://www.w3.org/2000/svg'
 											className='h-6 w-6'
