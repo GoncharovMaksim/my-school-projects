@@ -20,13 +20,13 @@ export default function Home() {
 								</button>
 							</Link>
 						</div>
-						<div>
+						{/* <div>
 							<Link href='/englishClient'>
 								<button className='btn btn-outline min-w-[200px]'>
 									АНГЛИЙСКИЙ НЕ НАЖИМАТЬ
 								</button>
 							</Link>
-						</div>
+						</div> */}
 						<div>
 							<Link href='/math'>
 								<button className='btn btn-outline min-w-[200px]'>
@@ -34,6 +34,9 @@ export default function Home() {
 								</button>
 							</Link>
 						</div>
+					
+						<img src='./elka.png' alt='' />
+						<img src='./next.svg' alt='' />
 					</div>
 				</main>
 			</div>
