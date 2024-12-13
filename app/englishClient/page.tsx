@@ -146,7 +146,7 @@ export default function App() {
 										className='btn text-lg text-gray-400 break-words overflow-hidden text-ellipsis'
 										onClick={() => speak(el.englishWord, 'en-US')}
 									>
-										Прослушать
+										
 										<svg
 											xmlns='http://www.w3.org/2000/svg'
 											className='h-6 w-6'
