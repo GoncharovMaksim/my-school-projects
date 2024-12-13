@@ -66,28 +66,26 @@ export default function App() {
 	}, [wordsList, schoolClass, lessonUnit, unitStep]);
 
 	useEffect(() => {
-		// Сбрасываем значения урока и шага при изменении класса
+
 		setLessonUnit('');
 		setUnitStep('');
 
-		// const handleSpeak = () => {
-		// 	speak('kangaroo', 'en-US');
-		// };
+
 	}, [schoolClass]);
 
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<div className='p-2 flex flex-col items-center space-y-6'>
 				<h1 className='text-4xl text-center font-bold mb-4'>Английский</h1>
-				<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm'>
+				<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-full'>
 					<div className='collapse collapse-arrow bg-base-200 overflow-visible'>
 						<input type='checkbox' name='my-accordion-2' />
 						<div className='collapse-title text-xl font-bold text-center '>
 							Параметры:
 						</div>
-						<div className='collapse-content flex flex-col items-center text-xl space-y-2'>
+						<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0 '>
 							<DropdownMenu
-								defaultLabel='Выберите класс'
+								defaultLabel='Выбор класса'
 								options={[
 									{ label: 'Класс: 2', onClick: () => setSchoolClass(2) },
 									{ label: 'Класс: 3', onClick: () => setSchoolClass(3) },
@@ -96,7 +94,7 @@ export default function App() {
 							/>
 							<DropdownMenu
 								key={`lessonUnit-${schoolClass}`}
-								defaultLabel='Выберите урок'
+								defaultLabel='Выбор урока'
 								options={[
 									{ label: 'Все уроки', onClick: () => setLessonUnit('') },
 									...listLessonUnit.map((el: number) => ({
@@ -107,7 +105,7 @@ export default function App() {
 							/>
 							<DropdownMenu
 								key={`unitStep-${lessonUnit}`}
-								defaultLabel='Выберите шаг'
+								defaultLabel='Выбор шага'
 								options={[
 									{ label: 'Все шаги', onClick: () => setUnitStep('') },
 									...listUnitStep.map((el: number) => ({
