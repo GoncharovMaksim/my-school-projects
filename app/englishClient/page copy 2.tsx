@@ -5,7 +5,6 @@ import { Word } from '@/types/word';
 import fetchWords from '../englishClient/components/api';
 import LoadingBars from '@/components/LoadingBars';
 import DropdownMenu from '@/components/DropdownMenu';
-import { useSpeaker } from './useSpeaker';
 
 export default function App() {
 	const [error, setError] = useState(false);
@@ -16,7 +15,7 @@ export default function App() {
 	const [unitStep, setUnitStep] = useState<number | ''>(''); // Выбранный шаг
 	const [listLessonUnit, setListLessonUnit] = useState<number[]>([]); // Список уроков
 	const [listUnitStep, setListUnitStep] = useState<number[]>([]); // Список шагов
-	const { speak } = useSpeaker();
+
 	useEffect(() => {
 		async function getWords() {
 			try {
@@ -69,10 +68,6 @@ export default function App() {
 		// Сбрасываем значения урока и шага при изменении класса
 		setLessonUnit('');
 		setUnitStep('');
-
-		// const handleSpeak = () => {
-		// 	speak('kangaroo', 'en-US');
-		// };
 	}, [schoolClass]);
 
 	return (
@@ -87,6 +82,7 @@ export default function App() {
 						</div>
 						<div className='collapse-content flex flex-col items-center text-xl space-y-2'>
 							<DropdownMenu
+								// key={`schoolClass-${schoolClass}`}
 								defaultLabel='Выберите класс'
 								options={[
 									{ label: 'Класс: 2', onClick: () => setSchoolClass(2) },
@@ -140,11 +136,6 @@ export default function App() {
 								</div>
 								<div className='text-lg text-gray-400 break-words overflow-hidden text-ellipsis'>
 									{el.transcriptionRu}
-								</div>
-								<div>
-									<button onClick={() => speak(el.englishWord, 'en-US')}>
-										Прослушать
-									</button>
 								</div>
 							</div>
 						))
