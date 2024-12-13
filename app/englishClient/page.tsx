@@ -142,8 +142,25 @@ export default function App() {
 									{el.transcriptionRu}
 								</div>
 								<div>
-									<button onClick={() => speak(el.englishWord, 'en-US')}>
+									<button
+										className='btn text-lg text-gray-400 break-words overflow-hidden text-ellipsis'
+										onClick={() => speak(el.englishWord, 'en-US')}
+									>
 										Прослушать
+										<svg
+											xmlns='http://www.w3.org/2000/svg'
+											className='h-6 w-6'
+											fill='none'
+											viewBox='0 0 24 24'
+											stroke='currentColor'
+										>
+											<path
+												strokeLinecap='round'
+												strokeLinejoin='round'
+												strokeWidth='2'
+												d='M6 4l12 8-12 8V4z'
+											/>
+										</svg>
 									</button>
 								</div>
 							</div>
