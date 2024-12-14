@@ -35,7 +35,8 @@ export default function DropdownMenu({
 					</MenuButton>
 				</div>
 
-				<MenuItems className='absolute mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none text-lg min-w-[280px] z-10'>
+				{/* Обновленные MenuItems */}
+				<MenuItems className='absolute mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none text-lg min-w-[280px] z-10 max-h-48 overflow-y-auto'>
 					<div className='py-1'>
 						{options.map((option, index) => (
 							<MenuItem key={index}>

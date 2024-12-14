@@ -26,7 +26,7 @@ export default function DropdownMenu({
 		<div className='relative inline-block text-left'>
 			<Menu>
 				<div>
-					<MenuButton className='inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-6 py-3 text-xl font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 min-w-[320px]'>
+					<MenuButton className='inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-6 py-3 text-xl font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 min-w-[280px]'>
 						{selectedLabel}
 						<ChevronDownIcon
 							aria-hidden='true'
@@ -35,7 +35,7 @@ export default function DropdownMenu({
 					</MenuButton>
 				</div>
 
-				<MenuItems className='absolute mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none text-lg min-w-[320px] z-10'>
+				<MenuItems className='absolute mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none text-lg min-w-[280px] z-10'>
 					<div className='py-1'>
 						{options.map((option, index) => (
 							<MenuItem key={index}>
