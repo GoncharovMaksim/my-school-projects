@@ -102,11 +102,8 @@ export default function App() {
 						</div>
 						<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0 '>
 							<DropdownMenu
-								key={`schoolClass-${schoolClass}`}
 								defaultLabel={
-									schoolClass !== ''
-										? `Выбран класс ${schoolClass.toString()}`
-										: 'Выбрать класс'
+									schoolClass !== '' ? schoolClass.toString() : 'Выбрать класс'
 								}
 								options={[
 									{

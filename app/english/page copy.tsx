@@ -11,30 +11,12 @@ export default function App() {
 	const [error, setError] = useState(false);
 	const [wordsList, setWordsList] = useState<Word[]>([]);
 	const [filterWordsList, setFilterWordsList] = useState<Word[]>([]);
-	const [schoolClass, setSchoolClass] = useState<number | ''>('');
+	const [schoolClass, setSchoolClass] = useState<number | ''>(''); // Выбранный класс
 	const [lessonUnit, setLessonUnit] = useState<number | ''>(''); // Выбранный урок
 	const [unitStep, setUnitStep] = useState<number | ''>(''); // Выбранный шаг
 	const [listLessonUnit, setListLessonUnit] = useState<number[]>([]); // Список уроков
 	const [listUnitStep, setListUnitStep] = useState<number[]>([]); // Список шагов
 	const { speak } = useSpeaker();
-
-	useEffect(() => {
-		const storedSchoolClass = localStorage.getItem('schoolClass');
-		if (storedSchoolClass) {
-			setSchoolClass(JSON.parse(storedSchoolClass));
-		}
-
-		const storedLessonUnit = localStorage.getItem('lessonUnit');
-		if (storedLessonUnit) {
-			setLessonUnit(JSON.parse(storedLessonUnit));
-		}
-
-		const storedUnitStep = localStorage.getItem('unitStep');
-		if (storedUnitStep) {
-			setUnitStep(JSON.parse(storedUnitStep));
-		}
-	}, []);
-
 	useEffect(() => {
 		async function getWords() {
 			try {
@@ -52,13 +34,13 @@ export default function App() {
 	useEffect(() => {
 		const handleFilterChange = () => {
 			let tempFilter = wordsList;
+
 			if (schoolClass) {
 				tempFilter = tempFilter.filter(el => el.schoolClass === schoolClass);
 				const uniqTempListLessonUnit = [
 					...new Set(tempFilter.map(el => el.lessonUnit)),
 				];
 				setListLessonUnit(uniqTempListLessonUnit);
-				localStorage.setItem('schoolClass', JSON.stringify(schoolClass));
 			} else {
 				setListLessonUnit([]);
 			}
@@ -69,14 +51,12 @@ export default function App() {
 					...new Set(tempFilter.map(el => el.unitStep)),
 				];
 				setListUnitStep(uniqTempListUnitStep);
-				localStorage.setItem('lessonUnit', JSON.stringify(lessonUnit));
 			} else {
 				setListUnitStep([]);
 			}
 
 			if (unitStep) {
 				tempFilter = tempFilter.filter(el => el.unitStep === unitStep);
-				localStorage.setItem('unitStep', JSON.stringify(unitStep));
 			}
 
 			setFilterWordsList(tempFilter);
@@ -85,10 +65,13 @@ export default function App() {
 		handleFilterChange();
 	}, [wordsList, schoolClass, lessonUnit, unitStep]);
 
-	// useEffect(() => {
-	// 	setLessonUnit('');
-	// 	setUnitStep('');
-	// }, [schoolClass]);
+	useEffect(() => {
+
+		setLessonUnit('');
+		setUnitStep('');
+
+
+	}, [schoolClass]);
 
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
@@ -102,63 +85,27 @@ export default function App() {
 						</div>
 						<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0 '>
 							<DropdownMenu
-								key={`schoolClass-${schoolClass}`}
-								defaultLabel={
-									schoolClass !== ''
-										? `Выбран класс ${schoolClass.toString()}`
-										: 'Выбрать класс'
-								}
+								defaultLabel='Выбор класса'
 								options={[
-									{
-										label: 'Класс: 2',
-										onClick: () => {
-											return (
-												setSchoolClass(2), setLessonUnit(''), setUnitStep('')
-											);
-										},
-									},
-									{
-										label: 'Класс: 3',
-										onClick: () => {
-											return (
-												setSchoolClass(3), setLessonUnit(''), setUnitStep('')
-											);
-										},
-									},
-									{
-										label: 'Все классы',
-										onClick: () => {
-											return (
-												setSchoolClass(''), setLessonUnit(''), setUnitStep('')
-											);
-										},
-									},
+									{ label: 'Класс: 2', onClick: () => setSchoolClass(2) },
+									{ label: 'Класс: 3', onClick: () => setSchoolClass(3) },
+									{ label: 'Все классы', onClick: () => setSchoolClass('') },
 								]}
 							/>
 							<DropdownMenu
 								key={`lessonUnit-${schoolClass}`}
-								defaultLabel={
-									lessonUnit !== ''
-										? `Выбран урок: ${lessonUnit.toString()}`
-										: 'Выбрать урок'
-								}
+								defaultLabel='Выбор урока'
 								options={[
 									{ label: 'Все уроки', onClick: () => setLessonUnit('') },
 									...listLessonUnit.map((el: number) => ({
 										label: `Выбран урок: ${el}`,
-										onClick: () => {
-											return setLessonUnit(el), setUnitStep('');
-										},
+										onClick: () => setLessonUnit(el),
 									})),
 								]}
 							/>
 							<DropdownMenu
 								key={`unitStep-${lessonUnit}`}
-								defaultLabel={
-									unitStep !== ''
-										? `Выбран шаг: ${unitStep.toString()}`
-										: 'Выбрать шаг'
-								}
+								defaultLabel='Выбор шага'
 								options={[
 									{ label: 'Все шаги', onClick: () => setUnitStep('') },
 									...listUnitStep.map((el: number) => ({

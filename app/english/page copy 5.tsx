@@ -102,12 +102,7 @@ export default function App() {
 						</div>
 						<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0 '>
 							<DropdownMenu
-								key={`schoolClass-${schoolClass}`}
-								defaultLabel={
-									schoolClass !== ''
-										? `Выбран класс ${schoolClass.toString()}`
-										: 'Выбрать класс'
-								}
+								defaultLabel='Выбор класса'
 								options={[
 									{
 										label: 'Класс: 2',
@@ -137,11 +132,7 @@ export default function App() {
 							/>
 							<DropdownMenu
 								key={`lessonUnit-${schoolClass}`}
-								defaultLabel={
-									lessonUnit !== ''
-										? `Выбран урок: ${lessonUnit.toString()}`
-										: 'Выбрать урок'
-								}
+								defaultLabel='Выбор урока'
 								options={[
 									{ label: 'Все уроки', onClick: () => setLessonUnit('') },
 									...listLessonUnit.map((el: number) => ({
@@ -154,11 +145,7 @@ export default function App() {
 							/>
 							<DropdownMenu
 								key={`unitStep-${lessonUnit}`}
-								defaultLabel={
-									unitStep !== ''
-										? `Выбран шаг: ${unitStep.toString()}`
-										: 'Выбрать шаг'
-								}
+								defaultLabel='Выбор шага'
 								options={[
 									{ label: 'Все шаги', onClick: () => setUnitStep('') },
 									...listUnitStep.map((el: number) => ({
