@@ -5,25 +5,22 @@ import { useRouter, usePathname } from 'next/navigation'; // Импортиру�
 import Link from 'next/link';
 
 export default function BottomNavigation() {
-	const [loading, setLoading] = useState(false);
+	const [loadingButton, setLoadingButton] = useState<string | null>(null);
 	const router = useRouter();
-	const pathname = usePathname(); // Получаем текущий путь
+	const pathname = usePathname();
 
-	// Используем useEffect для отслеживания завершения навигации
 	useEffect(() => {
-		// Когда переход завершен (новый путь), сбрасываем загрузку в false
 		const handleRouteChange = async () => {
-			// Ждем 1 секунду перед изменением статуса
-			await new Promise(resolve => setTimeout(resolve, 500));
-			setLoading(false);
+			await new Promise(resolve => setTimeout(resolve, 1000));
+			setLoadingButton(null); // Сбрасываем состояние после завершения загрузки
 		};
 
-		// В App Router нужно следить за изменениями маршрута с помощью router.push и других методов
-		router.push(pathname); // Переход к текущему пути
-		// Очистка хука не требуется, так как мы используем push
 		handleRouteChange();
-	}, [pathname]); // Зависимость от текущего пути
+	}, [pathname]);
 
+	const handleButtonClick = (buttonName: string) => {
+		setLoadingButton(buttonName);
+	};
 	return (
 		<div>
 			<div className='btm-nav bg-gray-800'>
@@ -31,7 +28,7 @@ export default function BottomNavigation() {
 				<button
 					className='hover:bg-gray-700'
 					onClick={() => {
-						setLoading(true);
+						handleButtonClick('back');
 						router.back();
 					}}
 				>
@@ -52,7 +49,7 @@ export default function BottomNavigation() {
 						</svg>
 						<span
 							className={
-								loading
+								loadingButton === 'back'
 									? 'loading loading-spinner text-gray-400'
 									: 'btm-nav-label text-gray-400'
 							}
@@ -68,7 +65,7 @@ export default function BottomNavigation() {
 					className='hover:bg-gray-700'
 					onClick={() => {
 						if (pathname !== '/') {
-							setLoading(true);
+							handleButtonClick('home');
 						}
 					}}
 				>
@@ -89,7 +86,7 @@ export default function BottomNavigation() {
 						</svg>
 						<span
 							className={
-								loading
+								loadingButton === 'home'
 									? 'loading loading-spinner text-gray-400'
 									: 'btm-nav-label text-gray-400'
 							}
@@ -105,8 +102,8 @@ export default function BottomNavigation() {
 					className='hover:bg-gray-700'
 					onClick={() => {
 						if (pathname !== '/statistics') {
-							setLoading(true);
-						} // Устанавливаем loading в true при клике на ссылку
+							handleButtonClick('statistics');
+						}
 					}}
 				>
 					<>
@@ -126,7 +123,7 @@ export default function BottomNavigation() {
 						</svg>
 						<span
 							className={
-								loading
+								loadingButton === 'statistics'
 									? 'loading loading-spinner text-gray-400'
 									: 'btm-nav-label text-gray-400'
 							}
