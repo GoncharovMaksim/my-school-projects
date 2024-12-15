@@ -1,10 +1,10 @@
+
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import DarkNav from '../components/DarkNav';
+import BottomNavigation from '../components/BottomNavigation';
 import { Providers } from '../components/Providers';
-import BottomNavigation from '@/components/BottomNavigation';
-
 const geistSans = localFont({
 	src: './fonts/GeistVF.woff',
 	variable: '--font-geist-sans',
@@ -37,10 +37,10 @@ export default function RootLayout({
 						{/* отступ равен высоте меню */}
 						{children}
 					</main>
-			
 					<BottomNavigation />
 				</Providers>
 			</body>
 		</html>
 	);
 }
+//

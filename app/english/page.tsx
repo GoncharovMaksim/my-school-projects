@@ -59,6 +59,8 @@ export default function App() {
 				];
 				setListLessonUnit(uniqTempListLessonUnit);
 				localStorage.setItem('schoolClass', JSON.stringify(schoolClass));
+				localStorage.setItem('lessonUnit', JSON.stringify(''));
+				localStorage.setItem('unitStep', JSON.stringify(''));
 			} else {
 				setListLessonUnit([]);
 			}
@@ -70,6 +72,7 @@ export default function App() {
 				];
 				setListUnitStep(uniqTempListUnitStep);
 				localStorage.setItem('lessonUnit', JSON.stringify(lessonUnit));
+				localStorage.setItem('unitStep', JSON.stringify(''));
 			} else {
 				setListUnitStep([]);
 			}

@@ -35,8 +35,8 @@ export default function Home() {
 							</Link>
 						</div>
 					
-						<img src='./elka.png' alt='' />
-						<img src='./next.svg' alt='' />
+						{/* <img src='./elka.png' alt='' />
+						<img src='./next.svg' alt='' /> */}
 					</div>
 				</main>
 			</div>
