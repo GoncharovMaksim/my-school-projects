@@ -13,7 +13,9 @@ export default function BottomNavigation() {
 	useEffect(() => {
 		// Когда переход завершен (новый путь), сбрасываем загрузку в false
 		const handleRouteChange = () => {
-			setLoading(false);
+			setTimeout(() => {
+				setLoading(false);
+			}, 1000);
 		};
 
 		// В App Router нужно следить за изменениями маршрута с помощью router.push и других методов
