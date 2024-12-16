@@ -213,8 +213,8 @@ ${session.data?.user?.email || ''}`;
 	return (
 		<>
 			{endGame ? (
-				<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm text-xl'>
-					<div className='space-y-4 max-w-screen-sm text-xl flex flex-col items-center'>
+				<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm text-xl items-center'>
+					<div className='space-y-4 max-w-screen-sm text-xl flex flex-col items-center break-words'>
 						<h1>Результат:</h1>
 						<div>
 							{arrTasks.map((el, index) => {

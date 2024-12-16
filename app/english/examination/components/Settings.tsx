@@ -11,7 +11,7 @@ import { useSpeaker } from '../../useSpeaker';
 import { GameProps } from './types';
 
 export default function Settings({ setGameSettings }: GameProps) {
-	const [operator, setOperator] = useState('*'); // Значение по умолчанию '*'
+
 	const [difficultyLevel, setDifficultyLevel] = useState(1);
 	const [isLoading, setIsLoading] = useState(true); // Флаг загрузки данных
 
@@ -90,15 +90,13 @@ export default function Settings({ setGameSettings }: GameProps) {
 			}
 
 			setFilterWordsList(tempFilter);
+			setIsLoading(false);
 		};
 
 		handleFilterChange();
 	}, [wordsList, schoolClass, lessonUnit, unitStep]);
 
-	// if (isLoading) {
-	// 	// Пока идет загрузка данных, показываем индикатор
-	// 	return <div>Загрузка...</div>;
-	// }
+
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
 			
@@ -110,7 +108,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 			); // Устанавливаем уровень сложности
 
 			// После загрузки данных, снимаем флаг загрузки
-			setIsLoading(false);
+			//setIsLoading(false);
 		}
 	}, []);
 
@@ -130,6 +128,11 @@ const handleStartGame = () => {
 	}));
 	
 };
+
+	if (isLoading) {
+		// Пока идет загрузка данных, показываем индикатор
+		return <div>Загрузка...</div>;
+	}
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<div>Настройки:</div>
