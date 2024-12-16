@@ -2,13 +2,19 @@
 
 import { useEffect, useState } from 'react';
 import { Word } from '@/types/word';
-import fetchWords from './components/api';
+import fetchWords from '../../components/api';
 import LoadingBars from '@/components/LoadingBars';
 import DropdownMenu from '@/components/DropdownMenu';
-import { useSpeaker } from './useSpeaker';
-import Link from 'next/link';
+import { useSpeaker } from '../../useSpeaker';
+//import Link from 'next/link';
 
-export default function App() {
+import { GameProps } from './types';
+
+export default function Settings({ setGameSettings }: GameProps) {
+	const [operator, setOperator] = useState('*'); // Значение по умолчанию '*'
+	const [difficultyLevel, setDifficultyLevel] = useState(1);
+	const [isLoading, setIsLoading] = useState(true); // Флаг загрузки данных
+
 	const [error, setError] = useState(false);
 	const [wordsList, setWordsList] = useState<Word[]>([]);
 	const [filterWordsList, setFilterWordsList] = useState<Word[]>([]);
@@ -89,93 +95,130 @@ export default function App() {
 		handleFilterChange();
 	}, [wordsList, schoolClass, lessonUnit, unitStep]);
 
+	// if (isLoading) {
+	// 	// Пока идет загрузка данных, показываем индикатор
+	// 	return <div>Загрузка...</div>;
+	// }
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			
+			const difficultyLevelLocalStorage =
+				localStorage.getItem('difficultyLevel');
+
+			setDifficultyLevel(
+				difficultyLevelLocalStorage ? Number(difficultyLevelLocalStorage) : 1
+			); // Устанавливаем уровень сложности
+
+			// После загрузки данных, снимаем флаг загрузки
+			setIsLoading(false);
+		}
+	}, []);
 
 
+
+	const handleDifficultyChange = (newLevel: number) => {
+		setDifficultyLevel(newLevel);
+	};
+
+
+const handleStartGame = () => {
+	setGameSettings(prevSettings => ({
+		...prevSettings,
+		difficultyLevel,
+		examWordsList: filterWordsList,
+		gameStatus: true,
+	}));
+	
+};
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
+			<div>Настройки:</div>
 			<div className='p-2 flex flex-col items-center space-y-6'>
-				<h1 className='text-4xl text-center font-bold mb-4'>Английский</h1>
 				<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-full'>
-					<div className='collapse collapse-arrow bg-base-200 overflow-visible'>
-						<input type='checkbox' name='my-accordion-2' />
-						<div className='collapse-title text-xl font-bold text-center '>
-							Параметры:
-						</div>
-						<div className='flex justify-center items-center'>
-							<Link href='/english/examination'>
-								<button className='btn btn-outline min-w-[200px]'>
-									ПРОЙТИ ТЕСТ
-								</button>
-							</Link>
-						</div>
-						<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0 '>
-							<DropdownMenu
-								key={`schoolClass-${schoolClass}`}
-								defaultLabel={
-									schoolClass !== ''
-										? `Выбран класс ${schoolClass.toString()}`
-										: 'Выбрать класс'
-								}
-								options={[
-									{
-										label: 'Класс: 2',
-										onClick: () => {
-											return (
-												setSchoolClass(2), setLessonUnit(''), setUnitStep('')
-											);
-										},
-									},
-									{
-										label: 'Класс: 3',
-										onClick: () => {
-											return (
-												setSchoolClass(3), setLessonUnit(''), setUnitStep('')
-											);
-										},
-									},
-									{
-										label: 'Все классы',
-										onClick: () => {
-											return (
-												setSchoolClass(''), setLessonUnit(''), setUnitStep('')
-											);
-										},
-									},
-								]}
-							/>
-							<DropdownMenu
-								key={`lessonUnit-${schoolClass}`}
-								defaultLabel={
-									lessonUnit !== ''
-										? `Выбран урок: ${lessonUnit.toString()}`
-										: 'Выбрать урок'
-								}
-								options={[
-									{ label: 'Все уроки', onClick: () => setLessonUnit('') },
-									...listLessonUnit.map((el: number) => ({
-										label: `Выбран урок: ${el}`,
-										onClick: () => {
-											return setLessonUnit(el), setUnitStep('');
-										},
-									})),
-								]}
-							/>
-							<DropdownMenu
-								key={`unitStep-${lessonUnit}`}
-								defaultLabel={
-									unitStep !== ''
-										? `Выбран шаг: ${unitStep.toString()}`
-										: 'Выбрать шаг'
-								}
-								options={[
-									{ label: 'Все шаги', onClick: () => setUnitStep('') },
-									...listUnitStep.map((el: number) => ({
-										label: `Выбран шаг: ${el}`,
-										onClick: () => setUnitStep(el),
-									})),
-								]}
-							/>
-						</div>
+					<DropdownMenu
+						key={`schoolClass-${schoolClass}`}
+						defaultLabel={
+							schoolClass !== ''
+								? `Выбран класс ${schoolClass.toString()}`
+								: 'Выбрать класс'
+						}
+						options={[
+							{
+								label: 'Класс: 2',
+								onClick: () => {
+									return setSchoolClass(2), setLessonUnit(''), setUnitStep('');
+								},
+							},
+							{
+								label: 'Класс: 3',
+								onClick: () => {
+									return setSchoolClass(3), setLessonUnit(''), setUnitStep('');
+								},
+							},
+							{
+								label: 'Все классы',
+								onClick: () => {
+									return setSchoolClass(''), setLessonUnit(''), setUnitStep('');
+								},
+							},
+						]}
+					/>
+					<DropdownMenu
+						key={`lessonUnit-${schoolClass}`}
+						defaultLabel={
+							lessonUnit !== ''
+								? `Выбран урок: ${lessonUnit.toString()}`
+								: 'Выбрать урок'
+						}
+						options={[
+							{ label: 'Все уроки', onClick: () => setLessonUnit('') },
+							...listLessonUnit.map((el: number) => ({
+								label: `Выбран урок: ${el}`,
+								onClick: () => {
+									return setLessonUnit(el), setUnitStep('');
+								},
+							})),
+						]}
+					/>
+					<DropdownMenu
+						key={`unitStep-${lessonUnit}`}
+						defaultLabel={
+							unitStep !== ''
+								? `Выбран шаг: ${unitStep.toString()}`
+								: 'Выбрать шаг'
+						}
+						options={[
+							{ label: 'Все шаги', onClick: () => setUnitStep('') },
+							...listUnitStep.map((el: number) => ({
+								label: `Выбран шаг: ${el}`,
+								onClick: () => setUnitStep(el),
+							})),
+						]}
+					/>
+					<DropdownMenu
+						defaultLabel={`Уровень ${difficultyLevel}`}
+						options={[
+							{
+								label: 'Уровень 1',
+								onClick: () => handleDifficultyChange(1),
+							},
+							{
+								label: 'Уровень 2',
+								onClick: () => handleDifficultyChange(2),
+							},
+							{
+								label: 'Уровень 3',
+								onClick: () => handleDifficultyChange(3),
+							},
+						]}
+					/>
+					<div>
+						<button
+							className='btn btn-outline w-full max-w-xs'
+							onClick={handleStartGame}
+						>
+							Начать
+						</button>
 					</div>
 				</div>
 			</div>

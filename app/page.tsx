@@ -23,10 +23,10 @@ export default function Home() {
 						{/* <div>
 							<Link href='/englishClient'>
 								<button className='btn btn-outline min-w-[200px]'>
-									АНГЛИЙСКИЙ НЕ НАЖИМАТЬ
+									АНГЛИЙСКИЙ ТЕСТ
 								</button>
 							</Link>
-						</div> */}
+						</div>  */}
 						<div>
 							<Link href='/math'>
 								<button className='btn btn-outline min-w-[200px]'>
