@@ -11,7 +11,6 @@ import { useSpeaker } from '../../useSpeaker';
 import { GameProps } from './types';
 
 export default function Settings({ setGameSettings }: GameProps) {
-
 	const [difficultyLevel, setDifficultyLevel] = useState(1);
 	const [isLoading, setIsLoading] = useState(true); // Флаг загрузки данных
 
@@ -96,10 +95,8 @@ export default function Settings({ setGameSettings }: GameProps) {
 		handleFilterChange();
 	}, [wordsList, schoolClass, lessonUnit, unitStep]);
 
-
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
-			
 			const difficultyLevelLocalStorage =
 				localStorage.getItem('difficultyLevel');
 
@@ -112,22 +109,21 @@ export default function Settings({ setGameSettings }: GameProps) {
 		}
 	}, []);
 
-
-
 	const handleDifficultyChange = (newLevel: number) => {
 		setDifficultyLevel(newLevel);
 	};
 
-
-const handleStartGame = () => {
-	setGameSettings(prevSettings => ({
-		...prevSettings,
-		difficultyLevel,
-		examWordsList: filterWordsList,
-		gameStatus: true,
-	}));
-	
-};
+	const handleStartGame = () => {
+		setGameSettings(prevSettings => ({
+			...prevSettings,
+			difficultyLevel,
+			schoolClass,
+			lessonUnit,
+			unitStep,
+			examWordsList: filterWordsList,
+			gameStatus: true,
+		}));
+	};
 
 	if (isLoading) {
 		// Пока идет загрузка данных, показываем индикатор

@@ -7,7 +7,10 @@ export interface GameProps {
 
 export interface GameSettings {
 	examWordsList: Word[];
-	difficultyLevel: number; // Уровень сложности
+	difficultyLevel: number;
+	schoolClass: number | '';
+	lessonUnit: number | '';
+	unitStep: number | '';
 	stepGame: number; // Текущий шаг игры
 	limGame: number; // Максимальное количество задач
 	timerStatus: boolean; // Статус таймера

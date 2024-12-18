@@ -9,6 +9,9 @@ export default function App() {
 const [gameSettings, setGameSettings] = useState<GameSettings>({
 	examWordsList: [] as Word[],
 	difficultyLevel: 1,
+	schoolClass:2,
+	lessonUnit:1,
+	unitStep:1,
 	gameStatus: false,
 	stepGame: 0,
 	limGame: 5,

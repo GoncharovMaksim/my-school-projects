@@ -4,10 +4,7 @@ import mongoose from 'mongoose';
 const TaskSchema = new mongoose.Schema(
 	{
 		question: { type: String, required: true }, // Вопрос
-		argumentA: { type: Number, required: true },
-		rightAnswer: { type: String, required: true },
-		argumentB: { type: Number, required: true },
-		result: { type: Number, required: true }, // Ожидаемый результат
+		rightAnswer: { type: [String], required: true },
 		userAnswer: { type: String, required: true }, // Ответ пользователя
 		checkUserAnswer: { type: Boolean, required: true }, // Проверка правильности ответа
 	},
@@ -21,7 +18,6 @@ const EnglishStatisticsSchema = new mongoose.Schema(
 		userName: { type: String, required: true, default: 'Гость' }, // Имя пользователя
 		userEmail: { type: String, required: false, default: '' }, // Email пользователя
 		appComponent: { type: String, required: true },
-		rightAnswer: { type: String, required: true },
 		grade: { type: Number, required: true }, // Оценка пользователя (1-5)
 		percentCorrectAnswer: { type: Number, required: true },
 		timeSpent: { type: Number, required: true }, // Затраченное время в секундах

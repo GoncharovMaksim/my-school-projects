@@ -44,9 +44,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		if (arrRandomWords.length > 0) {
 			const currentWord = arrRandomWords[gameSettings.stepGame];
 			setQuestion(currentWord.englishWord);
-			const rightAnswer = currentWord.translation
-				.split(',')
-				.map(word => word);
+			const rightAnswer = currentWord.translation.split(',').map(word => word);
 			setRightAnswer(rightAnswer);
 		}
 	}, [arrRandomWords, gameSettings.stepGame]);
@@ -101,11 +99,11 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	}, [badAnswer, limGame]);
 
 	function checkUserAnswer(userAnswer: string, rightAnswer: string[]): boolean {
-		// Функция для очистки строки от пробелов и спецсимволов
 		const sanitize = (str: string): string =>
-			str.toLowerCase() // Приводим к нижнему регистру
-            .replace(/ё/g, 'е') // Заменяем "ё" на "е"
-            .replace(/[^a-zа-я0-9]/g, '');
+			str
+				.toLowerCase()
+				.replace(/ё/g, 'е')
+				.replace(/[^a-zа-я0-9]/g, '');
 
 		return rightAnswer.some(
 			answer => sanitize(answer) === sanitize(userAnswer)
@@ -165,6 +163,9 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 				grade: gradeAnswer,
 				timeSpent: gameSettings.timeSpent / 1000,
 				difficultyLevel: gameSettings.difficultyLevel,
+				schoolClass: gameSettings.schoolClass,
+				lessonUnit: gameSettings.lessonUnit,
+				unitStep: gameSettings.unitStep,
 			};
 
 			const response = await fetch('/api/gameStatistics/english', {
@@ -185,7 +186,8 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 			// Telegram API
 			const resultText = `
 ${session.data?.user?.name || 'Гость'}
-Результат игры:
+Английский
+Результат теста:
 ${arrTasks
 	.map(
 		el =>
@@ -197,6 +199,10 @@ ${arrTasks
 Оценка: ${gradeAnswer}
 Время: ${(gameSettings.timeSpent / 1000).toFixed(2)} сек
 Сложность: ${gameSettings.difficultyLevel}
+Класс: ${gameSettings.schoolClass}
+Урок: ${gameSettings.lessonUnit}
+Шаг: ${gameSettings.unitStep}
+
 ${session.data?.user?.email || ''}`;
 
 			TgApi(resultText);

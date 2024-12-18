@@ -20,8 +20,12 @@ const EnglishStatisticsSchema = new mongoose.Schema(
 		appComponent: { type: String, required: true },
 		grade: { type: Number, required: true }, // Оценка пользователя (1-5)
 		percentCorrectAnswer: { type: Number, required: true },
-		timeSpent: { type: Number, required: true }, // Затраченное время в секундах
-		difficultyLevel: { type: Number, required: true }, // Уровень сложности игры (1, 2, 3)
+		timeSpent: { type: Number, required: true },
+		schoolClass: { type: mongoose.Schema.Types.Mixed, required: true },
+		lessonUnit: { type: mongoose.Schema.Types.Mixed, required: true },
+		unitStep: { type: mongoose.Schema.Types.Mixed, required: true },
+		difficultyLevel: { type: Number, required: true },
+
 		results: [
 			{
 				taskIndex: { type: Number, required: true }, // Индекс задания
@@ -30,11 +34,11 @@ const EnglishStatisticsSchema = new mongoose.Schema(
 					type: String,
 					enum: ['Верно', 'Неверно'],
 					required: true,
-				}, // Результат задания
+				},
 			},
 		],
 	},
-	{ timestamps: true } // Автоматическое добавление времени создания и обновления
+	{ timestamps: true }
 );
 
 // Экспортируем модель
