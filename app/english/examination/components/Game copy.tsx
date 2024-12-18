@@ -27,9 +27,8 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 
 	// Функция для перемешивания массива
 	function shuffleArray(array: Word[]) {
-	
 		const shuffledArray = array.slice();
-		
+
 		for (let i = shuffledArray.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
 			[shuffledArray[i], shuffledArray[j]] = [
@@ -47,7 +46,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 			setQuestion(currentWord.englishWord);
 			const rightAnswer = currentWord.translation
 				.split(',')
-				.map(word => word.trim());
+				.map(word => word);
 			setRightAnswer(rightAnswer);
 		}
 	}, [arrRandomWords, gameSettings.stepGame]);
@@ -102,8 +101,12 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	}, [badAnswer, limGame]);
 
 	function checkUserAnswer(userAnswer: string, rightAnswer: string[]): boolean {
+		// Функция для очистки строки от пробелов и спецсимволов
+		const sanitize = (str: string): string =>
+			str.replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g, '').toLowerCase();
+
 		return rightAnswer.some(
-			answer => answer.toLowerCase() === userAnswer.trim().toLowerCase()
+			answer => sanitize(answer) === sanitize(userAnswer)
 		);
 	}
 
@@ -156,9 +159,6 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 				userEmail: session.data?.user?.email || '',
 				appComponent: 'english',
 				percentCorrectAnswer,
-				// question,
-				// rightAnswer,
-				// userAnswer,
 				results,
 				grade: gradeAnswer,
 				timeSpent: gameSettings.timeSpent / 1000,

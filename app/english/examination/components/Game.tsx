@@ -103,7 +103,9 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	function checkUserAnswer(userAnswer: string, rightAnswer: string[]): boolean {
 		// Функция для очистки строки от пробелов и спецсимволов
 		const sanitize = (str: string): string =>
-			str.replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g, '').toLowerCase();
+			str.toLowerCase() // Приводим к нижнему регистру
+            .replace(/ё/g, 'е') // Заменяем "ё" на "е"
+            .replace(/[^a-zа-я0-9]/g, '');
 
 		return rightAnswer.some(
 			answer => sanitize(answer) === sanitize(userAnswer)
