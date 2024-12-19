@@ -71,9 +71,6 @@ export default function App() {
 				localStorage.setItem('lessonUnit', JSON.stringify(''));
 				localStorage.setItem('unitStep', JSON.stringify(''));
 			} else {
-				localStorage.setItem('schoolClass', JSON.stringify(''));
-				localStorage.setItem('lessonUnit', JSON.stringify(''));
-				localStorage.setItem('unitStep', JSON.stringify(''));
 				setListLessonUnit([]);
 			}
 
