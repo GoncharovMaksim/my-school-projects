@@ -91,7 +91,6 @@ export default function Settings({ setGameSettings }: GameProps) {
 			setFilterWordsList(tempFilter);
 			setIsLoading(false);
 		};
-
 		handleFilterChange();
 	}, [wordsList, schoolClass, lessonUnit, unitStep]);
 
@@ -114,16 +113,22 @@ export default function Settings({ setGameSettings }: GameProps) {
 	};
 
 	const handleStartGame = () => {
+		const wordCount = Array.isArray(filterWordsList)
+			? filterWordsList.length
+			: 0;
+
 		setGameSettings(prevSettings => ({
 			...prevSettings,
 			difficultyLevel,
 			schoolClass,
 			lessonUnit,
 			unitStep,
+			limGame: wordCount < 5 ? wordCount : prevSettings.limGame,
 			examWordsList: filterWordsList,
 			gameStatus: true,
 		}));
 	};
+
 
 	if (isLoading) {
 		// Пока идет загрузка данных, показываем индикатор

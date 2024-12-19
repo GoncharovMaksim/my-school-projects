@@ -24,7 +24,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const [arrRandomWords, setArrRandomWords] = useState<Word[]>([]);
 
 	const session = useSession();
-
+	console.log(gameSettings.limGame);
 	// Функция для перемешивания массива
 	function shuffleArray(array: Word[]) {
 		const shuffledArray = array.slice();
@@ -42,7 +42,9 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 
 	useEffect(() => {
 		if (arrRandomWords.length > 0) {
-			const currentWord = arrRandomWords[gameSettings.stepGame];
+			console.log('arrRandomWords.length', arrRandomWords.length);
+			console.log('gameSettings.stepGame', gameSettings.stepGame);
+			const currentWord = arrRandomWords[gameSettings.stepGame - 1];
 			setQuestion(currentWord.englishWord);
 			const rightAnswer = currentWord.translation.split(',').map(word => word);
 			setRightAnswer(rightAnswer);
@@ -56,6 +58,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 
 		if (gameSettings.stepGame === 0) {
 			const shuffledWords = shuffleArray(gameSettings.examWordsList);
+
 			setArrRandomWords(shuffledWords); // Запуск обновления состояния
 		}
 
@@ -99,16 +102,22 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	}, [badAnswer, limGame]);
 
 	function checkUserAnswer(userAnswer: string, rightAnswer: string[]): boolean {
-		const sanitize = (str: string): string =>
+		const sanitize = (str: string): string[] =>
 			str
 				.toLowerCase()
 				.replace(/ё/g, 'е')
-				.replace(/[^a-zа-я0-9]/g, '');
+				.replace(/[;.()]/g, ',') // Замена символов на запятую
+				.replace(/[^a-zа-я0-9,]/g, '') // Удаление всех лишних символов
+				.split(',') // Разделение строки на массив по запятой
+				.filter(Boolean); // Удаление пустых элементов массива
 
-		return rightAnswer.some(
-			answer => sanitize(answer) === sanitize(userAnswer)
-		);
+		return rightAnswer.some(answer => {
+			const sanitizedAnswer = sanitize(answer);
+			const sanitizedUserAnswer = sanitize(userAnswer);
+			return sanitizedAnswer.some(part => sanitizedUserAnswer.includes(part));
+		});
 	}
+
 
 	function userAnswerCheck() {
 		if (inputRef.current) {
