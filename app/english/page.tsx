@@ -30,7 +30,7 @@ export default function App() {
 useEffect(() => {
 	async function getWords() {
 		if (wordsList.length > 0) {
-			return setIsLoading(false); // Если данные уже есть, не делаем запрос
+			return; // Если данные уже есть, не делаем запрос
 		}
 		try {
 			setIsLoading(true);
@@ -85,13 +85,16 @@ useEffect(() => {
 			}
 
 			setFilterWordsList(tempFilter);
+			setIsLoading(false);
 		};
 
 		handleFilterChange();
 	}, [wordsList, schoolClass, lessonUnit, unitStep]);
+	
 	if (isLoading) {
 		return <Loading />;
 	}
+
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<div className='p-2 flex flex-col items-center space-y-6'>
