@@ -27,21 +27,26 @@ export default function App() {
 
 	const { speak } = useSpeaker();
 
-	useEffect(() => {
-		async function getWords() {
-			try {
-				setIsLoading(true);
-				const words = await fetchWords();
-				dispatch(setWordsList(words));
-			} catch (err) {
-				console.error('Ошибка загрузки слов:', err);
-				dispatch(setError(true));
-			} finally {
-				setIsLoading(false);
-			}
+useEffect(() => {
+	async function getWords() {
+		if (wordsList.length > 0) {
+			return setIsLoading(false); // Если данные уже есть, не делаем запрос
 		}
-		getWords();
-	}, [dispatch]);
+		try {
+			setIsLoading(true);
+			const words = await fetchWords();
+			dispatch(setWordsList(words));
+		} catch (err) {
+			console.error('Ошибка загрузки слов:', err);
+			dispatch(setError(true));
+		} finally {
+			setIsLoading(false);
+		}
+	}
+
+	getWords();
+}, [dispatch, wordsList.length]);
+
 
 	useEffect(() => {
 		const handleFilterChange = () => {
