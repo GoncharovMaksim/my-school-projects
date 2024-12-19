@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -8,22 +7,16 @@ import LoadingBars from '@/components/LoadingBars';
 import DropdownMenu from '@/components/DropdownMenu';
 import { useSpeaker } from './useSpeaker';
 import Link from 'next/link';
-import { useDispatch, useSelector } from 'react-redux';
-import { setWordsList, setError } from '@/lib/features/wordsSlice';
-import { RootState } from '@/lib/store';
 
 export default function App() {
-	const dispatch = useDispatch();
-	const wordsList = useSelector((state: RootState) => state.words.wordsList);
-	const error = useSelector((state: RootState) => state.words.error);
-
+	const [error, setError] = useState(false);
+	const [wordsList, setWordsList] = useState<Word[]>([]);
 	const [filterWordsList, setFilterWordsList] = useState<Word[]>([]);
 	const [schoolClass, setSchoolClass] = useState<number | ''>('');
-	const [lessonUnit, setLessonUnit] = useState<number | ''>('');
-	const [unitStep, setUnitStep] = useState<number | ''>('');
-	const [listLessonUnit, setListLessonUnit] = useState<number[]>([]);
-	const [listUnitStep, setListUnitStep] = useState<number[]>([]);
-
+	const [lessonUnit, setLessonUnit] = useState<number | ''>(''); // Выбранный урок
+	const [unitStep, setUnitStep] = useState<number | ''>(''); // Выбранный шаг
+	const [listLessonUnit, setListLessonUnit] = useState<number[]>([]); // Список уроков
+	const [listUnitStep, setListUnitStep] = useState<number[]>([]); // Список шагов
 	const { speak } = useSpeaker();
 
 	useEffect(() => {
@@ -47,15 +40,15 @@ export default function App() {
 		async function getWords() {
 			try {
 				const words = await fetchWords();
-				dispatch(setWordsList(words)); // сохраняем данные в Redux
+				setWordsList(words);
 			} catch (err) {
 				console.error('Ошибка загрузки слов:', err);
-				dispatch(setError(true)); // сохраняем ошибку в Redux
+				setError(true);
 			}
 		}
 
 		getWords();
-	}, [dispatch]);
+	}, []);
 
 	useEffect(() => {
 		const handleFilterChange = () => {
@@ -95,6 +88,8 @@ export default function App() {
 
 		handleFilterChange();
 	}, [wordsList, schoolClass, lessonUnit, unitStep]);
+
+
 
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
@@ -229,7 +224,12 @@ export default function App() {
 							</div>
 						))
 					) : (
-						<LoadingBars />
+						<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
+							<h3 className='text-2xl text-center font-bold mb-4'>
+								Загрузка данных...
+							</h3>
+							<LoadingBars />
+						</div>
 					)}
 				</div>
 			</div>
