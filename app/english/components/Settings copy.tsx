@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { Word } from '@/types/word';
-import fetchWords from '../../components/api';
+import fetchWords from './api';
 import LoadingBars from '@/components/LoadingBars';
 import DropdownMenu from '@/components/DropdownMenu';
-import { useSpeaker } from '../../useSpeaker';
+import { useSpeaker } from '../useSpeaker';
 //import Link from 'next/link';
 
 import { GameProps } from './types';
@@ -128,7 +128,6 @@ export default function Settings({ setGameSettings }: GameProps) {
 			gameStatus: true,
 		}));
 	};
-
 
 	if (isLoading) {
 		// Пока идет загрузка данных, показываем индикатор

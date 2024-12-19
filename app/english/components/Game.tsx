@@ -1,3 +1,4 @@
+'use client';
 import { useEffect, useState, useRef } from 'react';
 import Accordion from './Accordion';
 import { GameProps, Task } from './types';
@@ -117,7 +118,6 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 			return sanitizedAnswer.some(part => sanitizedUserAnswer.includes(part));
 		});
 	}
-
 
 	function userAnswerCheck() {
 		if (inputRef.current) {

@@ -1,6 +1,9 @@
 import Timer from './Timer';
-import { GameProps } from './types';
-export default function Accordion({ gameSettings, setGameSettings }: GameProps) {
+import { GameProps } from '../components/types';
+export default function Accordion({
+	gameSettings,
+	setGameSettings,
+}: GameProps) {
 	const { stepGame, difficultyLevel } = gameSettings;
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm'>
