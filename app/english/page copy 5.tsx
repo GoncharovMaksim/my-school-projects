@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -17,7 +18,6 @@ export default function App() {
 	const wordsList = useSelector((state: RootState) => state.words.wordsList);
 	const error = useSelector((state: RootState) => state.words.error);
 
-	const [isLoading, setIsLoading] = useState(true);
 	const [filterWordsList, setFilterWordsList] = useState<Word[]>([]);
 	const [schoolClass, setSchoolClass] = useState<number | ''>('');
 	const [lessonUnit, setLessonUnit] = useState<number | ''>('');
@@ -28,18 +28,33 @@ export default function App() {
 	const { speak } = useSpeaker();
 
 	useEffect(() => {
+		const storedSchoolClass = localStorage.getItem('schoolClass');
+		if (storedSchoolClass) {
+			setSchoolClass(JSON.parse(storedSchoolClass));
+		}
+
+		const storedLessonUnit = localStorage.getItem('lessonUnit');
+		if (storedLessonUnit) {
+			setLessonUnit(JSON.parse(storedLessonUnit));
+		}
+
+		const storedUnitStep = localStorage.getItem('unitStep');
+		if (storedUnitStep) {
+			setUnitStep(JSON.parse(storedUnitStep));
+		}
+	}, []);
+
+	useEffect(() => {
 		async function getWords() {
 			try {
-				setIsLoading(true);
 				const words = await fetchWords();
-				dispatch(setWordsList(words));
+				dispatch(setWordsList(words)); // сохраняем данные в Redux
 			} catch (err) {
 				console.error('Ошибка загрузки слов:', err);
-				dispatch(setError(true));
-			} finally {
-				setIsLoading(false);
+				dispatch(setError(true)); // сохраняем ошибку в Redux
 			}
 		}
+
 		getWords();
 	}, [dispatch]);
 
@@ -84,9 +99,7 @@ export default function App() {
 
 		handleFilterChange();
 	}, [wordsList, schoolClass, lessonUnit, unitStep]);
-	if (isLoading) {
-		return <Loading />;
-	}
+
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<div className='p-2 flex flex-col items-center space-y-6'>
@@ -220,7 +233,7 @@ export default function App() {
 							</div>
 						))
 					) : (
-						<div>sdfsdf</div>
+						<Loading />
 					)}
 				</div>
 			</div>
