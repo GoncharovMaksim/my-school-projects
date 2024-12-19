@@ -27,26 +27,25 @@ export default function App() {
 
 	const { speak } = useSpeaker();
 
-useEffect(() => {
-	async function getWords() {
-		if (wordsList.length > 0) {
-			return; // Если данные уже есть, не делаем запрос
+	useEffect(() => {
+		async function getWords() {
+			if (wordsList.length > 0) {
+				return; // Если данные уже есть, не делаем запрос
+			}
+			try {
+				setIsLoading(true);
+				const words = await fetchWords();
+				dispatch(setWordsList(words));
+			} catch (err) {
+				console.error('Ошибка загрузки слов:', err);
+				dispatch(setError(true));
+			} finally {
+				setIsLoading(false);
+			}
 		}
-		try {
-			setIsLoading(true);
-			const words = await fetchWords();
-			dispatch(setWordsList(words));
-		} catch (err) {
-			console.error('Ошибка загрузки слов:', err);
-			dispatch(setError(true));
-		} finally {
-			setIsLoading(false);
-		}
-	}
 
-	getWords();
-}, [dispatch, wordsList.length]);
-
+		getWords();
+	}, [dispatch, wordsList.length]);
 
 	useEffect(() => {
 		const handleFilterChange = () => {
@@ -85,12 +84,15 @@ useEffect(() => {
 			}
 
 			setFilterWordsList(tempFilter);
-			setIsLoading(false);
 		};
 
 		handleFilterChange();
 	}, [wordsList, schoolClass, lessonUnit, unitStep]);
-	
+	useEffect(() => {
+		if (filterWordsList.length > 0) {
+			return setIsLoading(false);
+		}
+	}, [filterWordsList]);
 	if (isLoading) {
 		return <Loading />;
 	}
@@ -189,7 +191,7 @@ useEffect(() => {
 						<div className='text-center py-4 text-red-500'>
 							Ошибка загрузки слов.
 						</div>
-					) :  (
+					) : (
 						filterWordsList.map((el, index) => (
 							<div
 								key={`${el.englishWord}-${index}`}
