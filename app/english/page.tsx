@@ -181,7 +181,7 @@ export default function App() {
 						<div className='text-center py-4 text-red-500'>
 							Ошибка загрузки слов.
 						</div>
-					) : wordsList.length > 0 ? (
+					) :  (
 						filterWordsList.map((el, index) => (
 							<div
 								key={`${el.englishWord}-${index}`}
@@ -219,8 +219,6 @@ export default function App() {
 								</div>
 							</div>
 						))
-					) : (
-						<div>sdfsdf</div>
 					)}
 				</div>
 			</div>
