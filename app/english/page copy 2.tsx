@@ -4,14 +4,13 @@
 import { useEffect, useState } from 'react';
 import { Word } from '@/types/word';
 import fetchWords from './components/api';
-
+import LoadingBars from '@/components/LoadingBars';
 import DropdownMenu from '@/components/DropdownMenu';
 import { useSpeaker } from './useSpeaker';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { setWordsList, setError } from '@/lib/features/wordsSlice';
 import { RootState } from '@/lib/store';
-import Loading from '../loading';
 
 export default function App() {
 	const dispatch = useDispatch();
@@ -230,7 +229,7 @@ export default function App() {
 							</div>
 						))
 					) : (
-						<Loading />
+						<LoadingBars />
 					)}
 				</div>
 			</div>
