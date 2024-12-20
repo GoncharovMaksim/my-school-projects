@@ -51,27 +51,6 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	// 		setRightAnswer(rightAnswer);
 	// 	}
 	// }, [arrRandomWords, gameSettings.stepGame]);
-	// useEffect(() => {
-	// 	if (arrRandomWords.length > 0) {
-	// 		console.log('arrRandomWords.length', arrRandomWords.length);
-	// 		console.log('gameSettings.stepGame', gameSettings.stepGame);
-	// 		const currentWord = arrRandomWords[gameSettings.stepGame - 1];
-	// 		if (gameSettings.difficultyLevel === 1) {
-	// 			setQuestion(currentWord.englishWord);
-	// 			const rightAnswer = currentWord.translation
-	// 				.split(',')
-	// 				.map(word => word);
-	// 			setRightAnswer(rightAnswer);
-	// 		}
-	// 		if (gameSettings.difficultyLevel === 2) {
-	// 			setQuestion(currentWord.translation);
-	// 			const rightAnswer = currentWord.englishWord
-	// 				.split(',')
-	// 				.map(word => word);
-	// 			setRightAnswer(rightAnswer);
-	// 		}
-	// 	}
-	// }, [arrRandomWords, gameSettings.stepGame, gameSettings.difficultyLevel]);
 	useEffect(() => {
 		if (arrRandomWords.length > 0) {
 			console.log('arrRandomWords.length', arrRandomWords.length);
@@ -90,22 +69,6 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 					.split(',')
 					.map(word => word);
 				setRightAnswer(rightAnswer);
-			}
-			if (gameSettings.difficultyLevel === 3) {
-				console.log('gameSettings.stepGame % 2', gameSettings.stepGame % 2);
-				if (gameSettings.stepGame % 2 > 0) {
-					setQuestion(currentWord.translation);
-					const rightAnswer = currentWord.englishWord
-						.split(',')
-						.map(word => word);
-					setRightAnswer(rightAnswer);
-				} else {
-					setQuestion(currentWord.englishWord);
-					const rightAnswer = currentWord.translation
-						.split(',')
-						.map(word => word);
-					setRightAnswer(rightAnswer);
-				}
 			}
 		}
 	}, [arrRandomWords, gameSettings.stepGame, gameSettings.difficultyLevel]);
