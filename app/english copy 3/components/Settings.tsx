@@ -31,9 +31,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 		const storedSchoolClass = localStorage.getItem('schoolClass');
 		const storedLessonUnit = localStorage.getItem('lessonUnit');
 		const storedUnitStep = localStorage.getItem('unitStep');
-		const storedDifficultyLevel = localStorage.getItem(
-			'difficultyLevelEnglish'
-		);
+		const storedDifficultyLevel = localStorage.getItem('difficultyLevel');
 
 		if (storedSchoolClass) setSchoolClass(JSON.parse(storedSchoolClass));
 		if (storedLessonUnit) setLessonUnit(JSON.parse(storedLessonUnit));
@@ -41,14 +39,14 @@ export default function Settings({ setGameSettings }: GameProps) {
 		if (storedDifficultyLevel)
 			setDifficultyLevel(JSON.parse(storedDifficultyLevel));
 	}, []);
-	console.log(
-		'schoolClass',
-		schoolClass,
-		'lessonUnit',
-		lessonUnit,
-		'difficultyLevel',
-		difficultyLevel
-	);
+console.log(
+	'schoolClass',
+	schoolClass,
+	'lessonUnit',
+	lessonUnit,
+	'difficultyLevel',
+	difficultyLevel
+);
 	useEffect(() => {
 		async function getWords() {
 			if (wordsList.length > 0) {
@@ -246,10 +244,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 									onClick: () => {
 										return (
 											setDifficultyLevel(1),
-											localStorage.setItem(
-												'difficultyLevelEnglish',
-												JSON.stringify(1)
-											)
+											localStorage.setItem('difficultyLevel', JSON.stringify(1))
 										);
 									},
 								},
@@ -258,10 +253,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 									onClick: () => {
 										return (
 											setDifficultyLevel(2),
-											localStorage.setItem(
-												'difficultyLevelEnglish',
-												JSON.stringify(2)
-											)
+											localStorage.setItem('difficultyLevel', JSON.stringify(2))
 										);
 									},
 								},
@@ -270,10 +262,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 									onClick: () => {
 										return (
 											setDifficultyLevel(3),
-											localStorage.setItem(
-												'difficultyLevelEnglish',
-												JSON.stringify(3)
-											)
+											localStorage.setItem('difficultyLevel', JSON.stringify(3))
 										);
 									},
 								},

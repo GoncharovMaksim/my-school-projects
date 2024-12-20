@@ -92,10 +92,8 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 				setRightAnswer(rightAnswer);
 			}
 			if (gameSettings.difficultyLevel === 3) {
-				const randomNum = (min: number, max: number) =>
-					Math.floor(Math.random() * (max - min + 1)) + min;
-
-				if (randomNum(0, 100) % 2 > 0) {
+				console.log('gameSettings.stepGame % 2', gameSettings.stepGame % 2);
+				if (gameSettings.stepGame % 2 > 0) {
 					setQuestion(currentWord.translation);
 					const rightAnswer = currentWord.englishWord
 						.split(',')
