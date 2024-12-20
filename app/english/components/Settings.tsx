@@ -141,7 +141,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 							className='btn btn-outline min-w-[200px] '
 							onClick={handleStartGame}
 						>
-							ПРОЙТИ ТЕСТ
+							Пройти тест
 						</button>
 					</div>
 					<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0 '>
@@ -244,10 +244,6 @@ export default function Settings({ setGameSettings }: GameProps) {
 								{
 									label: 'Уровень 2',
 									onClick: () => setDifficultyLevel(2),
-								},
-								{
-									label: 'Уровень 3',
-									onClick: () => setDifficultyLevel(3),
 								},
 							]}
 						/>

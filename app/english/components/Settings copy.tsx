@@ -2,58 +2,63 @@
 
 import { useEffect, useState } from 'react';
 import { Word } from '@/types/word';
-import fetchWords from './api';
-import LoadingBars from '@/components/LoadingBars';
+import fetchWords from '../components/api';
+
 import DropdownMenu from '@/components/DropdownMenu';
 import { useSpeaker } from '../useSpeaker';
-//import Link from 'next/link';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { setWordsList, setError } from '@/lib/features/wordsSlice';
+import { RootState } from '@/lib/store';
+import Loading from '../loading';
 import { GameProps } from './types';
 
 export default function Settings({ setGameSettings }: GameProps) {
-	const [difficultyLevel, setDifficultyLevel] = useState(1);
-	const [isLoading, setIsLoading] = useState(true); // Флаг загрузки данных
+	const dispatch = useDispatch();
+	const wordsList = useSelector((state: RootState) => state.words.wordsList);
+	const error = useSelector((state: RootState) => state.words.error);
 
-	const [error, setError] = useState(false);
-	const [wordsList, setWordsList] = useState<Word[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
 	const [filterWordsList, setFilterWordsList] = useState<Word[]>([]);
 	const [schoolClass, setSchoolClass] = useState<number | ''>('');
-	const [lessonUnit, setLessonUnit] = useState<number | ''>(''); // Выбранный урок
-	const [unitStep, setUnitStep] = useState<number | ''>(''); // Выбранный шаг
-	const [listLessonUnit, setListLessonUnit] = useState<number[]>([]); // Список уроков
-	const [listUnitStep, setListUnitStep] = useState<number[]>([]); // Список шагов
-	const { speak } = useSpeaker();
+	const [lessonUnit, setLessonUnit] = useState<number | ''>('');
+	const [unitStep, setUnitStep] = useState<number | ''>('');
+	const [listLessonUnit, setListLessonUnit] = useState<number[]>([]);
+	const [listUnitStep, setListUnitStep] = useState<number[]>([]);
+	const [difficultyLevel, setDifficultyLevel] = useState<number>(1);
 
+	const { speak } = useSpeaker();
 	useEffect(() => {
 		const storedSchoolClass = localStorage.getItem('schoolClass');
-		if (storedSchoolClass) {
-			setSchoolClass(JSON.parse(storedSchoolClass));
-		}
-
 		const storedLessonUnit = localStorage.getItem('lessonUnit');
-		if (storedLessonUnit) {
-			setLessonUnit(JSON.parse(storedLessonUnit));
-		}
-
 		const storedUnitStep = localStorage.getItem('unitStep');
-		if (storedUnitStep) {
-			setUnitStep(JSON.parse(storedUnitStep));
-		}
+		const storedDifficultyLevel = localStorage.getItem('difficultyLevel');
+
+		if (storedSchoolClass) setSchoolClass(JSON.parse(storedSchoolClass));
+		if (storedLessonUnit) setLessonUnit(JSON.parse(storedLessonUnit));
+		if (storedUnitStep) setUnitStep(JSON.parse(storedUnitStep));
+		if (storedDifficultyLevel)
+			setDifficultyLevel(JSON.parse(storedDifficultyLevel));
 	}, []);
 
 	useEffect(() => {
 		async function getWords() {
+			if (wordsList.length > 0) {
+				return;
+			}
 			try {
+				setIsLoading(true);
 				const words = await fetchWords();
-				setWordsList(words);
+				dispatch(setWordsList(words));
 			} catch (err) {
 				console.error('Ошибка загрузки слов:', err);
-				setError(true);
+				dispatch(setError(true));
+			} finally {
+				setIsLoading(false);
 			}
 		}
 
 		getWords();
-	}, []);
+	}, [dispatch, wordsList.length]);
 
 	useEffect(() => {
 		const handleFilterChange = () => {
@@ -68,7 +73,10 @@ export default function Settings({ setGameSettings }: GameProps) {
 				localStorage.setItem('lessonUnit', JSON.stringify(''));
 				localStorage.setItem('unitStep', JSON.stringify(''));
 			} else {
-				setListLessonUnit([]);
+				// localStorage.setItem('schoolClass', JSON.stringify(''));
+				// localStorage.setItem('lessonUnit', JSON.stringify(''));
+				// localStorage.setItem('unitStep', JSON.stringify(''));
+				//setListLessonUnit([]);
 			}
 
 			if (lessonUnit) {
@@ -89,28 +97,10 @@ export default function Settings({ setGameSettings }: GameProps) {
 			}
 
 			setFilterWordsList(tempFilter);
-			setIsLoading(false);
 		};
+		localStorage.setItem('difficultyLevel', JSON.stringify(difficultyLevel));
 		handleFilterChange();
-	}, [wordsList, schoolClass, lessonUnit, unitStep]);
-
-	useEffect(() => {
-		if (typeof window !== 'undefined') {
-			const difficultyLevelLocalStorage =
-				localStorage.getItem('difficultyLevel');
-
-			setDifficultyLevel(
-				difficultyLevelLocalStorage ? Number(difficultyLevelLocalStorage) : 1
-			); // Устанавливаем уровень сложности
-
-			// После загрузки данных, снимаем флаг загрузки
-			//setIsLoading(false);
-		}
-	}, []);
-
-	const handleDifficultyChange = (newLevel: number) => {
-		setDifficultyLevel(newLevel);
-	};
+	}, [wordsList, schoolClass, lessonUnit, unitStep, difficultyLevel]);
 
 	const handleStartGame = () => {
 		const wordCount = Array.isArray(filterWordsList)
@@ -129,99 +119,138 @@ export default function Settings({ setGameSettings }: GameProps) {
 		}));
 	};
 
+	useEffect(() => {
+		if (filterWordsList.length > 0) {
+			return setIsLoading(false);
+		}
+	}, [filterWordsList]);
 	if (isLoading) {
-		// Пока идет загрузка данных, показываем индикатор
-		return <div>Загрузка...</div>;
+		return <Loading />;
 	}
+
 	return (
-		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
-			<div>Настройки:</div>
+		<div className='space-y-6 max-w-screen-sm items-center'>
 			<div className='p-2 flex flex-col items-center space-y-6'>
-				<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-full'>
-					<DropdownMenu
-						key={`schoolClass-${schoolClass}`}
-						defaultLabel={
-							schoolClass !== ''
-								? `Выбран класс ${schoolClass.toString()}`
-								: 'Выбрать класс'
-						}
-						options={[
-							{
-								label: 'Класс: 2',
-								onClick: () => {
-									return setSchoolClass(2), setLessonUnit(''), setUnitStep('');
-								},
-							},
-							{
-								label: 'Класс: 3',
-								onClick: () => {
-									return setSchoolClass(3), setLessonUnit(''), setUnitStep('');
-								},
-							},
-							{
-								label: 'Все классы',
-								onClick: () => {
-									return setSchoolClass(''), setLessonUnit(''), setUnitStep('');
-								},
-							},
-						]}
-					/>
-					<DropdownMenu
-						key={`lessonUnit-${schoolClass}`}
-						defaultLabel={
-							lessonUnit !== ''
-								? `Выбран урок: ${lessonUnit.toString()}`
-								: 'Выбрать урок'
-						}
-						options={[
-							{ label: 'Все уроки', onClick: () => setLessonUnit('') },
-							...listLessonUnit.map((el: number) => ({
-								label: `Выбран урок: ${el}`,
-								onClick: () => {
-									return setLessonUnit(el), setUnitStep('');
-								},
-							})),
-						]}
-					/>
-					<DropdownMenu
-						key={`unitStep-${lessonUnit}`}
-						defaultLabel={
-							unitStep !== ''
-								? `Выбран шаг: ${unitStep.toString()}`
-								: 'Выбрать шаг'
-						}
-						options={[
-							{ label: 'Все шаги', onClick: () => setUnitStep('') },
-							...listUnitStep.map((el: number) => ({
-								label: `Выбран шаг: ${el}`,
-								onClick: () => setUnitStep(el),
-							})),
-						]}
-					/>
-					<DropdownMenu
-						defaultLabel={`Уровень ${difficultyLevel}`}
-						options={[
-							{
-								label: 'Уровень 1',
-								onClick: () => handleDifficultyChange(1),
-							},
-							{
-								label: 'Уровень 2',
-								onClick: () => handleDifficultyChange(2),
-							},
-							{
-								label: 'Уровень 3',
-								onClick: () => handleDifficultyChange(3),
-							},
-						]}
-					/>
-					<div>
+				<div className='collapse collapse-arrow bg-base-200 overflow-visible'>
+					<input type='checkbox' name='my-accordion-2' />
+					<div className='collapse-title text-xl font-bold text-center '>
+						Параметры:
+					</div>
+					<div className='flex justify-center items-center'>
 						<button
-							className='btn btn-outline w-full max-w-xs'
+							className='btn btn-outline min-w-[200px] '
 							onClick={handleStartGame}
 						>
-							Начать
+							Пройти тест
 						</button>
+					</div>
+					<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0 '>
+						<DropdownMenu
+							key={`schoolClass-${schoolClass}`}
+							defaultLabel={
+								schoolClass !== ''
+									? `Выбран класс ${schoolClass.toString()}`
+									: 'Выбрать класс'
+							}
+							options={[
+								{
+									label: 'Класс: 2',
+									onClick: () => {
+										return (
+											setSchoolClass(2), setLessonUnit(''), setUnitStep('')
+										);
+									},
+								},
+								{
+									label: 'Класс: 3',
+									onClick: () => {
+										return (
+											setSchoolClass(3), setLessonUnit(''), setUnitStep('')
+										);
+									},
+								},
+								{
+									label: 'Все классы',
+									onClick: () => {
+										return (
+											localStorage.setItem('schoolClass', JSON.stringify('')),
+											localStorage.setItem('lessonUnit', JSON.stringify('')),
+											localStorage.setItem('unitStep', JSON.stringify('')),
+											setSchoolClass(''),
+											setLessonUnit(''),
+											setUnitStep('')
+										);
+									},
+								},
+							]}
+						/>
+						<DropdownMenu
+							key={`lessonUnit-${schoolClass}`}
+							defaultLabel={
+								lessonUnit !== ''
+									? `Выбран урок: ${lessonUnit.toString()}`
+									: 'Выбрать урок'
+							}
+							options={[
+								{
+									label: 'Все уроки',
+									onClick: () => {
+										return (
+											localStorage.setItem('lessonUnit', JSON.stringify('')),
+											localStorage.setItem('unitStep', JSON.stringify('')),
+											setLessonUnit(''),
+											setUnitStep('')
+										);
+									},
+								},
+								...listLessonUnit.map((el: number) => ({
+									label: `Выбран урок: ${el}`,
+									onClick: () => {
+										return setLessonUnit(el), setUnitStep('');
+									},
+								})),
+							]}
+						/>
+						<DropdownMenu
+							key={`unitStep-${lessonUnit}`}
+							defaultLabel={
+								unitStep !== ''
+									? `Выбран шаг: ${unitStep.toString()}`
+									: 'Выбрать шаг'
+							}
+							options={[
+								{
+									label: 'Все шаги',
+									onClick: () => {
+										return (
+											localStorage.setItem('unitStep', JSON.stringify('')),
+											setUnitStep('')
+										);
+									},
+								},
+								...listUnitStep.map((el: number) => ({
+									label: `Выбран шаг: ${el}`,
+									onClick: () => setUnitStep(el),
+								})),
+							]}
+						/>
+						<DropdownMenu
+							defaultLabel={`Уровень ${difficultyLevel}`}
+							options={[
+								{
+									label: 'Уровень 1',
+									onClick: () => setDifficultyLevel(1),
+								},
+								{
+									label: 'Уровень 2',
+									onClick: () => setDifficultyLevel(2),
+								},
+								{
+									label: 'Уровень 3',
+									onClick: () => setDifficultyLevel(3),
+								},
+							]}
+						/>
 					</div>
 				</div>
 			</div>
@@ -231,7 +260,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 						<div className='text-center py-4 text-red-500'>
 							Ошибка загрузки слов.
 						</div>
-					) : wordsList.length > 0 ? (
+					) : (
 						filterWordsList.map((el, index) => (
 							<div
 								key={`${el.englishWord}-${index}`}
@@ -269,16 +298,10 @@ export default function Settings({ setGameSettings }: GameProps) {
 								</div>
 							</div>
 						))
-					) : (
-						<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
-							<h3 className='text-2xl text-center font-bold mb-4'>
-								Загрузка данных...
-							</h3>
-							<LoadingBars />
-						</div>
 					)}
 				</div>
 			</div>
 		</div>
 	);
 }
+//
