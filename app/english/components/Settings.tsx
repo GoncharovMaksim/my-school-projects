@@ -129,7 +129,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 	}
 
 	return (
-		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
+		<div className='space-y-6 max-w-screen-sm items-center'>
 			<div className='p-2 flex flex-col items-center space-y-6'>
 				<div className='collapse collapse-arrow bg-base-200 overflow-visible'>
 					<input type='checkbox' name='my-accordion-2' />
