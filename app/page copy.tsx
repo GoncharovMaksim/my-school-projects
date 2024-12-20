@@ -1,15 +1,6 @@
-'use client';
 import Link from 'next/link';
 
-import { loadEnglishStatistics } from './statistics/english/loadEnglishStatistics';
-import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-
 export default function Home() {
-	const dispatch = useDispatch();
-	useEffect(() => {
-		loadEnglishStatistics(dispatch);
-	}, [dispatch]); 
 	return (
 		<div className='bg-gray-100 min-h-screen flex flex-col'>
 			<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
@@ -29,7 +20,13 @@ export default function Home() {
 								</button>
 							</Link>
 						</div>
-
+						{/* <div>
+							<Link href='/englishClient'>
+								<button className='btn btn-outline min-w-[200px]'>
+									АНГЛИЙСКИЙ ТЕСТ
+								</button>
+							</Link>
+						</div>  */}
 						<div>
 							<Link href='/math'>
 								<button className='btn btn-outline min-w-[200px]'>
@@ -37,7 +34,7 @@ export default function Home() {
 								</button>
 							</Link>
 						</div>
-
+					
 						{/* <img src='./elka.png' alt='' />
 						<img src='./next.svg' alt='' /> */}
 					</div>
