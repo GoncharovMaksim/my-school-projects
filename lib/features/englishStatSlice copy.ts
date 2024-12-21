@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { loadEnglishStatistics } from '@/app/statistics/english/loadEnglishStatistics' ; // Импортируем асинхронное действи
 
 // Интерфейсы для данных
 interface Task {
@@ -28,13 +27,11 @@ interface EnglishStat {
 interface EnglishStatState {
 	englishStatList: EnglishStat[];
 	error: boolean;
-	loading: boolean;
 }
 
 const initialState: EnglishStatState = {
 	englishStatList: [],
 	error: false,
-	loading: false, // Добавим состояние загрузки
 };
 
 const englishStatSlice = createSlice({
@@ -73,23 +70,6 @@ const englishStatSlice = createSlice({
 		setError(state, action: PayloadAction<boolean>) {
 			state.error = action.payload;
 		},
-	},
-	// Обработчики для асинхронного действия
-	extraReducers: builder => {
-		builder
-			.addCase(loadEnglishStatistics.pending, state => {
-				state.loading = true; // Устанавливаем loading в true при начале загрузки
-				state.error = false; // Сбрасываем ошибку
-			})
-			.addCase(loadEnglishStatistics.fulfilled, (state, action) => {
-				state.loading = false;
-				state.englishStatList = action.payload; // Обновляем список статистики
-			})
-			.addCase(loadEnglishStatistics.rejected, (state, action) => {
-				state.loading = false;
-				state.error = true; // Устанавливаем ошибку
-				console.error(action.payload); // Выводим ошибку в консоль
-			});
 	},
 });
 

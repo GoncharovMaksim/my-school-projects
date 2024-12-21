@@ -10,7 +10,8 @@ import { AppDispatch } from '@/lib/store';
 export default function Home() {
 	const dispatch = useDispatch<AppDispatch>();
 	useEffect(() => {
-		loadEnglishStatistics(dispatch);
+		
+		 dispatch(loadEnglishStatistics());
 		 dispatch(loadWords());
 	}, [dispatch]); 
 	return (

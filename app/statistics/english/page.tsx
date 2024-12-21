@@ -1,6 +1,6 @@
 'use client';
 import { useEffect } from 'react';
-import { RootState } from '@/lib/store';
+import { AppDispatch, RootState } from '@/lib/store';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../loading';
 import { loadEnglishStatistics } from './loadEnglishStatistics';
@@ -9,14 +9,14 @@ export default function EnglishStatistics() {
 	const allUsersStatisticsList = useSelector(
 		(state: RootState) => state.englishStat.englishStatList
 	);
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 
 	// Загружаем статистику при монтировании компонента, если данных нет
-	useEffect(() => {
-		if (allUsersStatisticsList.length === 0) {
-			loadEnglishStatistics(dispatch);
-		}
-	}, [dispatch, allUsersStatisticsList.length]);
+useEffect(() => {
+	if (allUsersStatisticsList.length === 0) {
+		dispatch(loadEnglishStatistics());
+	}
+}, [dispatch, allUsersStatisticsList.length]);
 
 	if (allUsersStatisticsList.length === 0) {
 		// Пока данные не получены, показываем индикатор загрузки
