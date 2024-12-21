@@ -2,19 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import { Word } from '@/types/word';
-
+import fetchWords from '../components/api';
 
 import DropdownMenu from '@/components/DropdownMenu';
 import { useSpeaker } from '../useSpeaker';
 import { useDispatch, useSelector } from 'react-redux';
-import { setError } from '@/lib/features/wordsSlice';
-import { AppDispatch, RootState } from '@/lib/store';
+import { setWordsList, setError } from '@/lib/features/wordsSlice';
+import { RootState } from '@/lib/store';
 import Loading from '../loading';
 import { GameProps } from './types';
-import { loadWords } from './loadWords';
 
 export default function Settings({ setGameSettings }: GameProps) {
-	const dispatch = useDispatch<AppDispatch>();
+	const dispatch = useDispatch();
 	const wordsList = useSelector((state: RootState) => state.words.wordsList);
 	const error = useSelector((state: RootState) => state.words.error);
 
@@ -51,17 +50,23 @@ export default function Settings({ setGameSettings }: GameProps) {
 		difficultyLevel
 	);
 	useEffect(() => {
-		if (wordsList.length > 0) {
-			return;
-		} // Если слова уже загружены, не загружаем повторно
-
-		// Вызов асинхронного экшена loadWords
-		dispatch(loadWords())
-			.unwrap() // Это даст возможность ловить ошибки через .catch()
-			.catch(err => {
+		async function getWords() {
+			if (wordsList.length > 0) {
+				return;
+			}
+			try {
+				setIsLoading(true);
+				const words = await fetchWords();
+				dispatch(setWordsList(words));
+			} catch (err) {
 				console.error('Ошибка загрузки слов:', err);
-				dispatch(setError(true)); // Устанавливаем ошибку в состояние
-			});
+				dispatch(setError(true));
+			} finally {
+				setIsLoading(false);
+			}
+		}
+
+		getWords();
 	}, [dispatch, wordsList.length]);
 
 	useEffect(() => {

@@ -4,11 +4,14 @@ import Link from 'next/link';
 import { loadEnglishStatistics } from './statistics/english/loadEnglishStatistics';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
+import { loadWords } from './english/components/loadWords';
+import { AppDispatch } from '@/lib/store';
 
 export default function Home() {
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 	useEffect(() => {
 		loadEnglishStatistics(dispatch);
+		 dispatch(loadWords());
 	}, [dispatch]); 
 	return (
 		<div className='bg-gray-100 min-h-screen flex flex-col'>

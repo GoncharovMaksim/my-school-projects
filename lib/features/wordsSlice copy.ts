@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Word } from '@/types/word';
-import { loadWords } from '@/app/english/components/loadWords'; // Импорт асинхронного действия
 
 interface WordsState {
 	wordsList: Word[];
@@ -22,16 +21,6 @@ const wordsSlice = createSlice({
 		setError(state, action: PayloadAction<boolean>) {
 			state.error = action.payload;
 		},
-	},
-	extraReducers: builder => {
-		builder
-			.addCase(loadWords.fulfilled, (state, action: PayloadAction<Word[]>) => {
-				state.wordsList = action.payload;
-				state.error = false;
-			})
-			.addCase(loadWords.rejected, state => {
-				state.error = true;
-			});
 	},
 });
 
