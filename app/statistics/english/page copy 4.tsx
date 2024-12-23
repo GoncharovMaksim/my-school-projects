@@ -252,71 +252,16 @@ export default function EnglishStatistics() {
 						filterAllUsersStatisticsList.map((el, index) => (
 							<div
 								key={`${el.createdAt}-${index}`}
-								// className='border p-4 rounded-lg grid grid-rows-4 grid-flow-col gap-4 place-content-center bg-gray-200 shadow-md w-full h-full'
-								className='border p-4 rounded-lg flex flex-col items-center justify-center bg-gray-200 shadow-md w-full h-full'
+								className='border p-4 rounded-lg grid grid-cols-2 gap-4 place-content-center bg-gray-200 shadow-md w-full h-full'
 							>
 								<div className='text-2xl font-bold break-words overflow-hidden text-ellipsis'>
-									Класс: {el.schoolClass ? el.schoolClass : 'все'}, Урок:{' '}
-									{el.lessonUnit ? el.lessonUnit : 'все'}, Шаг:{' '}
-									{el.unitStep ? el.unitStep : 'все'}
+									{el.schoolClass}
 								</div>
-								{/* <div className='text-2xl text-gray-600 break-words overflow-hidden text-ellipsis'>
-									Урок: {el.lessonUnit}
+								<div className='text-2xl text-gray-600 break-words overflow-hidden text-ellipsis'>
+									{el.lessonUnit}
 								</div>
-								<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis '>
-									Шаг: {el.unitStep}
-								</div> */}
-								<div className='items-start '>
-									<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis '>
-										Оценка: {el.grade}, Время прохождения: {el.timeSpent} с
-									</div>
-									{/* <div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis '>
-									Время: {el.timeSpent} с
-								</div> */}
-									<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
-										Процент правильных ответов: {el.percentCorrectAnswer}
-									</div>
-									<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
-										Дата и время:{' '}
-										{new Date(el.createdAt).toLocaleString('ru-RU', {
-											year: 'numeric',
-											month: 'long',
-											day: 'numeric',
-											hour: '2-digit',
-											minute: '2-digit',
-											second: '2-digit',
-										})}
-									</div>
-								</div>
-								<div className='flex flex-col items-center justify-center text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
-									{/* className='border p-4 rounded-lg flex flex-col items-center justify-center bg-gray-200 shadow-md w-full h-full'
-									 */}
-									<div className='collapse collapse-arrow bg-base-200 overflow-visible'>
-										<input type='checkbox' name='my-accordion-2' />
-										<div className='collapse-title text-xl font-bold text-center '>
-											Вопросы теста:
-										</div>
-
-										<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0 '>
-											{el.results.map(el => {
-												return (
-													<div
-														key={el._id}
-														className='border p-2 rounded-md w-full'
-													>
-														{' '}
-														<p>Вопрос № {el.taskIndex}</p>
-														<p>Слово: {el.task.question} </p>
-														<p>
-															Правильный ответ: {el.task.rightAnswer.toString()}
-														</p>
-														<p>Ответ пользователя: {el.task.userAnswer}</p>
-														<p>Результат: {el.taskResult}</p>
-													</div>
-												);
-											})}
-										</div>
-									</div>
+								<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis h-12'>
+									{el.unitStep}
 								</div>
 							</div>
 						))

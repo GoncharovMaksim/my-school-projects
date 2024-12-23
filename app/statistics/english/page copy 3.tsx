@@ -1,31 +1,36 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+//import { Word } from '@/types/word';
+
 
 import DropdownMenu from '@/components/DropdownMenu';
-
+//import { useSpeaker } from '@/app/english/useSpeaker';
 import { useDispatch, useSelector } from 'react-redux';
-
+//import { setError } from '@/lib/features/wordsSlice';
 import { AppDispatch, RootState } from '@/lib/store';
 import Loading from '../loading';
-
+import { GameProps } from '@/app/english/components/types';
+//import { loadWords } from '@/app/english/components/loadWords';
 import { loadEnglishStatistics } from './loadEnglishStatistics';
 import { useFilteredEnglishStatistics } from './useFilteredEnglishStatistics';
 import { EnglishStat } from '@/types/englishStat';
 
-export default function EnglishStatistics() {
+export default function EnglishStatistics({ setGameSettings }: GameProps) {
 	const dispatch = useDispatch<AppDispatch>();
-
+	//const wordsList = useSelector((state: RootState) => state.words.wordsList);
 	const error = useSelector((state: RootState) => state.words.error);
 
+	//const [isLoading, setIsLoading] = useState(true);
 	const [filterAllUsersStatisticsList, setFilterAllUsersStatisticsList] =
 		useState<EnglishStat[]>([]);
 	const [schoolClass, setSchoolClass] = useState<number | ''>('');
 	const [lessonUnit, setLessonUnit] = useState<number | ''>('');
 	const [unitStep, setUnitStep] = useState<number | ''>('');
-	const [listLessonUnit, setListLessonUnit] = useState<(number | '')[]>([]);
-	const [listUnitStep, setListUnitStep] = useState<(number | '')[]>([]);
+	const [listLessonUnit, setListLessonUnit] = useState<number[]>([]);
+	const [listUnitStep, setListUnitStep] = useState<number[]>([]);
 	const [difficultyLevel, setDifficultyLevel] = useState<number>(1);
+
 
 	const allUsersStatisticsList = useSelector(
 		(state: RootState) => state.englishStat.englishStatList
@@ -42,6 +47,13 @@ export default function EnglishStatistics() {
 			dispatch(loadEnglishStatistics());
 		}
 	}, [dispatch, allUsersStatisticsList.length]);
+
+
+	
+
+
+
+
 
 	useEffect(() => {
 		const storedSchoolClass = localStorage.getItem('schoolClass');
@@ -65,6 +77,19 @@ export default function EnglishStatistics() {
 		'difficultyLevel',
 		difficultyLevel
 	);
+	// useEffect(() => {
+	// 	if (wordsList.length > 0) {
+	// 		return;
+	// 	} // Если слова уже загружены, не загружаем повторно
+
+	// 	// Вызов асинхронного экшена loadWords
+	// 	dispatch(loadWords())
+	// 		.unwrap() // Это даст возможность ловить ошибки через .catch()
+	// 		.catch(err => {
+	// 			console.error('Ошибка загрузки слов:', err);
+	// 			dispatch(setError(true)); // Устанавливаем ошибку в состояние
+	// 		});
+	// }, [dispatch, wordsList.length]);
 
 	useEffect(() => {
 		const handleFilterChange = () => {
@@ -99,7 +124,7 @@ export default function EnglishStatistics() {
 
 			setFilterAllUsersStatisticsList(tempFilter);
 		};
-
+		//localStorage.setItem('difficultyLevel', JSON.stringify(difficultyLevel));
 		handleFilterChange();
 	}, [
 		allUsersStatisticsList,
@@ -109,6 +134,31 @@ export default function EnglishStatistics() {
 		difficultyLevel,
 	]);
 
+	// const handleStartGame = () => {
+	// 	const wordCount = Array.isArray(filterWordsList)
+	// 		? filterWordsList.length
+	// 		: 0;
+
+	// 	setGameSettings(prevSettings => ({
+	// 		...prevSettings,
+	// 		difficultyLevel,
+	// 		schoolClass,
+	// 		lessonUnit,
+	// 		unitStep,
+	// 		limGame: wordCount < 5 ? wordCount : prevSettings.limGame,
+	// 		examWordsList: filterWordsList,
+	// 		gameStatus: true,
+	// 	}));
+	// };
+
+	// useEffect(() => {
+	// 	if (filterWordsList.length > 0) {
+	// 		return setIsLoading(false);
+	// 	}
+	// }, [filterWordsList]);
+	// if (isLoading) {
+	// 	return <Loading />;
+	// }
 	if (currentUsersFilterStatisticsList.length === 0) {
 		return <Loading />;
 	}
@@ -171,7 +221,7 @@ export default function EnglishStatistics() {
 							);
 						},
 					},
-					...listLessonUnit.map((el: number | '') => ({
+					...listLessonUnit.map((el: number) => ({
 						label: `Выбран урок: ${el}`,
 						onClick: () => {
 							return setLessonUnit(el), setUnitStep('');
@@ -194,7 +244,7 @@ export default function EnglishStatistics() {
 							);
 						},
 					},
-					...listUnitStep.map((el: number | '') => ({
+					...listUnitStep.map((el: number) => ({
 						label: `Выбран шаг: ${el}`,
 						onClick: () => setUnitStep(el),
 					})),
@@ -252,72 +302,38 @@ export default function EnglishStatistics() {
 						filterAllUsersStatisticsList.map((el, index) => (
 							<div
 								key={`${el.createdAt}-${index}`}
-								// className='border p-4 rounded-lg grid grid-rows-4 grid-flow-col gap-4 place-content-center bg-gray-200 shadow-md w-full h-full'
-								className='border p-4 rounded-lg flex flex-col items-center justify-center bg-gray-200 shadow-md w-full h-full'
+								className='border p-4 rounded-lg grid grid-cols-2 gap-4 place-content-center bg-gray-200 shadow-md w-full h-full'
 							>
 								<div className='text-2xl font-bold break-words overflow-hidden text-ellipsis'>
-									Класс: {el.schoolClass ? el.schoolClass : 'все'}, Урок:{' '}
-									{el.lessonUnit ? el.lessonUnit : 'все'}, Шаг:{' '}
-									{el.unitStep ? el.unitStep : 'все'}
+									{el.schoolClass}
 								</div>
-								{/* <div className='text-2xl text-gray-600 break-words overflow-hidden text-ellipsis'>
-									Урок: {el.lessonUnit}
+								<div className='text-2xl text-gray-600 break-words overflow-hidden text-ellipsis'>
+									{el.lessonUnit}
 								</div>
-								<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis '>
-									Шаг: {el.unitStep}
+								<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis h-12'>
+									{el.unitStep}
+								</div>
+								{/* <div className='flex items-end'>
+									<button
+										className='btn btn-outline text-lg text-gray-400 w-24 h-8 flex items-center justify-center p-0 min-h-0'
+										onClick={() => speak(el.englishWord, 'en-US')}
+									>
+										<svg
+											xmlns='http://www.w3.org/2000/svg'
+											className='h-6 w-6'
+											fill='none'
+											viewBox='0 0 24 24'
+											stroke='currentColor'
+										>
+											<path
+												strokeLinecap='round'
+												strokeLinejoin='round'
+												strokeWidth='2'
+												d='M6 4l12 8-12 8V4z'
+											/>
+										</svg>
+									</button>
 								</div> */}
-								<div className='items-start '>
-									<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis '>
-										Оценка: {el.grade}, Время прохождения: {el.timeSpent} с
-									</div>
-									{/* <div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis '>
-									Время: {el.timeSpent} с
-								</div> */}
-									<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
-										Процент правильных ответов: {el.percentCorrectAnswer}
-									</div>
-									<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
-										Дата и время:{' '}
-										{new Date(el.createdAt).toLocaleString('ru-RU', {
-											year: 'numeric',
-											month: 'long',
-											day: 'numeric',
-											hour: '2-digit',
-											minute: '2-digit',
-											second: '2-digit',
-										})}
-									</div>
-								</div>
-								<div className='flex flex-col items-center justify-center text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
-									{/* className='border p-4 rounded-lg flex flex-col items-center justify-center bg-gray-200 shadow-md w-full h-full'
-									 */}
-									<div className='collapse collapse-arrow bg-base-200 overflow-visible'>
-										<input type='checkbox' name='my-accordion-2' />
-										<div className='collapse-title text-xl font-bold text-center '>
-											Вопросы теста:
-										</div>
-
-										<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0 '>
-											{el.results.map(el => {
-												return (
-													<div
-														key={el._id}
-														className='border p-2 rounded-md w-full'
-													>
-														{' '}
-														<p>Вопрос № {el.taskIndex}</p>
-														<p>Слово: {el.task.question} </p>
-														<p>
-															Правильный ответ: {el.task.rightAnswer.toString()}
-														</p>
-														<p>Ответ пользователя: {el.task.userAnswer}</p>
-														<p>Результат: {el.taskResult}</p>
-													</div>
-												);
-											})}
-										</div>
-									</div>
-								</div>
 							</div>
 						))
 					)}

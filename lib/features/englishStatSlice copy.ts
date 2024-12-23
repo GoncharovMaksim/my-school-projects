@@ -1,8 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { loadEnglishStatistics } from '@/app/statistics/english/loadEnglishStatistics' ; // Импортируем асинхронное действи
-import { EnglishStat } from '@/types/englishStat';
 
+// Интерфейсы для данных
+interface Task {
+	taskIndex: number;
+	task: object; // Здесь нужно описать структуру TaskSchema, если она известна
+	taskResult: 'Верно' | 'Неверно';
+}
 
+interface EnglishStat {
+	userId: string;
+	userName: string;
+	userEmail: string;
+	appComponent: string;
+	grade: number;
+	percentCorrectAnswer: number;
+	timeSpent: number;
+	schoolClass: number | ''; // Подставьте более точный тип вместо any, если известно
+	lessonUnit: number | '';
+	unitStep: number | '';
+	difficultyLevel: number;
+	results: Task[];
+	createdAt: string; // Поля timestamps из mongoose
+	updatedAt?: string;
+}
 
 interface EnglishStatState {
 	englishStatList: EnglishStat[];

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { Word } from '@/types/word';
 
-
 import DropdownMenu from '@/components/DropdownMenu';
 import { useSpeaker } from '../useSpeaker';
 import { useDispatch, useSelector } from 'react-redux';
@@ -295,7 +294,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 								<div className='text-2xl text-gray-600 break-words overflow-hidden text-ellipsis'>
 									{el.translation}
 								</div>
-								<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis h-12'>
+								<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
 									{el.transcriptionRu}
 								</div>
 								<div className='flex items-end'>
