@@ -19,13 +19,14 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const [arrTasks, setArrTasks] = useState<Task[]>([]);
 	const [bgNoUserAnswer, setBgNoUserAnswer] = useState(false);
 	const [endGame, setEndGame] = useState(false);
-	const [badAnswer, setBadAnswer] = useState(0);
+	const [badAnswer, setBadAnswer] = useState(limGame);
 	const [gradeAnswer, setGradeAnswer] = useState(0);
 	const inputRef = useRef<HTMLInputElement | null>(null);
 	const [arrRandomWords, setArrRandomWords] = useState<Word[]>([]);
 
 	const session = useSession();
-
+	//console.log(gameSettings.limGame);
+	// Функция для перемешивания массива
 	function shuffleArray(array: Word[]) {
 		const shuffledArray = array.slice();
 
@@ -40,6 +41,37 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		return shuffledArray;
 	}
 
+	// useEffect(() => {
+	// 	if (arrRandomWords.length > 0) {
+	// 		console.log('arrRandomWords.length', arrRandomWords.length);
+	// 		console.log('gameSettings.stepGame', gameSettings.stepGame);
+	// 		const currentWord = arrRandomWords[gameSettings.stepGame - 1];
+	// 		setQuestion(currentWord.englishWord);
+	// 		const rightAnswer = currentWord.translation.split(',').map(word => word);
+	// 		setRightAnswer(rightAnswer);
+	// 	}
+	// }, [arrRandomWords, gameSettings.stepGame]);
+	// useEffect(() => {
+	// 	if (arrRandomWords.length > 0) {
+	// 		console.log('arrRandomWords.length', arrRandomWords.length);
+	// 		console.log('gameSettings.stepGame', gameSettings.stepGame);
+	// 		const currentWord = arrRandomWords[gameSettings.stepGame - 1];
+	// 		if (gameSettings.difficultyLevel === 1) {
+	// 			setQuestion(currentWord.englishWord);
+	// 			const rightAnswer = currentWord.translation
+	// 				.split(',')
+	// 				.map(word => word);
+	// 			setRightAnswer(rightAnswer);
+	// 		}
+	// 		if (gameSettings.difficultyLevel === 2) {
+	// 			setQuestion(currentWord.translation);
+	// 			const rightAnswer = currentWord.englishWord
+	// 				.split(',')
+	// 				.map(word => word);
+	// 			setRightAnswer(rightAnswer);
+	// 		}
+	// 	}
+	// }, [arrRandomWords, gameSettings.stepGame, gameSettings.difficultyLevel]);
 	useEffect(() => {
 		if (arrRandomWords.length > 0) {
 			console.log('arrRandomWords.length', arrRandomWords.length);
@@ -88,7 +120,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		if (gameSettings.stepGame === 0) {
 			const shuffledWords = shuffleArray(gameSettings.examWordsList);
 
-			setArrRandomWords(shuffledWords);
+			setArrRandomWords(shuffledWords); // Запуск обновления состояния
 		}
 
 		setGameSettings({
@@ -107,6 +139,12 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 			timeSpent: 0,
 		}));
 	};
+
+	useEffect(() => {
+		if (checkUserAnswer(userAnswer, rightAnswer)) {
+			setBadAnswer(prev => prev - 1);
+		}
+	}, [rightAnswer, userAnswer]);
 
 	useEffect(() => {
 		const percentAnswer = 100 - (badAnswer / limGame) * 100;
@@ -129,51 +167,39 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 			str
 				.toLowerCase()
 				.replace(/ё/g, 'е')
-				.replace(/[;.()]/g, ',')
-				.replace(/[^a-zа-я0-9,]/g, '')
-				.split(',')
-				.filter(Boolean);
+				.replace(/[;.()]/g, ',') // Замена символов на запятую
+				.replace(/[^a-zа-я0-9,]/g, '') // Удаление всех лишних символов
+				.split(',') // Разделение строки на массив по запятой
+				.filter(Boolean); // Удаление пустых элементов массива
 
-		const checkRightAnswer = rightAnswer.some(answer => {
+		return rightAnswer.some(answer => {
 			const sanitizedAnswer = sanitize(answer);
 			const sanitizedUserAnswer = sanitize(userAnswer);
 			return sanitizedAnswer.some(part => sanitizedUserAnswer.includes(part));
 		});
-
-		if (checkRightAnswer === false) {
-			setBadAnswer(prev => prev + 1);
-		}
-
-		return checkRightAnswer;
 	}
 
 	function userAnswerCheck() {
 		if (inputRef.current) {
 			inputRef.current.focus();
 		}
-
 		if (!userAnswer) {
 			setBgNoUserAnswer(true);
 			return;
 		}
 
 		setBgNoUserAnswer(false);
-
-		const isAnswerCorrect = checkUserAnswer(userAnswer, rightAnswer);
-
 		setArrTasks(prev => [
 			...prev,
 			{
 				question,
 				rightAnswer,
 				userAnswer,
-				checkUserAnswer: isAnswerCorrect,
+				checkUserAnswer: checkUserAnswer(userAnswer, rightAnswer),
 			},
 		]);
-		setUserAnswer('');
-
+		setUserAnswer(''); //РАЗОБРАТЬСЯ ГДЕ ОЧИЩАТЬ
 		if (stepGame === limGame) {
-			console.log('End Game triggered');
 			setGameSettings(prevSettings => ({
 				...prevSettings,
 				timerStatus: false,
@@ -183,7 +209,6 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 			startGame();
 		}
 	}
-
 	useEffect(() => {
 		startGame();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -262,7 +287,6 @@ ${session.data?.user?.email || ''}`;
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [gameSettings.timeSpent]);
 	//1
-
 	return (
 		<>
 			{endGame ? (
