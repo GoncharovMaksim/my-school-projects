@@ -42,9 +42,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 
 	useEffect(() => {
 		if (arrRandomWords.length > 0) {
-			console.log('arrRandomWords.length', arrRandomWords.length);
-			console.log('gameSettings.stepGame', gameSettings.stepGame);
-			const currentWord = arrRandomWords[gameSettings.stepGame - 1];
+				const currentWord = arrRandomWords[gameSettings.stepGame - 1];
 			if (gameSettings.difficultyLevel === 1) {
 				setQuestion(currentWord.englishWord);
 				const rightAnswer = currentWord.translation
@@ -173,7 +171,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		setUserAnswer('');
 
 		if (stepGame === limGame) {
-			console.log('End Game triggered');
+			
 			setGameSettings(prevSettings => ({
 				...prevSettings,
 				timerStatus: false,
