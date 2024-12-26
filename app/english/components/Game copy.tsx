@@ -42,7 +42,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 
 	useEffect(() => {
 		if (arrRandomWords.length > 0) {
-			const currentWord = arrRandomWords[gameSettings.stepGame - 1];
+				const currentWord = arrRandomWords[gameSettings.stepGame - 1];
 			if (gameSettings.difficultyLevel === 1) {
 				setQuestion(currentWord.englishWord);
 				const rightAnswer = currentWord.translation
@@ -171,6 +171,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		setUserAnswer('');
 
 		if (stepGame === limGame) {
+			
 			setGameSettings(prevSettings => ({
 				...prevSettings,
 				timerStatus: false,
@@ -297,7 +298,7 @@ ${session.data?.user?.email || ''}`;
 				</div>
 			) : (
 				<>
-					<div className='text-5xl text-center '>{question}</div>
+					<div className='text-5xl '>{question}</div>
 					<input
 						ref={inputRef}
 						type='string'
