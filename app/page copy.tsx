@@ -15,11 +15,7 @@ export default function Home() {
 		 dispatch(loadWords());
 	}, [dispatch]); 
 	return (
-		//<div className='bg-gray-100 min-h-screen flex flex-col'>
-		<div
-			className='bg-gray-100 min-h-screen flex flex-col bg-cover bg-center'
-			style={{ backgroundImage: "url('/images/background.jpg')" }}
-		>
+		<div className='bg-gray-100 min-h-screen flex flex-col'>
 			<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
 				<header className=''>
 					<div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8'>
