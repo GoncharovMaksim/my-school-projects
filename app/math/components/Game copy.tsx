@@ -19,7 +19,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const [arrTasks, setArrTasks] = useState<Task[]>([]);
 	const [bgNoUserAnswer, setBgNoUserAnswer] = useState(false);
 	const [endGame, setEndGame] = useState(false);
-	const [badAnswer, setBadAnswer] = useState(0);
+	const [badAnswer, setBadAnswer] = useState(limGame);
 	const [gradeAnswer, setGradeAnswer] = useState(0);
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -90,6 +90,12 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	};
 
 	useEffect(() => {
+		if (result === Number(userAnswer)) {
+			setBadAnswer(prev => prev - 1);
+		}
+	}, [result, userAnswer]);
+
+	useEffect(() => {
 		const percentAnswer = 100 - (badAnswer / limGame) * 100;
 		setPercentCorrectAnswer(percentAnswer);
 		if (percentAnswer > 89) {
@@ -115,11 +121,6 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		}
 
 		setBgNoUserAnswer(false);
-		const checkRightAnswer = result == Number(userAnswer);
-		if (checkRightAnswer === false) {
-			setBadAnswer(prev => prev + 1);
-		}
-
 		setArrTasks(prev => [
 			...prev,
 			{
@@ -129,10 +130,9 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 				operator,
 				result: result!,
 				userAnswer,
-				checkUserAnswer: checkRightAnswer,
+				checkUserAnswer: result === Number(userAnswer),
 			},
 		]);
-
 		setUserAnswer('');
 		if (stepGame === limGame) {
 			setGameSettings(prevSettings => ({
@@ -163,6 +163,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 				return 'Выберите действие';
 		}
 	};
+
 
 	async function setStatisticUserGame() {
 		try {

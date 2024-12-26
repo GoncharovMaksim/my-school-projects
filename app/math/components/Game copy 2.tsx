@@ -19,7 +19,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const [arrTasks, setArrTasks] = useState<Task[]>([]);
 	const [bgNoUserAnswer, setBgNoUserAnswer] = useState(false);
 	const [endGame, setEndGame] = useState(false);
-	const [badAnswer, setBadAnswer] = useState(0);
+	const [badAnswer, setBadAnswer] = useState(limGame);
 	const [gradeAnswer, setGradeAnswer] = useState(0);
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -89,38 +89,62 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 		}));
 	};
 
-	useEffect(() => {
-		const percentAnswer = 100 - (badAnswer / limGame) * 100;
-		setPercentCorrectAnswer(percentAnswer);
-		if (percentAnswer > 89) {
-			setGradeAnswer(5);
-		} else if (percentAnswer > 69) {
-			setGradeAnswer(4);
-		} else if (percentAnswer > 49) {
-			setGradeAnswer(3);
-		} else if (percentAnswer > 29) {
-			setGradeAnswer(2);
-		} else {
-			setGradeAnswer(1);
-		}
-	}, [badAnswer, limGame]);
+useEffect(() => {
+	console.log('Checking if user answer is correct...');
+	if (result === Number(userAnswer)) {
+		console.log(
+			`User's answer (${userAnswer}) is correct. Decreasing badAnswer.`
+		);
+		setBadAnswer(prev => prev - 1);
+	} else {
+		console.log(`User's answer (${userAnswer}) is incorrect.`);
+	}
+}, [result, userAnswer]);
 
-	function userAnswerCheck() {
-		if (inputRef.current) {
-			inputRef.current.focus();
-		}
-		if (!userAnswer) {
-			setBgNoUserAnswer(true);
-			return;
-		}
+useEffect(() => console.log('badAnswer', badAnswer), [badAnswer]);
 
-		setBgNoUserAnswer(false);
-		const checkRightAnswer = result == Number(userAnswer);
-		if (checkRightAnswer === false) {
-			setBadAnswer(prev => prev + 1);
-		}
 
-		setArrTasks(prev => [
+
+useEffect(() => {
+	const percentAnswer = 100 - (badAnswer / limGame) * 100;
+	console.log(`Calculated percent of correct answers: ${percentAnswer}%`);
+	setPercentCorrectAnswer(percentAnswer);
+	if (percentAnswer > 89) {
+		console.log('Grade set to 5');
+		setGradeAnswer(5);
+	} else if (percentAnswer > 69) {
+		console.log('Grade set to 4');
+		setGradeAnswer(4);
+	} else if (percentAnswer > 49) {
+		console.log('Grade set to 3');
+		setGradeAnswer(3);
+	} else if (percentAnswer > 29) {
+		console.log('Grade set to 2');
+		setGradeAnswer(2);
+	} else {
+		console.log('Grade set to 1');
+		setGradeAnswer(1);
+	}
+}, [badAnswer, limGame]);
+
+function userAnswerCheck() {
+	console.log('Checking user answer...');
+	if (inputRef.current) {
+		console.log('Focusing on the input field');
+		inputRef.current.focus();
+	}
+
+	if (!userAnswer) {
+		console.log('No answer provided, setting background to red.');
+		setBgNoUserAnswer(true);
+		return;
+	}
+
+	console.log('Answer provided:', userAnswer);
+	setBgNoUserAnswer(false);
+	setArrTasks(prev => {
+		console.log('Adding new task to arrTasks');
+		return [
 			...prev,
 			{
 				question,
@@ -129,25 +153,29 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 				operator,
 				result: result!,
 				userAnswer,
-				checkUserAnswer: checkRightAnswer,
+				checkUserAnswer: result === Number(userAnswer),
 			},
-		]);
-
-		setUserAnswer('');
-		if (stepGame === limGame) {
-			setGameSettings(prevSettings => ({
-				...prevSettings,
-				timerStatus: false,
-			}));
-			setEndGame(true);
-		} else {
-			startGame();
-		}
-	}
-	useEffect(() => {
+		];
+	});
+	setUserAnswer('');
+	if (stepGame === limGame) {
+		console.log('Game step limit reached, ending game.');
+		setGameSettings(prevSettings => ({
+			...prevSettings,
+			timerStatus: false,
+		}));
+		setEndGame(true);
+	} else {
+		console.log('Starting new game step.');
 		startGame();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}
+}
+
+useEffect(() => {
+	console.log('Starting game...');
+	startGame();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
 	const getOperatorLabel = (operator: string) => {
 		switch (operator) {
@@ -163,6 +191,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 				return 'Выберите действие';
 		}
 	};
+
 
 	async function setStatisticUserGame() {
 		try {
