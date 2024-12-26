@@ -70,7 +70,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 				tempFilter = tempFilter.filter(el => el.schoolClass === schoolClass);
 				const uniqTempListLessonUnit = [
 					...new Set(tempFilter.map(el => el.lessonUnit)),
-				].sort((a, b) => a-b);
+				];
 				setListLessonUnit(uniqTempListLessonUnit);
 				localStorage.setItem('schoolClass', JSON.stringify(schoolClass));
 				localStorage.setItem('lessonUnit', JSON.stringify(''));
@@ -81,7 +81,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 				tempFilter = tempFilter.filter(el => el.lessonUnit === lessonUnit);
 				const uniqTempListUnitStep = [
 					...new Set(tempFilter.map(el => el.unitStep)),
-				].sort((a, b) => a - b);
+				];
 				setListUnitStep(uniqTempListUnitStep);
 				localStorage.setItem('lessonUnit', JSON.stringify(lessonUnit));
 				localStorage.setItem('unitStep', JSON.stringify(''));

@@ -6,56 +6,29 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/lib/store';
 import Loading from '../loading';
 import { loadEnglishStatistics } from './loadEnglishStatistics';
-
+import { useFilteredEnglishStatistics } from './useFilteredEnglishStatistics';
 import { EnglishStat } from '@/types/englishStat';
-import { useSession } from 'next-auth/react';
 
 export default function EnglishStatistics() {
+	
 	const dispatch = useDispatch<AppDispatch>();
-	const error = useSelector((state: RootState) => state.englishStat.error);
-	const allUsersStatisticsList = useSelector(
-		(state: RootState) => state.englishStat.englishStatList
-	);
-
+	const error = useSelector((state: RootState) => state.words.error);
 	const [filterAllUsersStatisticsList, setFilterAllUsersStatisticsList] =
 		useState<EnglishStat[]>([]);
-	const [schoolClass, setSchoolClass] = useState<number | ''>(''); 
+	const [schoolClass, setSchoolClass] = useState<number | ''>('');
 	const [lessonUnit, setLessonUnit] = useState<number | ''>('');
 	const [unitStep, setUnitStep] = useState<number | ''>('');
 	const [listLessonUnit, setListLessonUnit] = useState<(number | '')[]>([]);
 	const [listUnitStep, setListUnitStep] = useState<(number | '')[]>([]);
 	const [difficultyLevel, setDifficultyLevel] = useState<number>(1);
-	const { data: session } = useSession();
-	
-
-	const currentUsersFilterStatisticsList = filterAllUsersStatisticsList.filter(
-		el => el.userId === session?.user?.id
+	const allUsersStatisticsList = useSelector(
+		(state: RootState) => state.englishStat.englishStatList
 	);
-	const currentUsersRightAnswerFilterStatisticsList =
-		currentUsersFilterStatisticsList.filter(
-			el => el.grade === 5
-		);
-	const allUsersRightAnswerFilterStatisticsList =
-		filterAllUsersStatisticsList.filter(el => el.grade === 5);
-
-	const findMinByKey = <T extends EnglishStat>(
-		array: T[],
-		key: keyof T
-	): T | undefined => {
-		return array.length
-			? array.reduce((min, obj) => (obj[key] < min[key] ? obj : min))
-			: undefined;
-	};
-
-	const minTimeSpentCurrentUser = findMinByKey(
-		currentUsersRightAnswerFilterStatisticsList,
-		'timeSpent'
-	)?.timeSpent;
-
-	const minTimeSpentAllUser = findMinByKey(
-		allUsersRightAnswerFilterStatisticsList,
-		'timeSpent'
-	)?.timeSpent;
+	const currentUsersFilterStatisticsList = useFilteredEnglishStatistics(
+		allUsersStatisticsList,
+		{ difficultyLevel: 3 },
+		true
+	);
 
 	useEffect(() => {
 		if (allUsersStatisticsList.length === 0) {
@@ -77,21 +50,23 @@ export default function EnglishStatistics() {
 		if (storedDifficultyLevel)
 			setDifficultyLevel(JSON.parse(storedDifficultyLevel));
 	}, []);
+	console.log(
+		'schoolClass',
+		schoolClass,
+		'lessonUnit',
+		lessonUnit,
+		'difficultyLevel',
+		difficultyLevel
+	);
 
 	useEffect(() => {
 		const handleFilterChange = () => {
 			let tempFilter = allUsersStatisticsList;
-
 			if (schoolClass) {
 				tempFilter = tempFilter.filter(el => el.schoolClass === schoolClass);
 				const uniqTempListLessonUnit = [
 					...new Set(tempFilter.map(el => el.lessonUnit)),
-				].sort((a, b) => {
-					const numA = a === '' ? Infinity : a;
-					const numB = b === '' ? Infinity : b;
-					return numA - numB;
-				});
-
+				];
 				setListLessonUnit(uniqTempListLessonUnit);
 				localStorage.setItem('schoolClass', JSON.stringify(schoolClass));
 				localStorage.setItem('lessonUnit', JSON.stringify(''));
@@ -102,11 +77,7 @@ export default function EnglishStatistics() {
 				tempFilter = tempFilter.filter(el => el.lessonUnit === lessonUnit);
 				const uniqTempListUnitStep = [
 					...new Set(tempFilter.map(el => el.unitStep)),
-				].sort((a, b) => {
-					const numA = a === '' ? Infinity : a;
-					const numB = b === '' ? Infinity : b;
-					return numA - numB;
-				});
+				];
 				setListUnitStep(uniqTempListUnitStep);
 				localStorage.setItem('lessonUnit', JSON.stringify(lessonUnit));
 				localStorage.setItem('unitStep', JSON.stringify(''));
@@ -131,7 +102,7 @@ export default function EnglishStatistics() {
 		difficultyLevel,
 	]);
 
-	if (allUsersStatisticsList.length === 0) {
+	if (currentUsersFilterStatisticsList.length === 0) {
 		return <Loading />;
 	}
 	return (
@@ -263,28 +234,15 @@ export default function EnglishStatistics() {
 					},
 				]}
 			/>
-			<div>
-				{/* <p>Время сервера: {filterDate.toString()}</p> */}
-				<p>Тестов пройдено: {currentUsersFilterStatisticsList.length}</p>
-				<p>
-					Ваше лучшее время:{' '}
-					{minTimeSpentCurrentUser !== undefined &&
-					minTimeSpentAllUser !== undefined &&
-					minTimeSpentCurrentUser <= minTimeSpentAllUser
-						? `${minTimeSpentCurrentUser} 🥇`
-						: minTimeSpentCurrentUser ?? 'Не доступно'}
-				</p>
-				<p>Рекордное время: {minTimeSpentAllUser ?? 'Не доступно'}</p>
-			</div>
 
 			<div className='w-full'>
 				<div className='flex flex-col space-y-4 w-full'>
 					{error ? (
 						<div className='text-center py-4 text-red-500'>
-							Ошибка загрузки статистики.
+							Ошибка загрузки слов.
 						</div>
 					) : (
-						currentUsersFilterStatisticsList.map((el, index) => (
+						filterAllUsersStatisticsList.map((el, index) => (
 							<div
 								key={`${el.createdAt}-${index}`}
 								className='border p-4 rounded-lg flex flex-col items-center justify-center bg-gray-200 shadow-md w-full h-full'
@@ -292,8 +250,7 @@ export default function EnglishStatistics() {
 								<div className='text-2xl font-bold break-words overflow-hidden text-ellipsis'>
 									Класс: {el.schoolClass ? el.schoolClass : 'все'}, Урок:{' '}
 									{el.lessonUnit ? el.lessonUnit : 'все'}, Шаг:{' '}
-									{el.unitStep ? el.unitStep : 'все'}, Уровень:{' '}
-									{el.difficultyLevel}
+									{el.unitStep ? el.unitStep : 'все'}
 								</div>
 								<div className='items-start '>
 									<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis '>

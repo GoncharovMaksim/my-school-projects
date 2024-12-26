@@ -28,4 +28,5 @@ export interface EnglishStat {
 	results: Task[];
 	createdAt: string; // Поля timestamps из mongoose
 	updatedAt?: string;
+	
 }
