@@ -11,8 +11,7 @@ import { EnglishStat } from '@/types/englishStat';
 import { useSession } from 'next-auth/react';
 
 import Flatpickr from 'react-flatpickr';
-import 'flatpickr/dist/flatpickr.css'; // Базовые стили без конкретной темы
-
+import 'flatpickr/dist/themes/material_green.css'; // Стили для Flatpickr
 import { Russian } from 'flatpickr/dist/l10n/ru';
 
 export default function EnglishStatistics() {
