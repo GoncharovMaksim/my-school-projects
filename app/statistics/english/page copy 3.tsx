@@ -84,20 +84,6 @@ export default function EnglishStatistics() {
 		const handleFilterChange = () => {
 			let tempFilter = allUsersStatisticsList;
 
-			if (selectedDate) {
-				tempFilter = tempFilter.filter(el => {
-					const elDate = new Date(el.createdAt);
-					const selectedDateCopy = new Date(selectedDate);
-
-					// Устанавливаем время в 00:00 для обеих дат
-					elDate.setHours(0, 0, 0, 0);
-					selectedDateCopy.setHours(0, 0, 0, 0);
-					// console.log('selectedDate', selectedDate.toString());
-					// console.log('elDate', elDate.toString());
-					return elDate.getTime() === selectedDateCopy.getTime();
-				});
-			}
-
 			if (schoolClass) {
 				tempFilter = tempFilter.filter(el => el.schoolClass === schoolClass);
 				const uniqTempListLessonUnit = [
@@ -145,7 +131,6 @@ export default function EnglishStatistics() {
 		lessonUnit,
 		unitStep,
 		difficultyLevel,
-		selectedDate,
 	]);
 
 	if (allUsersStatisticsList.length === 0) {

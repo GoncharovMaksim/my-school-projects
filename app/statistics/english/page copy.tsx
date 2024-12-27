@@ -10,10 +10,6 @@ import { loadEnglishStatistics } from './loadEnglishStatistics';
 import { EnglishStat } from '@/types/englishStat';
 import { useSession } from 'next-auth/react';
 
-import Flatpickr from 'react-flatpickr';
-import 'flatpickr/dist/themes/material_green.css'; // Стили для Flatpickr
-import { Russian } from 'flatpickr/dist/l10n/ru';
-
 export default function EnglishStatistics() {
 	const dispatch = useDispatch<AppDispatch>();
 	const error = useSelector((state: RootState) => state.englishStat.error);
@@ -23,20 +19,22 @@ export default function EnglishStatistics() {
 
 	const [filterAllUsersStatisticsList, setFilterAllUsersStatisticsList] =
 		useState<EnglishStat[]>([]);
-	const [schoolClass, setSchoolClass] = useState<number | ''>('');
+	const [schoolClass, setSchoolClass] = useState<number | ''>(''); 
 	const [lessonUnit, setLessonUnit] = useState<number | ''>('');
 	const [unitStep, setUnitStep] = useState<number | ''>('');
 	const [listLessonUnit, setListLessonUnit] = useState<(number | '')[]>([]);
 	const [listUnitStep, setListUnitStep] = useState<(number | '')[]>([]);
 	const [difficultyLevel, setDifficultyLevel] = useState<number>(1);
 	const { data: session } = useSession();
-	const [selectedDate, setSelectedDate] = useState<Date>(() => new Date()); // Текущая дата по умолчанию
+	
 
 	const currentUsersFilterStatisticsList = filterAllUsersStatisticsList.filter(
 		el => el.userId === session?.user?.id
 	);
 	const currentUsersRightAnswerFilterStatisticsList =
-		currentUsersFilterStatisticsList.filter(el => el.grade === 5);
+		currentUsersFilterStatisticsList.filter(
+			el => el.grade === 5
+		);
 	const allUsersRightAnswerFilterStatisticsList =
 		filterAllUsersStatisticsList.filter(el => el.grade === 5);
 
@@ -83,20 +81,6 @@ export default function EnglishStatistics() {
 	useEffect(() => {
 		const handleFilterChange = () => {
 			let tempFilter = allUsersStatisticsList;
-
-			if (selectedDate) {
-				tempFilter = tempFilter.filter(el => {
-					const elDate = new Date(el.createdAt);
-					const selectedDateCopy = new Date(selectedDate);
-
-					// Устанавливаем время в 00:00 для обеих дат
-					elDate.setHours(0, 0, 0, 0);
-					selectedDateCopy.setHours(0, 0, 0, 0);
-					// console.log('selectedDate', selectedDate.toString());
-					// console.log('elDate', elDate.toString());
-					return elDate.getTime() === selectedDateCopy.getTime();
-				});
-			}
 
 			if (schoolClass) {
 				tempFilter = tempFilter.filter(el => el.schoolClass === schoolClass);
@@ -145,7 +129,6 @@ export default function EnglishStatistics() {
 		lessonUnit,
 		unitStep,
 		difficultyLevel,
-		selectedDate,
 	]);
 
 	if (allUsersStatisticsList.length === 0) {
@@ -155,6 +138,7 @@ export default function EnglishStatistics() {
 		<div className='container mx-auto px-4 p-8 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<h1 className='text-4xl text-center font-bold mb-4'>Статистика</h1>
 			<h3 className='text-2xl text-center font-bold mb-4'>Английский</h3>
+
 			<DropdownMenu
 				key={`schoolClass-${schoolClass}`}
 				defaultLabel={
@@ -279,19 +263,6 @@ export default function EnglishStatistics() {
 					},
 				]}
 			/>
-
-			<div className='inline-flex max-w-20 justify-center gap-x-1.5 rounded-md bg-white px-6 py-3 text-xl font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 min-w-[280px]'>
-				<Flatpickr
-					value={selectedDate}
-					onChange={(date: Date[]) => setSelectedDate(date[0])} // Установка первой выбранной даты
-					options={{
-						locale: Russian, // Установка русской локализации
-						dateFormat: 'd.m.Y', // Формат даты без времени
-						defaultDate: new Date(), // Текущая дата по умолчанию
-					}}
-					className='w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300'
-				/>
-			</div>
 			<div>
 				{/* <p>Время сервера: {filterDate.toString()}</p> */}
 				<p>Тестов пройдено: {currentUsersFilterStatisticsList.length}</p>

@@ -84,20 +84,6 @@ export default function EnglishStatistics() {
 		const handleFilterChange = () => {
 			let tempFilter = allUsersStatisticsList;
 
-			if (selectedDate) {
-				tempFilter = tempFilter.filter(el => {
-					const elDate = new Date(el.createdAt);
-					const selectedDateCopy = new Date(selectedDate);
-
-					// Устанавливаем время в 00:00 для обеих дат
-					elDate.setHours(0, 0, 0, 0);
-					selectedDateCopy.setHours(0, 0, 0, 0);
-					// console.log('selectedDate', selectedDate.toString());
-					// console.log('elDate', elDate.toString());
-					return elDate.getTime() === selectedDateCopy.getTime();
-				});
-			}
-
 			if (schoolClass) {
 				tempFilter = tempFilter.filter(el => el.schoolClass === schoolClass);
 				const uniqTempListLessonUnit = [
@@ -145,7 +131,6 @@ export default function EnglishStatistics() {
 		lessonUnit,
 		unitStep,
 		difficultyLevel,
-		selectedDate,
 	]);
 
 	if (allUsersStatisticsList.length === 0) {
@@ -279,19 +264,17 @@ export default function EnglishStatistics() {
 					},
 				]}
 			/>
+			<Flatpickr
+				value={selectedDate}
+				onChange={(date: Date[]) => setSelectedDate(date[0])} // Установка первой выбранной даты
+				options={{
+					locale: Russian, // Установка русской локализации
+					dateFormat: 'd.m.Y', // Формат даты без времени
+					defaultDate: new Date(), // Текущая дата по умолчанию
+				}}
+				className='w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300'
+			/>
 
-			<div className='inline-flex max-w-20 justify-center gap-x-1.5 rounded-md bg-white px-6 py-3 text-xl font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 min-w-[280px]'>
-				<Flatpickr
-					value={selectedDate}
-					onChange={(date: Date[]) => setSelectedDate(date[0])} // Установка первой выбранной даты
-					options={{
-						locale: Russian, // Установка русской локализации
-						dateFormat: 'd.m.Y', // Формат даты без времени
-						defaultDate: new Date(), // Текущая дата по умолчанию
-					}}
-					className='w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300'
-				/>
-			</div>
 			<div>
 				{/* <p>Время сервера: {filterDate.toString()}</p> */}
 				<p>Тестов пройдено: {currentUsersFilterStatisticsList.length}</p>
