@@ -279,7 +279,7 @@ export default function EnglishStatistics() {
 				]}
 			/>
 
-			<div className='inline-flex max-w-20 justify-center gap-x-1.5 rounded-md bg-white px-6 py-3 text-xl font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 min-w-[280px]'>
+			<div>
 				<Flatpickr
 					value={selectedDate}
 					onChange={(date: Date[]) => setSelectedDate(date[0])} // Установка первой выбранной даты
@@ -289,7 +289,7 @@ export default function EnglishStatistics() {
 						defaultDate: new Date(), // Текущая дата по умолчанию
 						disableMobile: true,
 					}}
-					className='w-full text-center' // Класс для центрирования даты
+					className='w-full text-center inline-flex max-w-20 justify-center gap-x-1.5 rounded-md bg-white px-6 py-3 text-xl font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 min-w-[280px]' // Класс для центрирования даты
 				/>
 			</div>
 
