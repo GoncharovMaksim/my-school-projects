@@ -28,8 +28,11 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='ru'>
-			<body
+			{/* <body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100 min-h-screen flex flex-col`}
+			> */}
+					<body
+				className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100 min-h-screen flex flex-col` } style={{ backgroundImage: "url('/images/background.jpg')" }}
 			>
 				<Providers>
 					<DarkNav />

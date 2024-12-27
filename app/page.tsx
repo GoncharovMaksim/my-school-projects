@@ -10,15 +10,14 @@ import { AppDispatch } from '@/lib/store';
 export default function Home() {
 	const dispatch = useDispatch<AppDispatch>();
 	useEffect(() => {
-		
-		 dispatch(loadEnglishStatistics());
-		 dispatch(loadWords());
-	}, [dispatch]); 
+		dispatch(loadEnglishStatistics());
+		dispatch(loadWords());
+	}, [dispatch]);
 	return (
 		//<div className='bg-gray-100 min-h-screen flex flex-col'>
 		<div
 			className='bg-gray-100 min-h-screen flex flex-col bg-cover bg-center'
-			style={{ backgroundImage: "url('/images/9background.jpg.jpg')" }}
+			style={{ backgroundImage: "url('/images/background.jpg')" }}
 		>
 			<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
 				<header className=''>
