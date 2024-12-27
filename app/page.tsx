@@ -18,7 +18,7 @@ export default function Home() {
 		//<div className='bg-gray-100 min-h-screen flex flex-col'>
 		<div
 			className='bg-gray-100 min-h-screen flex flex-col bg-cover bg-center'
-			style={{ backgroundImage: "url('/images/background.jpg')" }}
+			style={{ backgroundImage: "url('/images/9background.jpg.jpg')" }}
 		>
 			<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
 				<header className=''>
