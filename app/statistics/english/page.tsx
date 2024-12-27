@@ -288,9 +288,10 @@ export default function EnglishStatistics() {
 						defaultDate: new Date(), // Текущая дата по умолчанию
 						disableMobile: true,
 					}}
-					className='w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300'
+					className='w-full text-center' // Класс для центрирования даты
 				/>
 			</div>
+
 			<div>
 				{/* <p>Время сервера: {filterDate.toString()}</p> */}
 				<p>Тестов пройдено: {currentUsersFilterStatisticsList.length}</p>
