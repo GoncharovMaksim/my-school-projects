@@ -89,9 +89,10 @@ export default function EnglishStatistics() {
 					const elDate = new Date(el.createdAt);
 					const selectedDateCopy = new Date(selectedDate);
 
+			
 					elDate.setHours(0, 0, 0, 0);
 					selectedDateCopy.setHours(0, 0, 0, 0);
-
+		
 					return elDate.getTime() === selectedDateCopy.getTime();
 				});
 			}
@@ -286,7 +287,6 @@ export default function EnglishStatistics() {
 						locale: Russian, // Установка русской локализации
 						dateFormat: 'd.m.Y', // Формат даты без времени
 						defaultDate: new Date(), // Текущая дата по умолчанию
-						disableMobile: true,
 					}}
 					className='w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300'
 				/>
