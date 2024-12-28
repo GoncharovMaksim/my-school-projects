@@ -89,17 +89,6 @@ export default function EnglishStatistics() {
 		const handleFilterChange = () => {
 			let tempFilter = allUsersStatisticsList;
 
-			// if (selectedDate) {
-			// 	tempFilter = tempFilter.filter(el => {
-			// 		const elDate = new Date(el.createdAt);
-			// 		const selectedDateCopy = new Date(selectedDate);
-
-			// 		elDate.setHours(0, 0, 0, 0);
-			// 		selectedDateCopy.setHours(0, 0, 0, 0);
-
-			// 		return elDate.getTime() === selectedDateCopy.getTime();
-			// 	});
-			// }
 
 			if (dateRange[0] && dateRange[1]) {
 				const startDate = new Date(dateRange[0]);
@@ -315,6 +304,7 @@ export default function EnglishStatistics() {
 						locale: Russian, // Установка русской локализации
 						mode: 'range', // Режим выбора диапазона
 						dateFormat: 'd.m.Y', // Формат даты
+						disableMobile: true,
 					}}
 					className='w-full text-center inline-flex max-w-20 justify-center gap-x-1.5 rounded-md bg-white px-6 py-3 text-xl font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 min-w-[280px]' // Класс для стилизации
 				/>
