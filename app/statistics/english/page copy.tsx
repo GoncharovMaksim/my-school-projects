@@ -31,11 +31,7 @@ export default function EnglishStatistics() {
 	const [listUnitStep, setListUnitStep] = useState<(number | '')[]>([]);
 	const [difficultyLevel, setDifficultyLevel] = useState<number>(1);
 	const { data: session } = useSession();
-
-	const [dateRange, setDateRange] = useState<[Date, Date ]>([
-		new Date(),
-		new Date(),
-	]);
+	const [selectedDate, setSelectedDate] = useState<Date>(() => new Date()); // Текущая дата по умолчанию
 
 	const currentUsersFilterStatisticsList = filterAllUsersStatisticsList.filter(
 		el => el.userId === session?.user?.id
@@ -89,28 +85,15 @@ export default function EnglishStatistics() {
 		const handleFilterChange = () => {
 			let tempFilter = allUsersStatisticsList;
 
-			// if (selectedDate) {
-			// 	tempFilter = tempFilter.filter(el => {
-			// 		const elDate = new Date(el.createdAt);
-			// 		const selectedDateCopy = new Date(selectedDate);
-
-			// 		elDate.setHours(0, 0, 0, 0);
-			// 		selectedDateCopy.setHours(0, 0, 0, 0);
-
-			// 		return elDate.getTime() === selectedDateCopy.getTime();
-			// 	});
-			// }
-
-			if (dateRange[0] && dateRange[1]) {
-				const startDate = new Date(dateRange[0]);
-				const endDate = new Date(dateRange[1]);
-				startDate.setHours(0, 0, 0, 0);
-				endDate.setHours(0, 0, 0, 0);
-
+			if (selectedDate) {
 				tempFilter = tempFilter.filter(el => {
 					const elDate = new Date(el.createdAt);
+					const selectedDateCopy = new Date(selectedDate);
+
 					elDate.setHours(0, 0, 0, 0);
-					return elDate >= startDate && elDate <= endDate;
+					selectedDateCopy.setHours(0, 0, 0, 0);
+
+					return elDate.getTime() === selectedDateCopy.getTime();
 				});
 			}
 
@@ -161,7 +144,7 @@ export default function EnglishStatistics() {
 		lessonUnit,
 		unitStep,
 		difficultyLevel,
-		dateRange,
+		selectedDate,
 	]);
 
 	if (allUsersStatisticsList.length === 0) {
@@ -297,7 +280,7 @@ export default function EnglishStatistics() {
 			/>
 
 			<div>
-				{/* <Flatpickr
+				<Flatpickr
 					value={selectedDate}
 					onChange={(date: Date[]) => setSelectedDate(date[0])} // Установка первой выбранной даты
 					options={{
@@ -307,16 +290,6 @@ export default function EnglishStatistics() {
 						disableMobile: true,
 					}}
 					className='w-full text-center inline-flex max-w-20 justify-center gap-x-1.5 rounded-md bg-white px-6 py-3 text-xl font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 min-w-[280px]' // Класс для центрирования даты
-				/> */}
-				<Flatpickr
-					value={dateRange}
-					onChange={(dates: Date[]) => setDateRange([dates[0], dates[1]])} // Установка диапазона дат
-					options={{
-						locale: Russian, // Установка русской локализации
-						mode: 'range', // Режим выбора диапазона
-						dateFormat: 'd.m.Y', // Формат даты
-					}}
-					className='w-full text-center inline-flex max-w-20 justify-center gap-x-1.5 rounded-md bg-white px-6 py-3 text-xl font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 min-w-[280px]' // Класс для стилизации
 				/>
 			</div>
 
