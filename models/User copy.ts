@@ -8,7 +8,6 @@ interface IUser extends Document {
 	createdAt: Date;
 	updatedAt: Date;
 	lastVisit: Date; // Поле для даты последнего визита
-	isAdmin: boolean; // Добавлено поле для проверки, является ли пользователь администратором
 }
 
 const userSchema = new Schema<IUser>(
@@ -18,7 +17,6 @@ const userSchema = new Schema<IUser>(
 		password: { type: String }, // Поле для хранения пароля, если используется регистрация через email/пароль
 		image: { type: String }, // Ссылка на аватар пользователя
 		lastVisit: { type: Date, default: Date.now }, // Поле с текущей датой по умолчанию
-		isAdmin: { type: Boolean, default: false }, // Новое поле, указывающее, является ли пользователь администратором
 	},
 	{
 		timestamps: true, // Автоматически добавляет поля createdAt и updatedAt

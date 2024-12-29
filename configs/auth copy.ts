@@ -31,7 +31,6 @@ export const authConfig: AuthOptions = {
 						name: user.name || 'Без имени',
 						image: user.image,
 						lastVisit: new Date(), // Устанавливаем дату визита
-						isAdmin: false, // Устанавливаем значение по умолчанию для обычных пользователей
 					});
 				}
 
@@ -62,7 +61,6 @@ export const authConfig: AuthOptions = {
 
 					if (dbUser) {
 						session.user.id = dbUser._id.toString();
-						session.user.isAdmin = dbUser.isAdmin; // Добавляем статус администратора в сессию
 					}
 				}
 				return session;
