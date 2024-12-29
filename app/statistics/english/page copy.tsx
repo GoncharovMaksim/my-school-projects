@@ -14,8 +14,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { registerLocale } from 'react-datepicker';
 import { ru } from 'date-fns/locale';
-
-
 registerLocale('ru', ru);
 
 export default function EnglishStatistics() {
@@ -30,15 +28,11 @@ export default function EnglishStatistics() {
 	const [schoolClass, setSchoolClass] = useState<number | ''>('');
 	const [lessonUnit, setLessonUnit] = useState<number | ''>('');
 	const [unitStep, setUnitStep] = useState<number | ''>('');
-	const [idSelectedUser, setIdSelectedUser] = useState<string | ''>('');
-	
 	const [listLessonUnit, setListLessonUnit] = useState<(number | '')[]>([]);
 	const [listUnitStep, setListUnitStep] = useState<(number | '')[]>([]);
-	const [listIdSelectedUser, setListIdSelectedUser] = useState<(string | '')[]>(
-		[]
-	);
 	const [difficultyLevel, setDifficultyLevel] = useState<number>(1);
 	const { data: session } = useSession();
+
 
 	const [startDate, setStartDate] = useState<Date | undefined>(new Date()); // startDate теперь может быть Date или undefined
 	const [endDate, setEndDate] = useState<Date | undefined>(new Date()); // endDate теперь может быть Date или undefined
@@ -46,48 +40,16 @@ export default function EnglishStatistics() {
 
 	const handleConfirm = () => {
 		setIsCalendarOpen(false); // Скрываем календарь
+		if (startDate && endDate) {
+			console.log('Выбранный диапазон:', startDate, endDate);
+		} else {
+			console.log('Диапазон дат не выбран');
+		}
 	};
 
-	const [
-		currentUsersFilterStatisticsList,
-		setCurrentUsersFilterStatisticsList,
-	] = useState<EnglishStat[]>([]);
-
-	useEffect(() => {
-		function selectedUserFilterChange() {
-			let tempFilter = filterAllUsersStatisticsList;
-			if (idSelectedUser) {
-				tempFilter = tempFilter.filter(el => el.userId === idSelectedUser);
-				localStorage.setItem('idSelectedUser', JSON.stringify(idSelectedUser));
-			}
-
-			setCurrentUsersFilterStatisticsList(tempFilter);
-
-			const uniqTempListUserId = [
-				...new Set(allUsersStatisticsList.map(el => el.userId)),
-			];
-
-			setListIdSelectedUser(uniqTempListUserId);
-		}
-
-		if (session?.user?.isAdmin === true) {
-			selectedUserFilterChange();
-		} else {
-			setCurrentUsersFilterStatisticsList(
-				filterAllUsersStatisticsList.filter(
-					el => el.userId === session?.user?.id
-				)
-			);
-			localStorage.setItem('idSelectedUser', JSON.stringify(''));
-		}
-	}, [
-		allUsersStatisticsList,
-		filterAllUsersStatisticsList,
-		idSelectedUser,
-		session?.user?.id,
-		session?.user?.isAdmin,
-	]);
-
+	const currentUsersFilterStatisticsList = filterAllUsersStatisticsList.filter(
+		el => el.userId === session?.user?.id
+	);
 	const currentUsersRightAnswerFilterStatisticsList =
 		currentUsersFilterStatisticsList.filter(el => el.grade === 5);
 	const allUsersRightAnswerFilterStatisticsList =
@@ -126,15 +88,11 @@ export default function EnglishStatistics() {
 			'difficultyLevelEnglish'
 		);
 
-		const storedIdSelectedUser = localStorage.getItem('idSelectedUser');
-
 		if (storedSchoolClass) setSchoolClass(JSON.parse(storedSchoolClass));
 		if (storedLessonUnit) setLessonUnit(JSON.parse(storedLessonUnit));
 		if (storedUnitStep) setUnitStep(JSON.parse(storedUnitStep));
 		if (storedDifficultyLevel)
 			setDifficultyLevel(JSON.parse(storedDifficultyLevel));
-		if (storedIdSelectedUser)
-			setIdSelectedUser(JSON.parse(storedIdSelectedUser));
 	}, []);
 
 	useEffect(() => {
@@ -201,7 +159,6 @@ export default function EnglishStatistics() {
 		difficultyLevel,
 		startDate,
 		endDate,
-		idSelectedUser,
 	]);
 
 	if (allUsersStatisticsList.length === 0) {
@@ -335,40 +292,7 @@ export default function EnglishStatistics() {
 					},
 				]}
 			/>
-			{session?.user?.isAdmin === true ? (
-				<DropdownMenu
-					key={idSelectedUser}
-					defaultLabel={
-						idSelectedUser !== ''
-							? `${
-									allUsersStatisticsList.find(
-										user => user.userId === idSelectedUser
-									)?.userName
-							  }`
-							: 'Пользователь'
-					}
-					options={[
-						{
-							label: 'Все пользователи',
-							onClick: () => {
-								return (
-									localStorage.setItem('idSelectedUser', JSON.stringify('')),
-									setIdSelectedUser('')
-								);
-							},
-						},
-						...listIdSelectedUser.map((el: string | '') => ({
-							label: `Выбран пользователь: ${
-								allUsersStatisticsList.find(user => user.userId === el)
-									?.userName
-							}`,
-							onClick: () => setIdSelectedUser(el),
-						})),
-					]}
-				/>
-			) : (
-				''
-			)}
+
 			<div className='datepicker-container'>
 				<h2>Выберете диапазон дат:</h2>
 
@@ -417,6 +341,7 @@ export default function EnglishStatistics() {
 					</div>
 				)}
 			</div>
+
 			<div>
 				{/* <p>Время сервера: {filterDate.toString()}</p> */}
 				<p>Тестов пройдено: {currentUsersFilterStatisticsList.length}</p>
@@ -430,6 +355,7 @@ export default function EnglishStatistics() {
 				</p>
 				<p>Рекордное время: {minTimeSpentAllUser ?? 'Не доступно'}</p>
 			</div>
+
 			<div className='w-full'>
 				<div className='flex flex-col space-y-4 w-full'>
 					{error ? (
