@@ -5,9 +5,9 @@ import DropdownMenu from '@/components/DropdownMenu';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/lib/store';
 import Loading from '../loading';
-import { loadEnglishStatistics } from './loadEnglishStatistics';
+import { loadMathStatistics } from './loadMathStatistics';
 
-import { EnglishStat } from '@/types/englishStat';
+import { MathStat } from '@/types/mathStat';
 import { useSession } from 'next-auth/react';
 
 import DatePicker from 'react-datepicker';
@@ -17,61 +17,78 @@ import { ru } from 'date-fns/locale';
 
 registerLocale('ru', ru);
 
-export default function EnglishStatistics() {
+export default function MathStatistics() {
 	const dispatch = useDispatch<AppDispatch>();
-	const error = useSelector((state: RootState) => state.englishStat.error);
+	const error = useSelector((state: RootState) => state.mathStat.error);
 	const allUsersStatisticsList = useSelector(
-		(state: RootState) => state.englishStat.englishStatList
+		(state: RootState) => state.mathStat.mathStatList
 	);
 
 	const [filterAllUsersStatisticsList, setFilterAllUsersStatisticsList] =
-		useState<EnglishStat[]>([]);
-	const [schoolClass, setSchoolClass] = useState<number | ''>('');
-	const [lessonUnit, setLessonUnit] = useState<number | ''>('');
-	const [unitStep, setUnitStep] = useState<number | ''>('');
+		useState<MathStat[]>([]);
+	const [operator, setOperator] = useState('');
 	const [idSelectedUser, setIdSelectedUser] = useState<string | ''>('');
 
-	const [listLessonUnit, setListLessonUnit] = useState<(number | '')[]>([]);
-	const [listUnitStep, setListUnitStep] = useState<(number | '')[]>([]);
 	const [listIdSelectedUser, setListIdSelectedUser] = useState<(string | '')[]>(
 		[]
 	);
-	const [difficultyLevel, setDifficultyLevel] = useState<number>(1);
+	const [difficultyLevel, setDifficultyLevel] = useState<number | string>();
 	const { data: session } = useSession();
 
-	const [startDate, setStartDate] = useState<Date | undefined>(new Date()); // startDate теперь может быть Date или undefined
-	const [endDate, setEndDate] = useState<Date | undefined>(new Date()); // endDate теперь может быть Date или undefined
+	const [startDate, setStartDate] = useState<Date | undefined>(new Date());
+	const [endDate, setEndDate] = useState<Date | undefined>(new Date());
 	const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
 	const handleConfirm = () => {
-		setIsCalendarOpen(false); // Скрываем календарь
+		setIsCalendarOpen(false);
 	};
 
 	const [
 		currentUsersFilterStatisticsList,
 		setCurrentUsersFilterStatisticsList,
-	] = useState<EnglishStat[]>([]);
+	] = useState<MathStat[]>([]);
 
-const [gradeStates, setGradeStates] = useState<boolean[]>([
-	true,
-	true,
-	true,
-	true,
-	true,
-]);
+	useEffect(() => {
+		const storedDifficultyLevel = localStorage.getItem('difficultyLevelMath');
+		const storedOperator = localStorage.getItem('operatorMath');
 
-const toggleStar = (index: number) => {
-	const newStates = [...gradeStates];
-	newStates[index] = !newStates[index];
-	setGradeStates(newStates);
-};
+		const storedIdSelectedUser = localStorage.getItem('idSelectedUser');
 
+		if (storedOperator) setOperator(JSON.parse(storedOperator));
+		if (storedDifficultyLevel)
+			setDifficultyLevel(JSON.parse(storedDifficultyLevel));
+		if (storedIdSelectedUser)
+			setIdSelectedUser(JSON.parse(storedIdSelectedUser));
+	}, []);
+
+	const [gradeStates, setGradeStates] = useState<boolean[]>([
+		true,
+		true,
+		true,
+		true,
+		true,
+	]);
+	
+
+	const toggleStar = (index: number) => {
+		const newStates = [...gradeStates];
+		newStates[index] = !newStates[index];
+		setGradeStates(newStates);
+	};
 
 
 
 	useEffect(() => {
 		function selectedUserFilterChange() {
 			let tempFilter = filterAllUsersStatisticsList;
+			const gradeTempList = gradeStates
+				.map((el, index) => (el === true ? index + 1 : null))
+				.filter(value => value !== null);
+			if (gradeTempList.length > 0) {
+				tempFilter = tempFilter.filter(
+					item => gradeTempList.includes(item.grade) // Проверяем, есть ли grade в tempList
+				);
+			}
 			if (idSelectedUser) {
 				tempFilter = tempFilter.filter(el => el.userId === idSelectedUser);
 				localStorage.setItem('idSelectedUser', JSON.stringify(idSelectedUser));
@@ -96,20 +113,14 @@ const toggleStar = (index: number) => {
 			);
 			localStorage.setItem('idSelectedUser', JSON.stringify(''));
 		}
-	}, [
-		allUsersStatisticsList,
-		filterAllUsersStatisticsList,
-		idSelectedUser,
-		session?.user?.id,
-		session?.user?.isAdmin,
-	]);
+	}, [allUsersStatisticsList, filterAllUsersStatisticsList, gradeStates, idSelectedUser, session?.user?.id, session?.user?.isAdmin]);
 
 	const currentUsersRightAnswerFilterStatisticsList =
 		currentUsersFilterStatisticsList.filter(el => el.grade === 5);
 	const allUsersRightAnswerFilterStatisticsList =
 		filterAllUsersStatisticsList.filter(el => el.grade === 5);
 
-	const findMinByKey = <T extends EnglishStat>(
+	const findMinByKey = <T extends MathStat>(
 		array: T[],
 		key: keyof T
 	): T | undefined => {
@@ -130,35 +141,13 @@ const toggleStar = (index: number) => {
 
 	useEffect(() => {
 		if (allUsersStatisticsList.length === 0) {
-			dispatch(loadEnglishStatistics());
+			dispatch(loadMathStatistics());
 		}
 	}, [dispatch, allUsersStatisticsList.length]);
 
 	useEffect(() => {
-		const storedSchoolClass = localStorage.getItem('schoolClass');
-		const storedLessonUnit = localStorage.getItem('lessonUnit');
-		const storedUnitStep = localStorage.getItem('unitStep');
-		const storedDifficultyLevel = localStorage.getItem(
-			'difficultyLevelEnglish'
-		);
-
-		const storedIdSelectedUser = localStorage.getItem('idSelectedUser');
-
-		if (storedSchoolClass) setSchoolClass(JSON.parse(storedSchoolClass));
-		if (storedLessonUnit) setLessonUnit(JSON.parse(storedLessonUnit));
-		if (storedUnitStep) setUnitStep(JSON.parse(storedUnitStep));
-		if (storedDifficultyLevel)
-			setDifficultyLevel(JSON.parse(storedDifficultyLevel));
-		if (storedIdSelectedUser)
-			setIdSelectedUser(JSON.parse(storedIdSelectedUser));
-	}, []);
-
-	useEffect(() => {
 		const handleFilterChange = () => {
 			let tempFilter = allUsersStatisticsList;
-const gradeTempList = gradeStates
-	.map((el, index) => (el === true ? index + 1 : null))
-	.filter(value => value !== null);
 
 			if (startDate && endDate) {
 				startDate.setHours(0, 0, 0, 0);
@@ -171,52 +160,33 @@ const gradeTempList = gradeStates
 				});
 			}
 
-			if (schoolClass) {
-				tempFilter = tempFilter.filter(el => el.schoolClass === schoolClass);
-				const uniqTempListLessonUnit = [
-					...new Set(tempFilter.map(el => el.lessonUnit)),
-				].sort((a, b) => {
-					const numA = a === '' ? Infinity : a;
-					const numB = b === '' ? Infinity : b;
-					return numA - numB;
-				});
+			if (operator) {
+				tempFilter = tempFilter.filter(el => el.operator === operator);
 
-				setListLessonUnit(uniqTempListLessonUnit);
-				localStorage.setItem('schoolClass', JSON.stringify(schoolClass));
-				localStorage.setItem('lessonUnit', JSON.stringify(''));
-				localStorage.setItem('unitStep', JSON.stringify(''));
+				localStorage.setItem('operatorMath', JSON.stringify(operator));
+			}
+			if (difficultyLevel) {
+				tempFilter = tempFilter.filter(
+					el => el.difficultyLevel === difficultyLevel
+				);
+				localStorage.setItem(
+					'difficultyLevelMath',
+					JSON.stringify(difficultyLevel)
+				);
 			}
 
-			if (lessonUnit) {
-				tempFilter = tempFilter.filter(el => el.lessonUnit === lessonUnit);
-				const uniqTempListUnitStep = [
-					...new Set(tempFilter.map(el => el.unitStep)),
-				].sort((a, b) => {
-					const numA = a === '' ? Infinity : a;
-					const numB = b === '' ? Infinity : b;
-					return numA - numB;
-				});
-				setListUnitStep(uniqTempListUnitStep);
-				localStorage.setItem('lessonUnit', JSON.stringify(lessonUnit));
-				localStorage.setItem('unitStep', JSON.stringify(''));
-			} else {
-				setListUnitStep([]);
-			}
-
-			if (unitStep) {
-				tempFilter = tempFilter.filter(el => el.unitStep === unitStep);
-				localStorage.setItem('unitStep', JSON.stringify(unitStep));
-			}
-if (gradeTempList.length > 0) {
-	tempFilter = tempFilter.filter(
-		item => gradeTempList.includes(item.grade) // Проверяем, есть ли grade в tempList
-	);
-}
 			setFilterAllUsersStatisticsList(tempFilter);
 		};
 
 		handleFilterChange();
-	}, [allUsersStatisticsList, schoolClass, lessonUnit, unitStep, difficultyLevel, startDate, endDate, idSelectedUser, gradeStates]);
+	}, [
+		allUsersStatisticsList,
+		difficultyLevel,
+		startDate,
+		endDate,
+		idSelectedUser,
+		operator,
+	]);
 
 	if (allUsersStatisticsList.length === 0) {
 		return <Loading />;
@@ -224,134 +194,67 @@ if (gradeTempList.length > 0) {
 	return (
 		<div className='container mx-auto px-4 p-8 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<h1 className='text-4xl text-center font-bold mb-4'>Статистика</h1>
-			<h3 className='text-2xl text-center font-bold mb-4'>Английский</h3>
+			<h3 className='text-2xl text-center font-bold mb-4'>Математика</h3>
 			<DropdownMenu
-				key={`schoolClass-${schoolClass}`}
-				defaultLabel={
-					schoolClass !== ''
-						? `Выбран класс ${schoolClass.toString()}`
-						: 'Выбрать класс'
-				}
+				key={`operator-${operator}`}
+				defaultLabel={operator ? operator : 'Все действия'} // Отображаем правильную метку
 				options={[
 					{
-						label: 'Класс: 2',
-						onClick: () => {
-							return setSchoolClass(2), setLessonUnit(''), setUnitStep('');
-						},
+						label: 'Умножение',
+						onClick: () => setOperator('Умножение'),
 					},
 					{
-						label: 'Класс: 3',
-						onClick: () => {
-							return setSchoolClass(3), setLessonUnit(''), setUnitStep('');
-						},
+						label: 'Сложение',
+						onClick: () => setOperator('Сложение'),
 					},
 					{
-						label: 'Все классы',
+						label: 'Вычитание',
+						onClick: () => setOperator('Вычитание'),
+					},
+					{
+						label: 'Деление',
+						onClick: () => setOperator('Деление'),
+					},
+					{
+						label: 'Все действия',
 						onClick: () => {
-							return (
-								localStorage.setItem('schoolClass', JSON.stringify('')),
-								localStorage.setItem('lessonUnit', JSON.stringify('')),
-								localStorage.setItem('unitStep', JSON.stringify('')),
-								setSchoolClass(''),
-								setLessonUnit(''),
-								setUnitStep('')
-							);
+							setOperator('');
+							localStorage.setItem('operatorMath', JSON.stringify(''));
 						},
 					},
 				]}
 			/>
 			<DropdownMenu
-				key={`lessonUnit-${schoolClass}`}
+				key={`difficultyLevel-${difficultyLevel}`}
 				defaultLabel={
-					lessonUnit !== ''
-						? `Выбран урок: ${lessonUnit.toString()}`
-						: 'Выбрать урок'
+					difficultyLevel ? `Уровень ${difficultyLevel}` : 'Все уровни'
 				}
-				options={[
-					{
-						label: 'Все уроки',
-						onClick: () => {
-							return (
-								localStorage.setItem('lessonUnit', JSON.stringify('')),
-								localStorage.setItem('unitStep', JSON.stringify('')),
-								setLessonUnit(''),
-								setUnitStep('')
-							);
-						},
-					},
-					...listLessonUnit.map((el: number | '') => ({
-						label: `Выбран урок: ${el}`,
-						onClick: () => {
-							return setLessonUnit(el), setUnitStep('');
-						},
-					})),
-				]}
-			/>
-			<DropdownMenu
-				key={`unitStep-${lessonUnit}`}
-				defaultLabel={
-					unitStep !== '' ? `Выбран шаг: ${unitStep.toString()}` : 'Выбрать шаг'
-				}
-				options={[
-					{
-						label: 'Все шаги',
-						onClick: () => {
-							return (
-								localStorage.setItem('unitStep', JSON.stringify('')),
-								setUnitStep('')
-							);
-						},
-					},
-					...listUnitStep.map((el: number | '') => ({
-						label: `Выбран шаг: ${el}`,
-						onClick: () => setUnitStep(el),
-					})),
-				]}
-			/>
-			<DropdownMenu
-				defaultLabel={`Уровень ${difficultyLevel}`}
 				options={[
 					{
 						label: 'Уровень 1',
-						onClick: () => {
-							return (
-								setDifficultyLevel(1),
-								localStorage.setItem(
-									'difficultyLevelEnglish',
-									JSON.stringify(1)
-								)
-							);
-						},
+						onClick: () => setDifficultyLevel(1),
 					},
 					{
 						label: 'Уровень 2',
-						onClick: () => {
-							return (
-								setDifficultyLevel(2),
-								localStorage.setItem(
-									'difficultyLevelEnglish',
-									JSON.stringify(2)
-								)
-							);
-						},
+						onClick: () => setDifficultyLevel(2),
 					},
 					{
 						label: 'Уровень 3',
+						onClick: () => setDifficultyLevel(3),
+					},
+					{
+						label: 'Все уровни',
 						onClick: () => {
-							return (
-								setDifficultyLevel(3),
-								localStorage.setItem(
-									'difficultyLevelEnglish',
-									JSON.stringify(3)
-								)
-							);
+							setDifficultyLevel('');
+							localStorage.setItem('difficultyLevelMath', JSON.stringify(''));
 						},
 					},
 				]}
 			/>
+
 			{session?.user?.isAdmin === true ? (
 				<DropdownMenu
-					key={idSelectedUser}
+					key={`idSelectedUser-${idSelectedUser}`}
 					defaultLabel={
 						idSelectedUser !== ''
 							? `${
@@ -372,7 +275,7 @@ if (gradeTempList.length > 0) {
 							},
 						},
 						...listIdSelectedUser.map((el: string | '') => ({
-							label: `Выбран пользователь: ${
+							label: `${
 								allUsersStatisticsList.find(user => user.userId === el)
 									?.userName
 							}`,
@@ -476,10 +379,7 @@ if (gradeTempList.length > 0) {
 								className='border p-4 rounded-lg flex flex-col items-center justify-center bg-gray-200 shadow-md w-full h-full'
 							>
 								<div className='text-2xl font-bold break-words overflow-hidden text-ellipsis'>
-									Класс: {el.schoolClass ? el.schoolClass : 'все'}, Урок:{' '}
-									{el.lessonUnit ? el.lessonUnit : 'все'}, Шаг:{' '}
-									{el.unitStep ? el.unitStep : 'все'}, Уровень:{' '}
-									{el.difficultyLevel}
+									Уровень: {el.difficultyLevel}
 								</div>
 								<div className='items-start '>
 									<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis '>
@@ -516,10 +416,8 @@ if (gradeTempList.length > 0) {
 													>
 														{' '}
 														<p>Вопрос № {el.taskIndex}</p>
-														<p>Слово: {el.task.question} </p>
-														<p>
-															Правильный ответ: {el.task.rightAnswer.toString()}
-														</p>
+														<p>Пример: {el.task.question} </p>
+														<p>Правильный ответ: {el.task.result.toString()}</p>
 														<p>Ответ пользователя: {el.task.userAnswer}</p>
 														<p>Результат: {el.taskResult}</p>
 													</div>

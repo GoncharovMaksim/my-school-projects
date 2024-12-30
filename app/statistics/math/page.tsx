@@ -68,7 +68,6 @@ export default function MathStatistics() {
 		true,
 		true,
 	]);
-	
 
 	const toggleStar = (index: number) => {
 		const newStates = [...gradeStates];
@@ -76,30 +75,10 @@ export default function MathStatistics() {
 		setGradeStates(newStates);
 	};
 
-	// useEffect(() => {
-	// 	const gradeTempList = gradeStates
-	// 		.map((el, index) => (el === true ? index + 1 : null))
-	// 		.filter(value => value !== null);
-	// 	const filteredList = currentUsersFilterStatisticsList.filter(
-	// 		item => gradeTempList.includes(item.grade) // Проверяем, есть ли grade в tempList
-	// 	);
-
-	// 	setGradeFilterList(tempList);
-	// 	setCurrentUsersFilterStatisticsList(filteredList);
-	// 	console.log(filteredList);
-	// }, [currentUsersFilterStatisticsList, gradeStates]);
-
 	useEffect(() => {
 		function selectedUserFilterChange() {
 			let tempFilter = filterAllUsersStatisticsList;
-			const gradeTempList = gradeStates
-				.map((el, index) => (el === true ? index + 1 : null))
-				.filter(value => value !== null);
-			if (gradeTempList.length > 0) {
-				tempFilter = tempFilter.filter(
-					item => gradeTempList.includes(item.grade) // Проверяем, есть ли grade в tempList
-				);
-			}
+
 			if (idSelectedUser) {
 				tempFilter = tempFilter.filter(el => el.userId === idSelectedUser);
 				localStorage.setItem('idSelectedUser', JSON.stringify(idSelectedUser));
@@ -124,7 +103,7 @@ export default function MathStatistics() {
 			);
 			localStorage.setItem('idSelectedUser', JSON.stringify(''));
 		}
-	}, [allUsersStatisticsList, filterAllUsersStatisticsList, gradeStates, idSelectedUser, session?.user?.id, session?.user?.isAdmin]);
+	}, [allUsersStatisticsList, filterAllUsersStatisticsList, idSelectedUser, session?.user?.id, session?.user?.isAdmin]);
 
 	const currentUsersRightAnswerFilterStatisticsList =
 		currentUsersFilterStatisticsList.filter(el => el.grade === 5);
@@ -159,7 +138,10 @@ export default function MathStatistics() {
 	useEffect(() => {
 		const handleFilterChange = () => {
 			let tempFilter = allUsersStatisticsList;
-
+			const gradeTempList = gradeStates
+				.map((el, index) => (el === true ? index + 1 : null))
+				.filter(value => value !== null);
+			
 			if (startDate && endDate) {
 				startDate.setHours(0, 0, 0, 0);
 				endDate.setHours(0, 0, 0, 0);
@@ -185,19 +167,17 @@ export default function MathStatistics() {
 					JSON.stringify(difficultyLevel)
 				);
 			}
+			if (gradeTempList.length > 0) {
+				tempFilter = tempFilter.filter(
+					item => gradeTempList.includes(item.grade) // Проверяем, есть ли grade в tempList
+				);
+			}
 
 			setFilterAllUsersStatisticsList(tempFilter);
 		};
 
 		handleFilterChange();
-	}, [
-		allUsersStatisticsList,
-		difficultyLevel,
-		startDate,
-		endDate,
-		idSelectedUser,
-		operator,
-	]);
+	}, [allUsersStatisticsList, difficultyLevel, startDate, endDate, idSelectedUser, operator, gradeStates]);
 
 	if (allUsersStatisticsList.length === 0) {
 		return <Loading />;
