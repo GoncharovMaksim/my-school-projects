@@ -48,58 +48,27 @@ export default function MathStatistics() {
 		setCurrentUsersFilterStatisticsList,
 	] = useState<MathStat[]>([]);
 
-	useEffect(() => {
-		const storedDifficultyLevel = localStorage.getItem('difficultyLevelMath');
-		const storedOperator = localStorage.getItem('operatorMath');
 
-		const storedIdSelectedUser = localStorage.getItem('idSelectedUser');
+useEffect(() => {
+	const storedDifficultyLevel = localStorage.getItem('difficultyLevelMath');
+	const storedOperator = localStorage.getItem('operatorMath');
 
-		if (storedOperator) setOperator(JSON.parse(storedOperator));
-		if (storedDifficultyLevel)
-			setDifficultyLevel(JSON.parse(storedDifficultyLevel));
-		if (storedIdSelectedUser)
-			setIdSelectedUser(JSON.parse(storedIdSelectedUser));
-	}, []);
+	const storedIdSelectedUser = localStorage.getItem('idSelectedUser');
 
-	const [gradeStates, setGradeStates] = useState<boolean[]>([
-		true,
-		true,
-		true,
-		true,
-		true,
-	]);
-	
+	if (storedOperator) setOperator(JSON.parse(storedOperator));
+	if (storedDifficultyLevel)
+		setDifficultyLevel(JSON.parse(storedDifficultyLevel));
+	if (storedIdSelectedUser) setIdSelectedUser(JSON.parse(storedIdSelectedUser));
+}, []);
 
-	const toggleStar = (index: number) => {
-		const newStates = [...gradeStates];
-		newStates[index] = !newStates[index];
-		setGradeStates(newStates);
-	};
 
-	// useEffect(() => {
-	// 	const gradeTempList = gradeStates
-	// 		.map((el, index) => (el === true ? index + 1 : null))
-	// 		.filter(value => value !== null);
-	// 	const filteredList = currentUsersFilterStatisticsList.filter(
-	// 		item => gradeTempList.includes(item.grade) // Проверяем, есть ли grade в tempList
-	// 	);
 
-	// 	setGradeFilterList(tempList);
-	// 	setCurrentUsersFilterStatisticsList(filteredList);
-	// 	console.log(filteredList);
-	// }, [currentUsersFilterStatisticsList, gradeStates]);
 
-	useEffect(() => {
+
+
+		useEffect(() => {
 		function selectedUserFilterChange() {
 			let tempFilter = filterAllUsersStatisticsList;
-			const gradeTempList = gradeStates
-				.map((el, index) => (el === true ? index + 1 : null))
-				.filter(value => value !== null);
-			if (gradeTempList.length > 0) {
-				tempFilter = tempFilter.filter(
-					item => gradeTempList.includes(item.grade) // Проверяем, есть ли grade в tempList
-				);
-			}
 			if (idSelectedUser) {
 				tempFilter = tempFilter.filter(el => el.userId === idSelectedUser);
 				localStorage.setItem('idSelectedUser', JSON.stringify(idSelectedUser));
@@ -124,7 +93,13 @@ export default function MathStatistics() {
 			);
 			localStorage.setItem('idSelectedUser', JSON.stringify(''));
 		}
-	}, [allUsersStatisticsList, filterAllUsersStatisticsList, gradeStates, idSelectedUser, session?.user?.id, session?.user?.isAdmin]);
+	}, [
+		allUsersStatisticsList,
+		filterAllUsersStatisticsList,
+		idSelectedUser,
+		session?.user?.id,
+		session?.user?.isAdmin,
+	]);
 
 	const currentUsersRightAnswerFilterStatisticsList =
 		currentUsersFilterStatisticsList.filter(el => el.grade === 5);
@@ -156,6 +131,8 @@ export default function MathStatistics() {
 		}
 	}, [dispatch, allUsersStatisticsList.length]);
 
+	
+
 	useEffect(() => {
 		const handleFilterChange = () => {
 			let tempFilter = allUsersStatisticsList;
@@ -173,7 +150,7 @@ export default function MathStatistics() {
 
 			if (operator) {
 				tempFilter = tempFilter.filter(el => el.operator === operator);
-
+				
 				localStorage.setItem('operatorMath', JSON.stringify(operator));
 			}
 			if (difficultyLevel) {
@@ -240,6 +217,7 @@ export default function MathStatistics() {
 				defaultLabel={
 					difficultyLevel ? `Уровень ${difficultyLevel}` : 'Все уровни'
 				}
+				
 				options={[
 					{
 						label: 'Уровень 1',
@@ -286,7 +264,7 @@ export default function MathStatistics() {
 							},
 						},
 						...listIdSelectedUser.map((el: string | '') => ({
-							label: `${
+							label: `Выбран пользователь: ${
 								allUsersStatisticsList.find(user => user.userId === el)
 									?.userName
 							}`,
@@ -344,25 +322,6 @@ export default function MathStatistics() {
 						</DatePicker>
 					</div>
 				)}
-			</div>
-			<div>
-				<h2>Выберите оценки:</h2>
-				<div className='flex space-x-4'>
-					{gradeStates.map((isSelected, index) => (
-						<button
-							key={index}
-							className={`w-10 h-10 flex items-center justify-center rounded-lg border-2 
-                      ${
-												isSelected
-													? 'bg-gray-500 text-white border-gray-700'
-													: 'bg-gray-200 text-black border-gray-300'
-											}`}
-							onClick={() => toggleStar(index)}
-						>
-							{index + 1}
-						</button>
-					))}
-				</div>
 			</div>
 			<div>
 				{/* <p>Время сервера: {filterDate.toString()}</p> */}
