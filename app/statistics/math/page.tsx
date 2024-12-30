@@ -214,7 +214,10 @@ useEffect(() => {
 			/>
 			<DropdownMenu
 				key={`difficultyLevel-${difficultyLevel}`}
-				defaultLabel={`Уровень ${difficultyLevel}`}
+				defaultLabel={
+					difficultyLevel ? `Уровень ${difficultyLevel}` : 'Все уровни'
+				}
+				
 				options={[
 					{
 						label: 'Уровень 1',
