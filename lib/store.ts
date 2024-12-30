@@ -2,13 +2,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import wordsReducer from './features/wordsSlice';
 import englishStatReducer from './features/englishStatSlice';
-
+import mathStatReducer from './features/mathStatSlice';
 
 export const makeStore = () => {
 	return configureStore({
 		reducer: {
 			words: wordsReducer,
 			englishStat: englishStatReducer,
+			mathStat: mathStatReducer,
 		},
 		devTools: process.env.NODE_ENV !== 'production', // Включение DevTools в режиме разработки
 	});

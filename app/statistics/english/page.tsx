@@ -15,7 +15,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { registerLocale } from 'react-datepicker';
 import { ru } from 'date-fns/locale';
 
-
 registerLocale('ru', ru);
 
 export default function EnglishStatistics() {
@@ -31,7 +30,7 @@ export default function EnglishStatistics() {
 	const [lessonUnit, setLessonUnit] = useState<number | ''>('');
 	const [unitStep, setUnitStep] = useState<number | ''>('');
 	const [idSelectedUser, setIdSelectedUser] = useState<string | ''>('');
-	
+
 	const [listLessonUnit, setListLessonUnit] = useState<(number | '')[]>([]);
 	const [listUnitStep, setListUnitStep] = useState<(number | '')[]>([]);
 	const [listIdSelectedUser, setListIdSelectedUser] = useState<(string | '')[]>(

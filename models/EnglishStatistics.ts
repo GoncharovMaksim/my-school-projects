@@ -8,7 +8,7 @@ const TaskSchema = new mongoose.Schema(
 		userAnswer: { type: String, required: true }, // Ответ пользователя
 		checkUserAnswer: { type: Boolean, required: true }, // Проверка правильности ответа
 	},
-	{ _id: false }
+	{ _id: true }
 ); // Отключаем автоматическое создание _id для вложенной схемы
 
 // Основная схема

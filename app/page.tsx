@@ -6,12 +6,14 @@ import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { loadWords } from './english/components/loadWords';
 import { AppDispatch } from '@/lib/store';
+import { loadMathStatistics } from './statistics/math/loadMathStatistics';
 
 export default function Home() {
 	const dispatch = useDispatch<AppDispatch>();
 	useEffect(() => {
 		dispatch(loadEnglishStatistics());
 		dispatch(loadWords());
+			dispatch(loadMathStatistics());
 	}, [dispatch]);
 	return (
 		//<div className='bg-gray-100 min-h-screen flex flex-col'>
