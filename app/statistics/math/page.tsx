@@ -425,4 +425,4 @@ export default function MathStatistics() {
 		</div>
 	);
 }
-//
+//2
