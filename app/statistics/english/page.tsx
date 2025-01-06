@@ -36,7 +36,7 @@ export default function EnglishStatistics() {
 	const [listIdSelectedUser, setListIdSelectedUser] = useState<(string | '')[]>(
 		[]
 	);
-	const [difficultyLevel, setDifficultyLevel] = useState<number>(1);
+	const [difficultyLevel, setDifficultyLevel] = useState<number | ''>('');
 	const { data: session } = useSession();
 
 	const [startDate, setStartDate] = useState<Date | undefined>(new Date()); // startDate теперь может быть Date или undefined
@@ -52,22 +52,19 @@ export default function EnglishStatistics() {
 		setCurrentUsersFilterStatisticsList,
 	] = useState<EnglishStat[]>([]);
 
-const [gradeStates, setGradeStates] = useState<boolean[]>([
-	true,
-	true,
-	true,
-	true,
-	true,
-]);
+	const [gradeStates, setGradeStates] = useState<boolean[]>([
+		true,
+		true,
+		true,
+		true,
+		true,
+	]);
 
-const toggleStar = (index: number) => {
-	const newStates = [...gradeStates];
-	newStates[index] = !newStates[index];
-	setGradeStates(newStates);
-};
-
-
-
+	const toggleStar = (index: number) => {
+		const newStates = [...gradeStates];
+		newStates[index] = !newStates[index];
+		setGradeStates(newStates);
+	};
 
 	useEffect(() => {
 		function selectedUserFilterChange() {
@@ -156,9 +153,9 @@ const toggleStar = (index: number) => {
 	useEffect(() => {
 		const handleFilterChange = () => {
 			let tempFilter = allUsersStatisticsList;
-const gradeTempList = gradeStates
-	.map((el, index) => (el === true ? index + 1 : null))
-	.filter(value => value !== null);
+			const gradeTempList = gradeStates
+				.map((el, index) => (el === true ? index + 1 : null))
+				.filter(value => value !== null);
 
 			if (startDate && endDate) {
 				startDate.setHours(0, 0, 0, 0);
@@ -207,16 +204,36 @@ const gradeTempList = gradeStates
 				tempFilter = tempFilter.filter(el => el.unitStep === unitStep);
 				localStorage.setItem('unitStep', JSON.stringify(unitStep));
 			}
-if (gradeTempList.length > 0) {
-	tempFilter = tempFilter.filter(
-		item => gradeTempList.includes(item.grade) // Проверяем, есть ли grade в tempList
-	);
-}
+
+			if (difficultyLevel) {
+				tempFilter = tempFilter.filter(
+					el => el.difficultyLevel === difficultyLevel
+				);
+				localStorage.setItem(
+					'difficultyLevelEnglish',
+					JSON.stringify(difficultyLevel)
+				);
+			}
+			if (gradeTempList.length > 0) {
+				tempFilter = tempFilter.filter(
+					item => gradeTempList.includes(item.grade) // Проверяем, есть ли grade в tempList
+				);
+			}
 			setFilterAllUsersStatisticsList(tempFilter);
 		};
 
 		handleFilterChange();
-	}, [allUsersStatisticsList, schoolClass, lessonUnit, unitStep, difficultyLevel, startDate, endDate, idSelectedUser, gradeStates]);
+	}, [
+		allUsersStatisticsList,
+		schoolClass,
+		lessonUnit,
+		unitStep,
+		difficultyLevel,
+		startDate,
+		endDate,
+		idSelectedUser,
+		gradeStates,
+	]);
 
 	if (allUsersStatisticsList.length === 0) {
 		return <Loading />;
@@ -309,42 +326,28 @@ if (gradeTempList.length > 0) {
 				]}
 			/>
 			<DropdownMenu
-				defaultLabel={`Уровень ${difficultyLevel}`}
+				key={`difficultyLevel-${difficultyLevel}`}
+				defaultLabel={
+					difficultyLevel ? `Уровень ${difficultyLevel}` : 'Все уровни'
+				}
 				options={[
 					{
 						label: 'Уровень 1',
-						onClick: () => {
-							return (
-								setDifficultyLevel(1),
-								localStorage.setItem(
-									'difficultyLevelEnglish',
-									JSON.stringify(1)
-								)
-							);
-						},
+						onClick: () => setDifficultyLevel(1),
 					},
 					{
 						label: 'Уровень 2',
-						onClick: () => {
-							return (
-								setDifficultyLevel(2),
-								localStorage.setItem(
-									'difficultyLevelEnglish',
-									JSON.stringify(2)
-								)
-							);
-						},
+						onClick: () => setDifficultyLevel(2),
 					},
 					{
 						label: 'Уровень 3',
+						onClick: () => setDifficultyLevel(3),
+					},
+					{
+						label: 'Все уровни',
 						onClick: () => {
-							return (
-								setDifficultyLevel(3),
-								localStorage.setItem(
-									'difficultyLevelEnglish',
-									JSON.stringify(3)
-								)
-							);
+							setDifficultyLevel('');
+							localStorage.setItem('difficultyLevelMath', JSON.stringify(''));
 						},
 					},
 				]}
@@ -372,7 +375,7 @@ if (gradeTempList.length > 0) {
 							},
 						},
 						...listIdSelectedUser.map((el: string | '') => ({
-							label: `Выбран пользователь: ${
+							label: `${
 								allUsersStatisticsList.find(user => user.userId === el)
 									?.userName
 							}`,

@@ -52,6 +52,23 @@ export default function EnglishStatistics() {
 		setCurrentUsersFilterStatisticsList,
 	] = useState<EnglishStat[]>([]);
 
+const [gradeStates, setGradeStates] = useState<boolean[]>([
+	true,
+	true,
+	true,
+	true,
+	true,
+]);
+
+const toggleStar = (index: number) => {
+	const newStates = [...gradeStates];
+	newStates[index] = !newStates[index];
+	setGradeStates(newStates);
+};
+
+
+
+
 	useEffect(() => {
 		function selectedUserFilterChange() {
 			let tempFilter = filterAllUsersStatisticsList;
@@ -139,6 +156,9 @@ export default function EnglishStatistics() {
 	useEffect(() => {
 		const handleFilterChange = () => {
 			let tempFilter = allUsersStatisticsList;
+const gradeTempList = gradeStates
+	.map((el, index) => (el === true ? index + 1 : null))
+	.filter(value => value !== null);
 
 			if (startDate && endDate) {
 				startDate.setHours(0, 0, 0, 0);
@@ -187,21 +207,17 @@ export default function EnglishStatistics() {
 				tempFilter = tempFilter.filter(el => el.unitStep === unitStep);
 				localStorage.setItem('unitStep', JSON.stringify(unitStep));
 			}
-
+			
+if (gradeTempList.length > 0) {
+	tempFilter = tempFilter.filter(
+		item => gradeTempList.includes(item.grade) // Проверяем, есть ли grade в tempList
+	);
+}
 			setFilterAllUsersStatisticsList(tempFilter);
 		};
 
 		handleFilterChange();
-	}, [
-		allUsersStatisticsList,
-		schoolClass,
-		lessonUnit,
-		unitStep,
-		difficultyLevel,
-		startDate,
-		endDate,
-		idSelectedUser,
-	]);
+	}, [allUsersStatisticsList, schoolClass, lessonUnit, unitStep, difficultyLevel, startDate, endDate, idSelectedUser, gradeStates]);
 
 	if (allUsersStatisticsList.length === 0) {
 		return <Loading />;
@@ -357,7 +373,7 @@ export default function EnglishStatistics() {
 							},
 						},
 						...listIdSelectedUser.map((el: string | '') => ({
-							label: `Выбран пользователь: ${
+							label: `${
 								allUsersStatisticsList.find(user => user.userId === el)
 									?.userName
 							}`,
@@ -415,6 +431,25 @@ export default function EnglishStatistics() {
 						</DatePicker>
 					</div>
 				)}
+			</div>
+			<div>
+				<h2>Выберите оценки:</h2>
+				<div className='flex space-x-4'>
+					{gradeStates.map((isSelected, index) => (
+						<button
+							key={index}
+							className={`w-10 h-10 flex items-center justify-center rounded-lg border-2 
+                      ${
+												isSelected
+													? 'bg-gray-500 text-white border-gray-700'
+													: 'bg-gray-200 text-black border-gray-300'
+											}`}
+							onClick={() => toggleStar(index)}
+						>
+							{index + 1}
+						</button>
+					))}
+				</div>
 			</div>
 			<div>
 				{/* <p>Время сервера: {filterDate.toString()}</p> */}
