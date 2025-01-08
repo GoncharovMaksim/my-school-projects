@@ -1,5 +1,5 @@
 'use client';
-import { useWindowVirtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { useEffect, useState } from 'react';
 import DropdownMenu from '@/components/DropdownMenu';
 import { useDispatch, useSelector } from 'react-redux';
@@ -195,30 +195,22 @@ export default function MathStatistics() {
 	]);
 
 
-const listRef = React.useRef<HTMLDivElement | null>(null);
 
-	const rowVirtualizer = useWindowVirtualizer({
+
+	const parentRef = React.useRef<HTMLDivElement>(null);
+
+	const rowVirtualizer = useVirtualizer({
 		count: currentUsersFilterStatisticsList.length,
-
-		estimateSize: () => 250, // Предполагаемый размер строки
-		overscan: 5, // Количество строк, которые будут рендериться за пределами видимой области
-		scrollMargin: listRef.current?.offsetTop ?? 0,
-		
+		getScrollElement: () => parentRef.current!,
+		estimateSize: () => 100, // Предполагаемый размер строки
+		overscan: 10, // Количество строк, которые будут рендериться за пределами видимой области
 	});
 	
 	if (allUsersStatisticsList.length === 0) {
 		return <Loading />;
 	}
 	return (
-		<div
-			className='container mx-auto px-4 p-8 flex flex-col space-y-6 max-w-screen-sm items-center'
-
-			// ref={parentRef}
-			// style={{
-			// 	height: '1500px',
-			// 	overflowY: 'auto',
-			// }}
-		>
+		<div className='container mx-auto px-4 p-8 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<h1 className='text-4xl text-center font-bold mb-4'>Статистика</h1>
 			<h3 className='text-2xl text-center font-bold mb-4'>Математика</h3>
 			<DropdownMenu
@@ -399,101 +391,25 @@ const listRef = React.useRef<HTMLDivElement | null>(null);
 							Ошибка загрузки статистики.
 						</div>
 					) : (
-						<div>
-							<div
-								ref={listRef}
-								// ref={parentRef}
-								// style={{
-								// 	height: '500px',
-								// 	overflowY: 'auto',
-								// }}
-							>
-								<div
-									style={{
-										height: `${rowVirtualizer.getTotalSize()}px`,
-										position: 'relative',
-									}}
-								>
-									{rowVirtualizer.getVirtualItems().map(virtualRow => {
-										const el =
-											currentUsersFilterStatisticsList[virtualRow.index];
-										return (
-											<div
-												key={`${el.createdAt}-${virtualRow.index}`}
-												//ref={rowVirtualizer.measureElement}
-												ref={rowVirtualizer.measureElement}
-												data-index={virtualRow.index}
-												style={{
-													position: 'absolute',
-													top: 0,
-													left: 0,
-													width: '100%',
-													height: `auto`,
-
-													transform: `translateY(${
-														virtualRow.start -
-														rowVirtualizer.options.scrollMargin
-													}px)`,
-												}}
-												className='border p-4 rounded-lg flex flex-col items-center justify-center bg-gray-200 shadow-md w-full h-full'
-											>
-												<div className='text-2xl font-bold break-words overflow-hidden text-ellipsis'>
-													Уровень: {el.difficultyLevel}
-												</div>
-												<div className='items-start'>
-													<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
-														Оценка: {el.grade}, Время прохождения:{' '}
-														{el.timeSpent} с
-													</div>
-													<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
-														Процент правильных ответов:{' '}
-														{el.percentCorrectAnswer}
-													</div>
-													<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
-														Дата и время:{' '}
-														{new Date(el.createdAt).toLocaleString('ru-RU', {
-															year: 'numeric',
-															month: 'long',
-															day: 'numeric',
-															hour: '2-digit',
-															minute: '2-digit',
-															second: '2-digit',
-														})}
-													</div>
-												</div>
-												<div className='flex flex-col items-center justify-center text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
-													<div className='collapse collapse-arrow bg-base-200 overflow-visible'>
-														<input type='checkbox' name='my-accordion-2' />
-														<div className='collapse-title text-xl font-bold text-center'>
-															Вопросы теста:
-														</div>
-
-														<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0'>
-															{el.results.map(question => (
-																<div
-																	key={question._id}
-																	className='border p-2 rounded-md w-full'
-																>
-																	<p>Вопрос № {question.taskIndex}</p>
-																	<p>Пример: {question.task.question}</p>
-																	<p>
-																		Правильный ответ:{' '}
-																		{question.task.result.toString()}
-																	</p>
-																	<p>
-																		Ответ пользователя:{' '}
-																		{question.task.userAnswer}
-																	</p>
-																	<p>Результат: {question.taskResult}</p>
-																</div>
-															))}
-														</div>
-													</div>
-												</div>
-											</div>
-										);
-									})}
-								</div>
+						<div ref={parentRef} style={{ height: 500, overflowY: 'auto' }}>
+							<div>
+								{rowVirtualizer.getVirtualItems().map(virtualRow => (
+									<div key={virtualRow.index}>
+										{/* Контент строки */}
+										<div className='p-4'>
+											<p>
+												{
+													currentUsersFilterStatisticsList[virtualRow.index]
+														.userName
+												}
+											</p>
+											{
+												currentUsersFilterStatisticsList[virtualRow.index]
+													.grade
+											}
+										</div>
+									</div>
+								))}
 							</div>
 						</div>
 					)}
