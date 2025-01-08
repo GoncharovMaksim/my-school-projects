@@ -387,7 +387,7 @@ export default function EnglishStatistics() {
 				''
 			)}
 			<div className='datepicker-container'>
-				<h2>Выберете диапазон дат:</h2>
+				<h2>Выберите диапазон дат:</h2>
 
 				{/* Поле для открытия календаря */}
 				<input
