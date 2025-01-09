@@ -4,7 +4,10 @@ import { GameProps, Task } from './types';
 import { useSession } from 'next-auth/react';
 
 import TgApi from '@/lib/tgApi';
-import MathStatistics from '@/app/statistics/math/page';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/lib/store';
+
+
 
 export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const { operator, difficultyLevel, stepGame, limGame } = gameSettings;
@@ -26,6 +29,13 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 
 	const session = useSession();
 
+	const allUsersStatisticsList = useSelector(
+		(state: RootState) => state.mathStat.mathStatList
+	);
+	const filterAllUsersStatisticsList= allUsersStatisticsList.filter(el=>{
+		return el.grade===5&&el.difficultyLevel===gameSettings.difficultyLevel&&el.operator===gameSettings.operator
+	});
+console.log(filterAllUsersStatisticsList)
 	function randomNumber(a: number, b: number): number {
 		return Math.floor(Math.random() * (b - a + 1)) + a;
 	}
@@ -257,7 +267,6 @@ ${session.data?.user?.email || ''}`;
 							Оценка: <span className='text-2xl font-bold'>{gradeAnswer}</span>
 						</div>
 						<div>Время: {(gameSettings.timeSpent / 1000).toFixed(2)} сек</div>
-						<MathStatistics minTimeSpent={true} />
 					</div>
 					<button
 						className='btn btn-outline w-full max-w-xs'

@@ -4,7 +4,6 @@ import { GameProps, Task } from './types';
 import { useSession } from 'next-auth/react';
 
 import TgApi from '@/lib/tgApi';
-import MathStatistics from '@/app/statistics/math/page';
 
 export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const { operator, difficultyLevel, stepGame, limGame } = gameSettings;
@@ -257,7 +256,6 @@ ${session.data?.user?.email || ''}`;
 							Оценка: <span className='text-2xl font-bold'>{gradeAnswer}</span>
 						</div>
 						<div>Время: {(gameSettings.timeSpent / 1000).toFixed(2)} сек</div>
-						<MathStatistics minTimeSpent={true} />
 					</div>
 					<button
 						className='btn btn-outline w-full max-w-xs'

@@ -18,7 +18,11 @@ import React from 'react';
 
 registerLocale('ru', ru);
 
-export default function MathStatistics() {
+interface MathStatisticsProps {
+	minTimeSpent: boolean;
+}
+
+export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 	const dispatch = useDispatch<AppDispatch>();
 	const error = useSelector((state: RootState) => state.mathStat.error);
 	const allUsersStatisticsList = useSelector(
@@ -131,16 +135,11 @@ export default function MathStatistics() {
 		'timeSpent'
 	);
 
-	// const minTimeSpentAllUser = findMinByKey(
-	// 	allUsersRightAnswerFilterStatisticsList,
-	// 	'timeSpent'
-	// )?.timeSpent;
 	const minTimeSpentAllUser = findMinByKey(
 		allUsersRightAnswerFilterStatisticsList,
 		'timeSpent'
 	);
 
-	
 	useEffect(() => {
 		if (allUsersStatisticsList.length === 0) {
 			dispatch(loadMathStatistics());
@@ -212,6 +211,16 @@ export default function MathStatistics() {
 
 	if (allUsersStatisticsList.length === 0) {
 		return <Loading />;
+	}
+	if (minTimeSpent) {
+		return (
+			<p>
+				Рекордное время:{' '}
+				{`${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} (${
+					minTimeSpentAllUser?.userNickName || 'Нет ника'
+				})`}
+			</p>
+		);
 	}
 	return (
 		<div className='container mx-auto px-4 p-8 flex flex-col space-y-6 max-w-screen-sm items-center'>
