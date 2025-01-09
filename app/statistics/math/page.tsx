@@ -194,8 +194,7 @@ export default function MathStatistics() {
 		gradeStates,
 	]);
 
-
-const listRef = React.useRef<HTMLDivElement | null>(null);
+	const listRef = React.useRef<HTMLDivElement | null>(null);
 
 	const rowVirtualizer = useWindowVirtualizer({
 		count: currentUsersFilterStatisticsList.length,
@@ -203,22 +202,14 @@ const listRef = React.useRef<HTMLDivElement | null>(null);
 		estimateSize: () => 250, // Предполагаемый размер строки
 		overscan: 5, // Количество строк, которые будут рендериться за пределами видимой области
 		scrollMargin: listRef.current?.offsetTop ?? 0,
-		
+		gap: 7,
 	});
-	
+
 	if (allUsersStatisticsList.length === 0) {
 		return <Loading />;
 	}
 	return (
-		<div
-			className='container mx-auto px-4 p-8 flex flex-col space-y-6 max-w-screen-sm items-center'
-
-			// ref={parentRef}
-			// style={{
-			// 	height: '1500px',
-			// 	overflowY: 'auto',
-			// }}
-		>
+		<div className='container mx-auto px-4 p-8 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<h1 className='text-4xl text-center font-bold mb-4'>Статистика</h1>
 			<h3 className='text-2xl text-center font-bold mb-4'>Математика</h3>
 			<DropdownMenu
@@ -400,14 +391,7 @@ const listRef = React.useRef<HTMLDivElement | null>(null);
 						</div>
 					) : (
 						<div>
-							<div
-								ref={listRef}
-								// ref={parentRef}
-								// style={{
-								// 	height: '500px',
-								// 	overflowY: 'auto',
-								// }}
-							>
+							<div ref={listRef}>
 								<div
 									style={{
 										height: `${rowVirtualizer.getTotalSize()}px`,
@@ -420,7 +404,6 @@ const listRef = React.useRef<HTMLDivElement | null>(null);
 										return (
 											<div
 												key={`${el.createdAt}-${virtualRow.index}`}
-												//ref={rowVirtualizer.measureElement}
 												ref={rowVirtualizer.measureElement}
 												data-index={virtualRow.index}
 												style={{
@@ -435,7 +418,7 @@ const listRef = React.useRef<HTMLDivElement | null>(null);
 														rowVirtualizer.options.scrollMargin
 													}px)`,
 												}}
-												className='border p-4 rounded-lg flex flex-col items-center justify-center bg-gray-200 shadow-md w-full h-full'
+												className='border p-4 rounded-lg flex flex-col items-center justify-center bg-gray-200 shadow-md w-full h-full '
 											>
 												<div className='text-2xl font-bold break-words overflow-hidden text-ellipsis'>
 													Уровень: {el.difficultyLevel}
