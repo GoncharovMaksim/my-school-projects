@@ -4,7 +4,7 @@ import { GameProps, Task } from './types';
 import { useSession } from 'next-auth/react';
 
 import TgApi from '@/lib/tgApi';
-import MathStatistics from '@/app/statistics/math/page';
+import MathStatistics from '@/app/statistics/math/MathStatistics';
 
 export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const { operator, difficultyLevel, stepGame, limGame } = gameSettings;
