@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 interface IUser extends Document {
 	name: string;
 	email: string;
+	nickName?: string;
 	password?: string; // Необязательное поле для пользователей с OAuth
 	image?: string; // Ссылка на аватар
 	createdAt: Date;
@@ -15,6 +16,7 @@ const userSchema = new Schema<IUser>(
 	{
 		name: { type: String, required: true },
 		email: { type: String, required: true, unique: true },
+		nickName: { type: String, unique: true, sparse: true },
 		password: { type: String }, // Поле для хранения пароля, если используется регистрация через email/пароль
 		image: { type: String }, // Ссылка на аватар пользователя
 		lastVisit: { type: Date, default: Date.now }, // Поле с текущей датой по умолчанию

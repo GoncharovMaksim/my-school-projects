@@ -16,6 +16,7 @@ export type Results = Task[];
 export interface EnglishStat {
 	userId: string;
 	userName: string;
+	userNickName: string;
 	userEmail: string;
 	appComponent: string;
 	grade: number;
@@ -28,5 +29,4 @@ export interface EnglishStat {
 	results: Task[];
 	createdAt: string; // Поля timestamps из mongoose
 	updatedAt?: string;
-	
 }

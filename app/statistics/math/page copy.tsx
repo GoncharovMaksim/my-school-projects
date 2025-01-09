@@ -1,5 +1,5 @@
 'use client';
-
+import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import { useEffect, useState } from 'react';
 import DropdownMenu from '@/components/DropdownMenu';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +14,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { registerLocale } from 'react-datepicker';
 import { ru } from 'date-fns/locale';
+import React from 'react';
 
 registerLocale('ru', ru);
 
@@ -103,7 +104,13 @@ export default function MathStatistics() {
 			);
 			localStorage.setItem('idSelectedUser', JSON.stringify(''));
 		}
-	}, [allUsersStatisticsList, filterAllUsersStatisticsList, idSelectedUser, session?.user?.id, session?.user?.isAdmin]);
+	}, [
+		allUsersStatisticsList,
+		filterAllUsersStatisticsList,
+		idSelectedUser,
+		session?.user?.id,
+		session?.user?.isAdmin,
+	]);
 
 	const currentUsersRightAnswerFilterStatisticsList =
 		currentUsersFilterStatisticsList.filter(el => el.grade === 5);
@@ -141,7 +148,7 @@ export default function MathStatistics() {
 			const gradeTempList = gradeStates
 				.map((el, index) => (el === true ? index + 1 : null))
 				.filter(value => value !== null);
-			
+
 			if (startDate && endDate) {
 				startDate.setHours(0, 0, 0, 0);
 				endDate.setHours(0, 0, 0, 0);
@@ -177,7 +184,26 @@ export default function MathStatistics() {
 		};
 
 		handleFilterChange();
-	}, [allUsersStatisticsList, difficultyLevel, startDate, endDate, idSelectedUser, operator, gradeStates]);
+	}, [
+		allUsersStatisticsList,
+		difficultyLevel,
+		startDate,
+		endDate,
+		idSelectedUser,
+		operator,
+		gradeStates,
+	]);
+
+	const listRef = React.useRef<HTMLDivElement | null>(null);
+
+	const rowVirtualizer = useWindowVirtualizer({
+		count: currentUsersFilterStatisticsList.length,
+
+		estimateSize: () => 250, // Предполагаемый размер строки
+		overscan: 5, // Количество строк, которые будут рендериться за пределами видимой области
+		scrollMargin: listRef.current?.offsetTop ?? 0,
+		gap: 7,
+	});
 
 	if (allUsersStatisticsList.length === 0) {
 		return <Loading />;
@@ -364,61 +390,99 @@ export default function MathStatistics() {
 							Ошибка загрузки статистики.
 						</div>
 					) : (
-						currentUsersFilterStatisticsList.map((el, index) => (
-							<div
-								key={`${el.createdAt}-${index}`}
-								className='border p-4 rounded-lg flex flex-col items-center justify-center bg-gray-200 shadow-md w-full h-full'
-							>
-								<div className='text-2xl font-bold break-words overflow-hidden text-ellipsis'>
-									Уровень: {el.difficultyLevel}
-								</div>
-								<div className='items-start '>
-									<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis '>
-										Оценка: {el.grade}, Время прохождения: {el.timeSpent} с
-									</div>
-									<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
-										Процент правильных ответов: {el.percentCorrectAnswer}
-									</div>
-									<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
-										Дата и время:{' '}
-										{new Date(el.createdAt).toLocaleString('ru-RU', {
-											year: 'numeric',
-											month: 'long',
-											day: 'numeric',
-											hour: '2-digit',
-											minute: '2-digit',
-											second: '2-digit',
-										})}
-									</div>
-								</div>
-								<div className='flex flex-col items-center justify-center text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
-									<div className='collapse collapse-arrow bg-base-200 overflow-visible'>
-										<input type='checkbox' name='my-accordion-2' />
-										<div className='collapse-title text-xl font-bold text-center '>
-											Вопросы теста:
-										</div>
+						<div>
+							<div ref={listRef}>
+								<div
+									style={{
+										height: `${rowVirtualizer.getTotalSize()}px`,
+										position: 'relative',
+									}}
+								>
+									{rowVirtualizer.getVirtualItems().map(virtualRow => {
+										const el =
+											currentUsersFilterStatisticsList[virtualRow.index];
+										return (
+											<div
+												key={`${el.createdAt}-${virtualRow.index}`}
+												ref={rowVirtualizer.measureElement}
+												data-index={virtualRow.index}
+												style={{
+													position: 'absolute',
+													top: 0,
+													left: 0,
+													width: '100%',
+													height: `auto`,
 
-										<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0 '>
-											{el.results.map(el => {
-												return (
-													<div
-														key={el._id}
-														className='border p-2 rounded-md w-full'
-													>
-														{' '}
-														<p>Вопрос № {el.taskIndex}</p>
-														<p>Пример: {el.task.question} </p>
-														<p>Правильный ответ: {el.task.result.toString()}</p>
-														<p>Ответ пользователя: {el.task.userAnswer}</p>
-														<p>Результат: {el.taskResult}</p>
+													transform: `translateY(${
+														virtualRow.start -
+														rowVirtualizer.options.scrollMargin
+													}px)`,
+												}}
+												className='border p-4 rounded-lg flex flex-col items-center justify-center bg-gray-200 shadow-md w-full h-full '
+											>
+												<div className='text-2xl font-bold break-words overflow-hidden text-ellipsis'>
+													Уровень: {el.difficultyLevel}
+												</div>
+												<div className='items-start'>
+													<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
+														Оценка: {el.grade}, Время прохождения:{' '}
+														{el.timeSpent} с
 													</div>
-												);
-											})}
-										</div>
-									</div>
+													<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
+														Процент правильных ответов:{' '}
+														{el.percentCorrectAnswer}
+													</div>
+													
+													<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
+														Пользователь: {el.userNickName?el.userNickName:'Нет ника'}
+													</div>
+													<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
+														Дата и время:{' '}
+														{new Date(el.createdAt).toLocaleString('ru-RU', {
+															year: 'numeric',
+															month: 'long',
+															day: 'numeric',
+															hour: '2-digit',
+															minute: '2-digit',
+															second: '2-digit',
+														})}
+													</div>
+												</div>
+												<div className='flex flex-col items-center justify-center text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
+													<div className='collapse collapse-arrow bg-base-200 overflow-visible'>
+														<input type='checkbox' name='my-accordion-2' />
+														<div className='collapse-title text-xl font-bold text-center'>
+															Вопросы теста:
+														</div>
+
+														<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0'>
+															{el.results.map(question => (
+																<div
+																	key={question._id}
+																	className='border p-2 rounded-md w-full'
+																>
+																	<p>Вопрос № {question.taskIndex}</p>
+																	<p>Пример: {question.task.question}</p>
+																	<p>
+																		Правильный ответ:{' '}
+																		{question.task.result.toString()}
+																	</p>
+																	<p>
+																		Ответ пользователя:{' '}
+																		{question.task.userAnswer}
+																	</p>
+																	<p>Результат: {question.taskResult}</p>
+																</div>
+															))}
+														</div>
+													</div>
+												</div>
+											</div>
+										);
+									})}
 								</div>
 							</div>
-						))
+						</div>
 					)}
 				</div>
 			</div>

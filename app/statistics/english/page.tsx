@@ -120,12 +120,12 @@ export default function EnglishStatistics() {
 	const minTimeSpentCurrentUser = findMinByKey(
 		currentUsersRightAnswerFilterStatisticsList,
 		'timeSpent'
-	)?.timeSpent;
+	);
 
 	const minTimeSpentAllUser = findMinByKey(
 		allUsersRightAnswerFilterStatisticsList,
 		'timeSpent'
-	)?.timeSpent;
+	);
 
 	useEffect(() => {
 		if (allUsersStatisticsList.length === 0) {
@@ -236,17 +236,16 @@ export default function EnglishStatistics() {
 		idSelectedUser,
 		gradeStates,
 	]);
-const listRef = React.useRef<HTMLDivElement | null>(null);
+	const listRef = React.useRef<HTMLDivElement | null>(null);
 
-const rowVirtualizer = useWindowVirtualizer({
-	count: currentUsersFilterStatisticsList.length,
+	const rowVirtualizer = useWindowVirtualizer({
+		count: currentUsersFilterStatisticsList.length,
 
-	estimateSize: () => 250, // Предполагаемый размер строки
-	overscan: 5, // Количество строк, которые будут рендериться за пределами видимой области
-	scrollMargin: listRef.current?.offsetTop ?? 0,
-	gap: 7,
-});
-
+		estimateSize: () => 250, // Предполагаемый размер строки
+		overscan: 5, // Количество строк, которые будут рендериться за пределами видимой области
+		scrollMargin: listRef.current?.offsetTop ?? 0,
+		gap: 7,
+	});
 
 	if (allUsersStatisticsList.length === 0) {
 		return <Loading />;
@@ -471,13 +470,18 @@ const rowVirtualizer = useWindowVirtualizer({
 				<p>Тестов пройдено: {currentUsersFilterStatisticsList.length}</p>
 				<p>
 					Ваше лучшее время:{' '}
-					{minTimeSpentCurrentUser !== undefined &&
-					minTimeSpentAllUser !== undefined &&
-					minTimeSpentCurrentUser <= minTimeSpentAllUser
-						? `${minTimeSpentCurrentUser} 🥇`
-						: minTimeSpentCurrentUser ?? 'Не доступно'}
+					{minTimeSpentCurrentUser?.timeSpent !== undefined &&
+					minTimeSpentAllUser?.timeSpent !== undefined &&
+					minTimeSpentCurrentUser?.timeSpent <= minTimeSpentAllUser?.timeSpent
+						? `${minTimeSpentCurrentUser?.timeSpent} 🥇`
+						: minTimeSpentCurrentUser?.timeSpent ?? 'Не доступно'}
 				</p>
-				<p>Рекордное время: {minTimeSpentAllUser ?? 'Не доступно'}</p>
+				<p>
+					Рекордное время:{' '}
+					{`${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} (${
+						minTimeSpentAllUser?.userNickName || 'Нет ника'
+					})`}
+				</p>
 			</div>
 			<div className='w-full'>
 				<div className='flex flex-col space-y-4 w-full'>
@@ -530,6 +534,10 @@ const rowVirtualizer = useWindowVirtualizer({
 													<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
 														Процент правильных ответов:{' '}
 														{el.percentCorrectAnswer}
+													</div>
+													<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
+														Пользователь:{' '}
+														{el.userNickName ? el.userNickName : 'Нет ника'}
 													</div>
 													<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
 														Дата и время:{' '}

@@ -16,6 +16,7 @@ const EnglishStatisticsSchema = new mongoose.Schema(
 	{
 		userId: { type: String, required: true }, // Идентификатор пользователя
 		userName: { type: String, required: true, default: 'Гость' }, // Имя пользователя
+		userNickName: { type: String, required: false, default: '' },
 		userEmail: { type: String, required: false, default: '' }, // Email пользователя
 		appComponent: { type: String, required: true },
 		grade: { type: Number, required: true }, // Оценка пользователя (1-5)

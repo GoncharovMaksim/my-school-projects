@@ -15,7 +15,8 @@ export interface Task {
 export type Results = Task[];
 export interface MathStat {
 	userId: string; // Идентификатор пользователя
-	userName: string; // Имя пользователя
+	userName: string;
+	userNickName: string; // Имя пользователя
 	userEmail: string; // Email пользователя
 	appComponent: string; // Компонент приложения
 	operator: string; // Оператор (например, +, -, *)

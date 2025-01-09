@@ -32,6 +32,7 @@ export const authConfig: AuthOptions = {
 						image: user.image,
 						lastVisit: new Date(), // Устанавливаем дату визита
 						isAdmin: false, // Устанавливаем значение по умолчанию для обычных пользователей
+						nickName: 'Ник не задан',
 					});
 				}
 
@@ -63,6 +64,7 @@ export const authConfig: AuthOptions = {
 					if (dbUser) {
 						session.user.id = dbUser._id.toString();
 						session.user.isAdmin = dbUser.isAdmin; // Добавляем статус администратора в сессию
+						session.user.nickName = dbUser.nickName;
 					}
 				}
 				return session;

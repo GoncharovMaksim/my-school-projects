@@ -197,6 +197,7 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 			const gameData = {
 				userId: session.data?.user?.id || '',
 				userName: session.data?.user?.name || 'Гость',
+				userNickName: session.data?.user?.nickName || '',
 				userEmail: session.data?.user?.email || '',
 				appComponent: 'english',
 				percentCorrectAnswer,
