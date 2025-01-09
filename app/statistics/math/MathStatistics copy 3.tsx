@@ -55,7 +55,7 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 
 	useEffect(() => {
 		const storedDifficultyLevel = localStorage.getItem('difficultyLevel');
-		const storedOperator = localStorage.getItem('operator');
+		const storedOperator = localStorage.getItem('operatorMath');
 
 		const storedIdSelectedUser = localStorage.getItem('idSelectedUser');
 
@@ -78,21 +78,6 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 		const newStates = [...gradeStates];
 		newStates[index] = !newStates[index];
 		setGradeStates(newStates);
-	};
-
-	const getOperatorLabel = (operator: string) => {
-		switch (operator) {
-			case '*':
-				return 'Умножение';
-			case '+':
-				return 'Сложение';
-			case '-':
-				return 'Вычитание';
-			case '/':
-				return 'Деление';
-			default:
-				return '';
-		}
 	};
 
 	useEffect(() => {
@@ -180,11 +165,9 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 			}
 
 			if (operator) {
-				tempFilter = tempFilter.filter(
-					el => el.operator === getOperatorLabel(operator)
-				);
+				tempFilter = tempFilter.filter(el => el.operator === operator);
 
-				localStorage.setItem('operator', JSON.stringify(operator));
+				localStorage.setItem('operatorMath', JSON.stringify(operator));
 			}
 			if (difficultyLevel) {
 				tempFilter = tempFilter.filter(
@@ -245,29 +228,29 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 			<h3 className='text-2xl text-center font-bold mb-4'>Математика</h3>
 			<DropdownMenu
 				key={`operator-${operator}`}
-				defaultLabel={operator ? getOperatorLabel(operator) : 'Все действия'} // Отображаем правильную метку
+				defaultLabel={operator ? operator : 'Все действия'} // Отображаем правильную метку
 				options={[
 					{
 						label: 'Умножение',
-						onClick: () => setOperator('*'),
+						onClick: () => setOperator('Умножение'),
 					},
 					{
 						label: 'Сложение',
-						onClick: () => setOperator('+'),
+						onClick: () => setOperator('Сложение'),
 					},
 					{
 						label: 'Вычитание',
-						onClick: () => setOperator('-'),
+						onClick: () => setOperator('Вычитание'),
 					},
 					{
 						label: 'Деление',
-						onClick: () => setOperator('/'),
+						onClick: () => setOperator('Деление'),
 					},
 					{
 						label: 'Все действия',
 						onClick: () => {
 							setOperator('');
-							localStorage.setItem('operator', JSON.stringify(''));
+							localStorage.setItem('operatorMath', JSON.stringify(''));
 						},
 					},
 				]}
