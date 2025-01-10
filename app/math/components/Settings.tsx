@@ -29,7 +29,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 			const difficultyLevelLocalStorage =
 				localStorage.getItem('difficultyLevel');
 
-			setOperator(JSON.parse(operatorLocalStorage)); // Обновляем значение оператора
+			setOperator(operatorLocalStorage); // Обновляем значение оператора
 			setDifficultyLevel(
 				difficultyLevelLocalStorage ? Number(difficultyLevelLocalStorage) : 1
 			); // Устанавливаем уровень сложности
@@ -54,7 +54,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 			difficultyLevel,
 			gameStatus: true,
 		}));
-		localStorage.setItem('operator', JSON.stringify(operator)); // Сохраняем значение оператора
+		localStorage.setItem('operator', operator); // Сохраняем значение оператора
 		localStorage.setItem('difficultyLevel', difficultyLevel.toString()); // Сохраняем уровень сложности
 	};
 

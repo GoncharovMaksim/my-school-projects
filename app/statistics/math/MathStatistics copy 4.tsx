@@ -61,7 +61,7 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 
 		if (storedOperator) setOperator(storedOperator);
 		if (storedDifficultyLevel)
-			setDifficultyLevel(JSON.parse(storedDifficultyLevel));
+			setDifficultyLevel(storedDifficultyLevel);
 		if (storedIdSelectedUser)
 			setIdSelectedUser(JSON.parse(storedIdSelectedUser));
 	}, []);
@@ -192,7 +192,7 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 				);
 				localStorage.setItem(
 					'difficultyLevel',
-					JSON.stringify(difficultyLevel)
+					difficultyLevel.toString()
 				);
 			}
 			if (gradeTempList.length > 0) {
@@ -267,7 +267,7 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 						label: 'Все действия',
 						onClick: () => {
 							setOperator('');
-							localStorage.setItem('operator', JSON.stringify(''));
+							localStorage.setItem('operator','');
 						},
 					},
 				]}
@@ -294,7 +294,7 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 						label: 'Все уровни',
 						onClick: () => {
 							setDifficultyLevel('');
-							localStorage.setItem('difficultyLevel', JSON.stringify(''));
+							localStorage.setItem('difficultyLevel','');
 						},
 					},
 				]}
