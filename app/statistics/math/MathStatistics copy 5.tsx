@@ -231,12 +231,12 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 	}
 	if (minTimeSpent) {
 		return (
-			<div className='text-center'>
+			<p>
 				Рекордное время:{' '}
 				{`${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} (${
 					minTimeSpentAllUser?.userNickName || 'Нет ника'
 				})`}
-			</div>
+			</p>
 		);
 	}
 	return (
