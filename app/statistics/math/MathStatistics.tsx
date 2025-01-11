@@ -269,7 +269,7 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 						label: 'Все действия',
 						onClick: () => {
 							setOperator('');
-							localStorage.setItem('operator', JSON.stringify(''));
+							localStorage.setItem('operator', '');
 						},
 					},
 				]}
@@ -296,7 +296,7 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 						label: 'Все уровни',
 						onClick: () => {
 							setDifficultyLevel('');
-							localStorage.setItem('difficultyLevel', JSON.stringify(''));
+							localStorage.setItem('difficultyLevel', '');
 						},
 					},
 				]}

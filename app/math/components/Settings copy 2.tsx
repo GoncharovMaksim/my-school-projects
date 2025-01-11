@@ -9,7 +9,6 @@ export default function Settings({ setGameSettings }: GameProps) {
 
 	// Функция для получения текста оператора по его значению
 	const getOperatorLabel = (operator: string) => {
-	
 		switch (operator) {
 			case '*':
 				return 'Умножение';
@@ -26,18 +25,13 @@ export default function Settings({ setGameSettings }: GameProps) {
 
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
-			const operatorLocalStorage = localStorage.getItem('operator') || '*'; 
+			const operatorLocalStorage = localStorage.getItem('operator') || '*'; // По умолчанию '*'
 			const difficultyLevelLocalStorage =
-				localStorage.getItem('difficultyLevel')||1;
+				localStorage.getItem('difficultyLevel');
 
-			setOperator(operatorLocalStorage!==''?operatorLocalStorage:'*'); // Обновляем значение оператора
-			
-
-
+			setOperator(operatorLocalStorage); // Обновляем значение оператора
 			setDifficultyLevel(
-				difficultyLevelLocalStorage !== ''
-					? Number(difficultyLevelLocalStorage)
-					: 1
+				difficultyLevelLocalStorage ? Number(difficultyLevelLocalStorage) : 1
 			); // Устанавливаем уровень сложности
 
 			// После загрузки данных, снимаем флаг загрузки
@@ -65,7 +59,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 	};
 
 	if (isLoading) {
-		
+		// Пока идет загрузка данных, показываем индикатор
 		return <div>Загрузка...</div>;
 	}
 
