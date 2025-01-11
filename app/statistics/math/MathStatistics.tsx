@@ -232,10 +232,12 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 	if (minTimeSpent) {
 		return (
 			<div className='text-center'>
-				Рекордное время:{' '}
-				{`${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} (${
-					minTimeSpentAllUser?.userNickName || 'Нет ника'
-				})`}
+				Рекордное время:
+				{` ${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} ${
+					minTimeSpentAllUser?.userNickName
+						? `(${minTimeSpentAllUser.userNickName})`
+						: ''
+				}`}
 			</div>
 		);
 	}
@@ -413,10 +415,12 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 						: minTimeSpentCurrentUser?.timeSpent ?? 'Не доступно'}
 				</p>
 				<p>
-					Рекордное время:{' '}
-					{`${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} (${
-						minTimeSpentAllUser?.userNickName || 'Нет ника'
-					})`}
+					Рекордное время:
+					{` ${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} ${
+						minTimeSpentAllUser?.userNickName
+							? `(${minTimeSpentAllUser.userNickName})`
+							: ''
+					}`}
 				</p>
 			</div>
 			<div className='w-full'>
