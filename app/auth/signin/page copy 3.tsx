@@ -80,7 +80,7 @@ export default function SignInPage() {
 				</div>
 				<button
 					type='submit'
-					className='btn btn-outline w-full '
+					className='btn btn-primary w-full py-2 rounded bg-blue-600 text-white hover:bg-blue-700'
 				>
 					Войти
 				</button>
