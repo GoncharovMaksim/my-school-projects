@@ -18,7 +18,11 @@ import React from 'react';
 
 registerLocale('ru', ru);
 
-export default function MathStatistics() {
+interface MathStatisticsProps {
+	minTimeSpent?: boolean;
+}
+
+export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 	const dispatch = useDispatch<AppDispatch>();
 	const error = useSelector((state: RootState) => state.mathStat.error);
 	const allUsersStatisticsList = useSelector(
@@ -50,12 +54,12 @@ export default function MathStatistics() {
 	] = useState<MathStat[]>([]);
 
 	useEffect(() => {
-		const storedDifficultyLevel = localStorage.getItem('difficultyLevelMath');
-		const storedOperator = localStorage.getItem('operatorMath');
+		const storedDifficultyLevel = localStorage.getItem('difficultyLevel');
+		const storedOperator = localStorage.getItem('operator');
 
 		const storedIdSelectedUser = localStorage.getItem('idSelectedUser');
 
-		if (storedOperator) setOperator(JSON.parse(storedOperator));
+		if (storedOperator) setOperator(storedOperator);
 		if (storedDifficultyLevel)
 			setDifficultyLevel(JSON.parse(storedDifficultyLevel));
 		if (storedIdSelectedUser)
@@ -74,6 +78,21 @@ export default function MathStatistics() {
 		const newStates = [...gradeStates];
 		newStates[index] = !newStates[index];
 		setGradeStates(newStates);
+	};
+
+	const getOperatorLabel = (operator: string) => {
+		switch (operator) {
+			case '*':
+				return 'Умножение';
+			case '+':
+				return 'Сложение';
+			case '-':
+				return 'Вычитание';
+			case '/':
+				return 'Деление';
+			default:
+				return '';
+		}
 	};
 
 	useEffect(() => {
@@ -131,16 +150,11 @@ export default function MathStatistics() {
 		'timeSpent'
 	);
 
-	// const minTimeSpentAllUser = findMinByKey(
-	// 	allUsersRightAnswerFilterStatisticsList,
-	// 	'timeSpent'
-	// )?.timeSpent;
 	const minTimeSpentAllUser = findMinByKey(
 		allUsersRightAnswerFilterStatisticsList,
 		'timeSpent'
 	);
 
-	
 	useEffect(() => {
 		if (allUsersStatisticsList.length === 0) {
 			dispatch(loadMathStatistics());
@@ -166,16 +180,18 @@ export default function MathStatistics() {
 			}
 
 			if (operator) {
-				tempFilter = tempFilter.filter(el => el.operator === operator);
+				tempFilter = tempFilter.filter(
+					el => el.operator === getOperatorLabel(operator)
+				);
 
-				localStorage.setItem('operatorMath', JSON.stringify(operator));
+				localStorage.setItem('operator', operator);
 			}
 			if (difficultyLevel) {
 				tempFilter = tempFilter.filter(
 					el => el.difficultyLevel === difficultyLevel
 				);
 				localStorage.setItem(
-					'difficultyLevelMath',
+					'difficultyLevel',
 					JSON.stringify(difficultyLevel)
 				);
 			}
@@ -213,35 +229,47 @@ export default function MathStatistics() {
 	if (allUsersStatisticsList.length === 0) {
 		return <Loading />;
 	}
+	if (minTimeSpent) {
+		return (
+			<div className='text-center'>
+				Рекордное время:
+				{` ${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} ${
+					minTimeSpentAllUser?.userNickName
+						? `(${minTimeSpentAllUser.userNickName})`
+						: ''
+				}`}
+			</div>
+		);
+	}
 	return (
 		<div className='container mx-auto px-4 p-8 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<h1 className='text-4xl text-center font-bold mb-4'>Статистика</h1>
 			<h3 className='text-2xl text-center font-bold mb-4'>Математика</h3>
 			<DropdownMenu
 				key={`operator-${operator}`}
-				defaultLabel={operator ? operator : 'Все действия'} // Отображаем правильную метку
+				defaultLabel={operator ? getOperatorLabel(operator) : 'Все действия'} // Отображаем правильную метку
 				options={[
 					{
 						label: 'Умножение',
-						onClick: () => setOperator('Умножение'),
+						onClick: () => setOperator('*'),
 					},
 					{
 						label: 'Сложение',
-						onClick: () => setOperator('Сложение'),
+						onClick: () => setOperator('+'),
 					},
 					{
 						label: 'Вычитание',
-						onClick: () => setOperator('Вычитание'),
+						onClick: () => setOperator('-'),
 					},
 					{
 						label: 'Деление',
-						onClick: () => setOperator('Деление'),
+						onClick: () => setOperator('/'),
 					},
 					{
 						label: 'Все действия',
 						onClick: () => {
 							setOperator('');
-							localStorage.setItem('operatorMath', JSON.stringify(''));
+							localStorage.setItem('operator', '');
 						},
 					},
 				]}
@@ -268,7 +296,7 @@ export default function MathStatistics() {
 						label: 'Все уровни',
 						onClick: () => {
 							setDifficultyLevel('');
-							localStorage.setItem('difficultyLevelMath', JSON.stringify(''));
+							localStorage.setItem('difficultyLevel', '');
 						},
 					},
 				]}
@@ -387,10 +415,12 @@ export default function MathStatistics() {
 						: minTimeSpentCurrentUser?.timeSpent ?? 'Не доступно'}
 				</p>
 				<p>
-					Рекордное время:{' '}
-					{`${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} (${
-						minTimeSpentAllUser?.userNickName || 'Нет ника'
-					})`}
+					Рекордное время:
+					{` ${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} ${
+						minTimeSpentAllUser?.userNickName
+							? `(${minTimeSpentAllUser.userNickName})`
+							: ''
+					}`}
 				</p>
 			</div>
 			<div className='w-full'>

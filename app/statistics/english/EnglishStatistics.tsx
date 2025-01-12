@@ -131,6 +131,13 @@ export default function MathStatistics({ minTimeSpent }: EnglishStatisticsProps)
 		'timeSpent'
 	);
 
+	  const timeAllTests = currentUsersFilterStatisticsList.reduce(
+			(sum, item) => {
+				return sum + item.timeSpent;
+			},
+			0
+		);
+ 
 	useEffect(() => {
 		if (allUsersStatisticsList.length === 0) {
 			dispatch(loadEnglishStatistics());
@@ -499,6 +506,21 @@ export default function MathStatistics({ minTimeSpent }: EnglishStatisticsProps)
 							? `(${minTimeSpentAllUser.userNickName})`
 							: ''
 					}`}
+				</p>
+				<p>
+					Всего затрачено времени:
+					{` ${
+						timeAllTests
+							? `${
+									Math.floor(timeAllTests / 3600) > 0
+										? `${Math.floor(timeAllTests / 3600)} ч `
+										: ''
+							  }${Math.floor((timeAllTests % 3600) / 60)} мин ${Math.floor(
+									timeAllTests % 60
+							  )} сек`
+							: 'Не доступно'
+					}
+`}
 				</p>
 			</div>
 			<div className='w-full'>
