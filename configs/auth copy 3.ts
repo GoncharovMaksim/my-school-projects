@@ -35,7 +35,7 @@ export const authConfig: AuthOptions = {
 						password: hashedPassword,
 						name: credentials.email.split('@')[0], // Имя по умолчанию (можно изменить логику)
 						isAdmin: false,
-						nickName: credentials.nickName ? credentials.nickName : '',
+						nickName: credentials.nickName ?credentials.nickName: '',
 						lastVisit: new Date(),
 					});
 				}
@@ -59,9 +59,6 @@ export const authConfig: AuthOptions = {
 			},
 		}),
 	],
-	pages: {
-		signIn: '/auth/signin', // Укажите путь к кастомной странице
-	},
 	callbacks: {
 		async signIn({ user }) {
 			try {
@@ -72,10 +69,10 @@ export const authConfig: AuthOptions = {
 					existingUser.lastVisit = new Date();
 					existingUser.image = user.image;
 					existingUser.name = existingUser.name ? user.name : '';
-					if (!existingUser.nickName) {
+					 if (!existingUser.nickName) {
 						existingUser.nickName = user.nickName;
 					}
-					await existingUser.save();
+					 await existingUser.save();
 				} else {
 					await User.create({
 						email: user.email,
