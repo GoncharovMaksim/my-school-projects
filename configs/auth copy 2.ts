@@ -13,9 +13,8 @@ export const authConfig: AuthOptions = {
 		}),
 		CredentialsProvider({
 			credentials: {
-				email: { label: 'Email', type: 'email' },
-				nickName: { label: 'Nick', type: 'text' },
-				password: { label: 'Password', type: 'password' },
+				email: { label: 'Email', type: 'email', required: true },
+				password: { label: 'Password', type: 'password', required: true },
 			},
 			async authorize(credentials) {
 				if (!credentials?.email || !credentials?.password) {
@@ -24,27 +23,18 @@ export const authConfig: AuthOptions = {
 
 				await connectDB();
 
-				// Проверка, существует ли пользователь с таким email
-				let user = await User.findOne({ email: credentials.email });
+				const user = await User.findOne({ email: credentials.email });
 
 				if (!user) {
-					// Если пользователь не найден, создаем нового
-					const hashedPassword = await bcrypt.hash(credentials.password, 10);
-					user = await User.create({
-						email: credentials.email,
-						password: hashedPassword,
-						name: credentials.email.split('@')[0], // Имя по умолчанию (можно изменить логику)
-						isAdmin: false,
-						nickName: credentials.nickName ?credentials.nickName: '',
-						lastVisit: new Date(),
-					});
+					throw new Error('Пользователь не найден.');
 				}
 
-				// Проверка пароля, если пользователь был найден в базе
+				// Проверка пароля
 				const isPasswordValid = await bcrypt.compare(
 					credentials.password,
 					user.password
 				);
+
 				if (!isPasswordValid) {
 					throw new Error('Неверный пароль.');
 				}
@@ -54,7 +44,7 @@ export const authConfig: AuthOptions = {
 					email: user.email,
 					name: user.name,
 					isAdmin: user.isAdmin,
-					nickName: user.nickName ? user.nickName : credentials.nickName,
+					nickName: user.nickName,
 				};
 			},
 		}),
@@ -67,12 +57,7 @@ export const authConfig: AuthOptions = {
 
 				if (existingUser) {
 					existingUser.lastVisit = new Date();
-					existingUser.image = user.image;
-					existingUser.name = existingUser.name ? user.name : '';
-					 if (!existingUser.nickName) {
-						existingUser.nickName = user.nickName;
-					}
-					 await existingUser.save();
+					await existingUser.save();
 				} else {
 					await User.create({
 						email: user.email,
@@ -80,7 +65,7 @@ export const authConfig: AuthOptions = {
 						image: user.image,
 						lastVisit: new Date(),
 						isAdmin: false,
-						nickName: '',
+						nickName: 'Ник не задан',
 						password: bcrypt.hashSync('defaultPassword', 10), // Для Google авторизации (в случае необходимости)
 					});
 				}

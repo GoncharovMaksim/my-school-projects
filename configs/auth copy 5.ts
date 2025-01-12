@@ -14,12 +14,13 @@ export const authConfig: AuthOptions = {
 		CredentialsProvider({
 			credentials: {
 				email: { label: 'Email', type: 'email' },
-				nickName: { label: 'Nick', type: 'text' },
+				nickName: { label: 'Nick', type: 'nickName' },
 				password: { label: 'Password', type: 'password' },
 			},
 			async authorize(credentials) {
 				if (!credentials?.email || !credentials?.password) {
 					throw new Error('Email и пароль обязательны.');
+					
 				}
 
 				await connectDB();
@@ -35,7 +36,7 @@ export const authConfig: AuthOptions = {
 						password: hashedPassword,
 						name: credentials.email.split('@')[0], // Имя по умолчанию (можно изменить логику)
 						isAdmin: false,
-						nickName: credentials.nickName ?credentials.nickName: '',
+						nickName: credentials.nickName ?? 'Ник не задан',
 						lastVisit: new Date(),
 					});
 				}
@@ -54,7 +55,7 @@ export const authConfig: AuthOptions = {
 					email: user.email,
 					name: user.name,
 					isAdmin: user.isAdmin,
-					nickName: user.nickName ? user.nickName : credentials.nickName,
+					nickName: user.nickName,
 				};
 			},
 		}),
@@ -67,12 +68,7 @@ export const authConfig: AuthOptions = {
 
 				if (existingUser) {
 					existingUser.lastVisit = new Date();
-					existingUser.image = user.image;
-					existingUser.name = existingUser.name ? user.name : '';
-					 if (!existingUser.nickName) {
-						existingUser.nickName = user.nickName;
-					}
-					 await existingUser.save();
+					await existingUser.save();
 				} else {
 					await User.create({
 						email: user.email,
@@ -80,7 +76,7 @@ export const authConfig: AuthOptions = {
 						image: user.image,
 						lastVisit: new Date(),
 						isAdmin: false,
-						nickName: '',
+						nickName: 'Ник не задан',
 						password: bcrypt.hashSync('defaultPassword', 10), // Для Google авторизации (в случае необходимости)
 					});
 				}
