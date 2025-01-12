@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 
 import TgApi from '@/lib/tgApi';
 import { Word } from '@/types/word';
+import EnglishStatistics from '@/app/statistics/english/EnglishStatistics';
 
 export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const { difficultyLevel, stepGame, limGame } = gameSettings;
@@ -286,6 +287,7 @@ ${session.data?.user?.email || ''}`;
 							Оценка: <span className='text-2xl font-bold'>{gradeAnswer}</span>
 						</div>
 						<div>Время: {(gameSettings.timeSpent / 1000).toFixed(2)} сек</div>
+						<EnglishStatistics minTimeSpent={true} />
 					</div>
 					<button
 						className='btn btn-outline w-full max-w-xs'

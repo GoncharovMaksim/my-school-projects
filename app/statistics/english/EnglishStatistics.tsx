@@ -1,13 +1,13 @@
 'use client';
-import { useWindowVirtualizer } from '@tanstack/react-virtual';
+
 import { useEffect, useState } from 'react';
 import DropdownMenu from '@/components/DropdownMenu';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/lib/store';
 import Loading from '../loading';
-import { loadMathStatistics } from './loadMathStatistics';
+import { loadEnglishStatistics } from './loadEnglishStatistics';
 
-import { MathStat } from '@/types/mathStat';
+import { EnglishStat } from '@/types/englishStat';
 import { useSession } from 'next-auth/react';
 
 import DatePicker from 'react-datepicker';
@@ -15,56 +15,48 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { registerLocale } from 'react-datepicker';
 import { ru } from 'date-fns/locale';
 import React from 'react';
+import { useWindowVirtualizer } from '@tanstack/react-virtual';
 
 registerLocale('ru', ru);
 
-interface MathStatisticsProps {
+interface EnglishStatisticsProps {
 	minTimeSpent?: boolean;
 }
 
-export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
+export default function MathStatistics({ minTimeSpent }: EnglishStatisticsProps) {
 	const dispatch = useDispatch<AppDispatch>();
-	const error = useSelector((state: RootState) => state.mathStat.error);
+	const error = useSelector((state: RootState) => state.englishStat.error);
 	const allUsersStatisticsList = useSelector(
-		(state: RootState) => state.mathStat.mathStatList
+		(state: RootState) => state.englishStat.englishStatList
 	);
 
 	const [filterAllUsersStatisticsList, setFilterAllUsersStatisticsList] =
-		useState<MathStat[]>([]);
-	const [operator, setOperator] = useState('');
+		useState<EnglishStat[]>([]);
+	const [schoolClass, setSchoolClass] = useState<number | ''>('');
+	const [lessonUnit, setLessonUnit] = useState<number | ''>('');
+	const [unitStep, setUnitStep] = useState<number | ''>('');
 	const [idSelectedUser, setIdSelectedUser] = useState<string | ''>('');
 
+	const [listLessonUnit, setListLessonUnit] = useState<(number | '')[]>([]);
+	const [listUnitStep, setListUnitStep] = useState<(number | '')[]>([]);
 	const [listIdSelectedUser, setListIdSelectedUser] = useState<(string | '')[]>(
 		[]
 	);
-	const [difficultyLevel, setDifficultyLevel] = useState<number | string>();
+	const [difficultyLevel, setDifficultyLevel] = useState<number | ''>('');
 	const { data: session } = useSession();
 
-	const [startDate, setStartDate] = useState<Date | undefined>(new Date());
-	const [endDate, setEndDate] = useState<Date | undefined>(new Date());
+	const [startDate, setStartDate] = useState<Date | undefined>(new Date()); // startDate теперь может быть Date или undefined
+	const [endDate, setEndDate] = useState<Date | undefined>(new Date()); // endDate теперь может быть Date или undefined
 	const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
 	const handleConfirm = () => {
-		setIsCalendarOpen(false);
+		setIsCalendarOpen(false); // Скрываем календарь
 	};
 
 	const [
 		currentUsersFilterStatisticsList,
 		setCurrentUsersFilterStatisticsList,
-	] = useState<MathStat[]>([]);
-
-	useEffect(() => {
-		const storedDifficultyLevel = localStorage.getItem('difficultyLevelMath');
-		const storedOperator = localStorage.getItem('operatorMath');
-
-		const storedIdSelectedUser = localStorage.getItem('idSelectedUser');
-
-		if (storedOperator) setOperator(JSON.parse(storedOperator));
-		if (storedDifficultyLevel)
-			setDifficultyLevel(JSON.parse(storedDifficultyLevel));
-		if (storedIdSelectedUser)
-			setIdSelectedUser(JSON.parse(storedIdSelectedUser));
-	}, []);
+	] = useState<EnglishStat[]>([]);
 
 	const [gradeStates, setGradeStates] = useState<boolean[]>([
 		true,
@@ -83,7 +75,6 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 	useEffect(() => {
 		function selectedUserFilterChange() {
 			let tempFilter = filterAllUsersStatisticsList;
-
 			if (idSelectedUser) {
 				tempFilter = tempFilter.filter(el => el.userId === idSelectedUser);
 				localStorage.setItem('idSelectedUser', JSON.stringify(idSelectedUser));
@@ -121,7 +112,7 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 	const allUsersRightAnswerFilterStatisticsList =
 		filterAllUsersStatisticsList.filter(el => el.grade === 5);
 
-	const findMinByKey = <T extends MathStat>(
+	const findMinByKey = <T extends EnglishStat>(
 		array: T[],
 		key: keyof T
 	): T | undefined => {
@@ -142,9 +133,28 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 
 	useEffect(() => {
 		if (allUsersStatisticsList.length === 0) {
-			dispatch(loadMathStatistics());
+			dispatch(loadEnglishStatistics());
 		}
 	}, [dispatch, allUsersStatisticsList.length]);
+
+	useEffect(() => {
+		const storedSchoolClass = localStorage.getItem('schoolClass');
+		const storedLessonUnit = localStorage.getItem('lessonUnit');
+		const storedUnitStep = localStorage.getItem('unitStep');
+		const storedDifficultyLevel = localStorage.getItem(
+			'difficultyLevelEnglish'
+		);
+
+		const storedIdSelectedUser = localStorage.getItem('idSelectedUser');
+
+		if (storedSchoolClass) setSchoolClass(JSON.parse(storedSchoolClass));
+		if (storedLessonUnit) setLessonUnit(JSON.parse(storedLessonUnit));
+		if (storedUnitStep) setUnitStep(JSON.parse(storedUnitStep));
+		if (storedDifficultyLevel)
+			setDifficultyLevel(JSON.parse(storedDifficultyLevel));
+		if (storedIdSelectedUser)
+			setIdSelectedUser(JSON.parse(storedIdSelectedUser));
+	}, []);
 
 	useEffect(() => {
 		const handleFilterChange = () => {
@@ -164,17 +174,49 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 				});
 			}
 
-			if (operator) {
-				tempFilter = tempFilter.filter(el => el.operator === operator);
+			if (schoolClass) {
+				tempFilter = tempFilter.filter(el => el.schoolClass === schoolClass);
+				const uniqTempListLessonUnit = [
+					...new Set(tempFilter.map(el => el.lessonUnit)),
+				].sort((a, b) => {
+					const numA = a === '' ? Infinity : a;
+					const numB = b === '' ? Infinity : b;
+					return numA - numB;
+				});
 
-				localStorage.setItem('operatorMath', JSON.stringify(operator));
+				setListLessonUnit(uniqTempListLessonUnit);
+				localStorage.setItem('schoolClass', JSON.stringify(schoolClass));
+				localStorage.setItem('lessonUnit', JSON.stringify(''));
+				localStorage.setItem('unitStep', JSON.stringify(''));
 			}
+
+			if (lessonUnit) {
+				tempFilter = tempFilter.filter(el => el.lessonUnit === lessonUnit);
+				const uniqTempListUnitStep = [
+					...new Set(tempFilter.map(el => el.unitStep)),
+				].sort((a, b) => {
+					const numA = a === '' ? Infinity : a;
+					const numB = b === '' ? Infinity : b;
+					return numA - numB;
+				});
+				setListUnitStep(uniqTempListUnitStep);
+				localStorage.setItem('lessonUnit', JSON.stringify(lessonUnit));
+				localStorage.setItem('unitStep', JSON.stringify(''));
+			} else {
+				setListUnitStep([]);
+			}
+
+			if (unitStep) {
+				tempFilter = tempFilter.filter(el => el.unitStep === unitStep);
+				localStorage.setItem('unitStep', JSON.stringify(unitStep));
+			}
+
 			if (difficultyLevel) {
 				tempFilter = tempFilter.filter(
 					el => el.difficultyLevel === difficultyLevel
 				);
 				localStorage.setItem(
-					'difficultyLevelMath',
+					'difficultyLevelEnglish',
 					JSON.stringify(difficultyLevel)
 				);
 			}
@@ -183,21 +225,21 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 					item => gradeTempList.includes(item.grade) // Проверяем, есть ли grade в tempList
 				);
 			}
-
 			setFilterAllUsersStatisticsList(tempFilter);
 		};
 
 		handleFilterChange();
 	}, [
 		allUsersStatisticsList,
+		schoolClass,
+		lessonUnit,
+		unitStep,
 		difficultyLevel,
 		startDate,
 		endDate,
 		idSelectedUser,
-		operator,
 		gradeStates,
 	]);
-
 	const listRef = React.useRef<HTMLDivElement | null>(null);
 
 	const rowVirtualizer = useWindowVirtualizer({
@@ -214,45 +256,101 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 	}
 	if (minTimeSpent) {
 		return (
-			<p>
-				Рекордное время:{' '}
-				{`${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} (${
-					minTimeSpentAllUser?.userNickName || 'Нет ника'
-				})`}
-			</p>
+			<div className='text-center'>
+				Рекордное время:
+				{` ${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} ${
+					minTimeSpentAllUser?.userNickName
+						? `(${minTimeSpentAllUser.userNickName})`
+						: ''
+				}`}
+			</div>
 		);
 	}
 	return (
 		<div className='container mx-auto px-4 p-8 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<h1 className='text-4xl text-center font-bold mb-4'>Статистика</h1>
-			<h3 className='text-2xl text-center font-bold mb-4'>Математика</h3>
+			<h3 className='text-2xl text-center font-bold mb-4'>Английский</h3>
 			<DropdownMenu
-				key={`operator-${operator}`}
-				defaultLabel={operator ? operator : 'Все действия'} // Отображаем правильную метку
+				key={`schoolClass-${schoolClass}`}
+				defaultLabel={
+					schoolClass !== ''
+						? `Выбран класс ${schoolClass.toString()}`
+						: 'Выбрать класс'
+				}
 				options={[
 					{
-						label: 'Умножение',
-						onClick: () => setOperator('Умножение'),
-					},
-					{
-						label: 'Сложение',
-						onClick: () => setOperator('Сложение'),
-					},
-					{
-						label: 'Вычитание',
-						onClick: () => setOperator('Вычитание'),
-					},
-					{
-						label: 'Деление',
-						onClick: () => setOperator('Деление'),
-					},
-					{
-						label: 'Все действия',
+						label: 'Класс: 2',
 						onClick: () => {
-							setOperator('');
-							localStorage.setItem('operatorMath', JSON.stringify(''));
+							return setSchoolClass(2), setLessonUnit(''), setUnitStep('');
 						},
 					},
+					{
+						label: 'Класс: 3',
+						onClick: () => {
+							return setSchoolClass(3), setLessonUnit(''), setUnitStep('');
+						},
+					},
+					{
+						label: 'Все классы',
+						onClick: () => {
+							return (
+								localStorage.setItem('schoolClass', JSON.stringify('')),
+								localStorage.setItem('lessonUnit', JSON.stringify('')),
+								localStorage.setItem('unitStep', JSON.stringify('')),
+								setSchoolClass(''),
+								setLessonUnit(''),
+								setUnitStep('')
+							);
+						},
+					},
+				]}
+			/>
+			<DropdownMenu
+				key={`lessonUnit-${schoolClass}`}
+				defaultLabel={
+					lessonUnit !== ''
+						? `Выбран урок: ${lessonUnit.toString()}`
+						: 'Выбрать урок'
+				}
+				options={[
+					{
+						label: 'Все уроки',
+						onClick: () => {
+							return (
+								localStorage.setItem('lessonUnit', JSON.stringify('')),
+								localStorage.setItem('unitStep', JSON.stringify('')),
+								setLessonUnit(''),
+								setUnitStep('')
+							);
+						},
+					},
+					...listLessonUnit.map((el: number | '') => ({
+						label: `Выбран урок: ${el}`,
+						onClick: () => {
+							return setLessonUnit(el), setUnitStep('');
+						},
+					})),
+				]}
+			/>
+			<DropdownMenu
+				key={`unitStep-${lessonUnit}`}
+				defaultLabel={
+					unitStep !== '' ? `Выбран шаг: ${unitStep.toString()}` : 'Выбрать шаг'
+				}
+				options={[
+					{
+						label: 'Все шаги',
+						onClick: () => {
+							return (
+								localStorage.setItem('unitStep', JSON.stringify('')),
+								setUnitStep('')
+							);
+						},
+					},
+					...listUnitStep.map((el: number | '') => ({
+						label: `Выбран шаг: ${el}`,
+						onClick: () => setUnitStep(el),
+					})),
 				]}
 			/>
 			<DropdownMenu
@@ -282,10 +380,9 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 					},
 				]}
 			/>
-
 			{session?.user?.isAdmin === true ? (
 				<DropdownMenu
-					key={`idSelectedUser-${idSelectedUser}`}
+					key={idSelectedUser}
 					defaultLabel={
 						idSelectedUser !== ''
 							? `${
@@ -391,15 +488,17 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 					Ваше лучшее время:{' '}
 					{minTimeSpentCurrentUser?.timeSpent !== undefined &&
 					minTimeSpentAllUser?.timeSpent !== undefined &&
-					minTimeSpentCurrentUser?.timeSpent <= minTimeSpentAllUser.timeSpent
+					minTimeSpentCurrentUser?.timeSpent <= minTimeSpentAllUser?.timeSpent
 						? `${minTimeSpentCurrentUser?.timeSpent} 🥇`
 						: minTimeSpentCurrentUser?.timeSpent ?? 'Не доступно'}
 				</p>
 				<p>
-					Рекордное время:{' '}
-					{`${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} (${
-						minTimeSpentAllUser?.userNickName || 'Нет ника'
-					})`}
+					Рекордное время:
+					{` ${minTimeSpentAllUser?.timeSpent ?? 'Не доступно'} ${
+						minTimeSpentAllUser?.userNickName
+							? `(${minTimeSpentAllUser.userNickName})`
+							: ''
+					}`}
 				</p>
 			</div>
 			<div className='w-full'>
@@ -440,10 +539,13 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 												className='border p-4 rounded-lg flex flex-col items-center justify-center bg-gray-200 shadow-md w-full h-full '
 											>
 												<div className='text-2xl font-bold break-words overflow-hidden text-ellipsis'>
-													Уровень: {el.difficultyLevel}
+													Класс: {el.schoolClass ? el.schoolClass : 'все'},
+													Урок: {el.lessonUnit ? el.lessonUnit : 'все'}, Шаг:{' '}
+													{el.unitStep ? el.unitStep : 'все'}, Уровень:{' '}
+													{el.difficultyLevel}
 												</div>
-												<div className='items-start'>
-													<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
+												<div className='items-start '>
+													<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis '>
 														Оценка: {el.grade}, Время прохождения:{' '}
 														{el.timeSpent} с
 													</div>
@@ -451,7 +553,6 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 														Процент правильных ответов:{' '}
 														{el.percentCorrectAnswer}
 													</div>
-
 													<div className='flex items-end text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
 														Пользователь:{' '}
 														{el.userNickName ? el.userNickName : 'Нет ника'}
@@ -471,29 +572,31 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 												<div className='flex flex-col items-center justify-center text-2xl text-gray-400 break-words overflow-hidden text-ellipsis'>
 													<div className='collapse collapse-arrow bg-base-200 overflow-visible'>
 														<input type='checkbox' name='my-accordion-2' />
-														<div className='collapse-title text-xl font-bold text-center'>
+														<div className='collapse-title text-xl font-bold text-center '>
 															Вопросы теста:
 														</div>
 
-														<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0'>
-															{el.results.map(question => (
-																<div
-																	key={question._id}
-																	className='border p-2 rounded-md w-full'
-																>
-																	<p>Вопрос № {question.taskIndex}</p>
-																	<p>Пример: {question.task.question}</p>
-																	<p>
-																		Правильный ответ:{' '}
-																		{question.task.result.toString()}
-																	</p>
-																	<p>
-																		Ответ пользователя:{' '}
-																		{question.task.userAnswer}
-																	</p>
-																	<p>Результат: {question.taskResult}</p>
-																</div>
-															))}
+														<div className='collapse-content flex flex-col items-center text-xl space-y-2 min-w-0 '>
+															{el.results.map(el => {
+																return (
+																	<div
+																		key={el._id}
+																		className='border p-2 rounded-md w-full'
+																	>
+																		{' '}
+																		<p>Вопрос № {el.taskIndex}</p>
+																		<p>Слово: {el.task.question} </p>
+																		<p>
+																			Правильный ответ:{' '}
+																			{el.task.rightAnswer.toString()}
+																		</p>
+																		<p>
+																			Ответ пользователя: {el.task.userAnswer}
+																		</p>
+																		<p>Результат: {el.taskResult}</p>
+																	</div>
+																);
+															})}
 														</div>
 													</div>
 												</div>
@@ -509,4 +612,4 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 		</div>
 	);
 }
-//4
+//
