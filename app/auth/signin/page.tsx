@@ -1,28 +1,18 @@
 'use client';
 
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function SignInPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const callbackUrl = searchParams.get('callbackUrl') || '/';
+	const callbackUrl = searchParams.get('callbackUrl') || '/'; // Получаем изначальную страницу или используем `/`
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [nickName, setNickName] = useState('');
 	const [error, setError] = useState('');
-	const [redirecting, setRedirecting] = useState(false);
-
-	const { data: session, status, update } = useSession(); // Подключаем update для обновления сессии
-
-	useEffect(() => {
-		if (status === 'authenticated' && !redirecting) {
-			setRedirecting(true);
-			router.push(callbackUrl);
-		}
-	}, [status, session, callbackUrl, router, redirecting]);
 
 	const handleSignIn = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -33,30 +23,30 @@ export default function SignInPage() {
 				email,
 				password,
 				nickName,
-				callbackUrl,
 			});
 
 			if (!result?.ok) {
 				setError('Неверный email или пароль.');
 			} else {
 				setError('');
+				console.log('Callback URL:', callbackUrl);
+				console.log('SignIn Result:', result);
 
-				// Принудительно обновляем сессию после успешного входа
-				await update();
-
-				setRedirecting(true);
-				router.push('https://school112.ru/math');
+				router.push('/statistics/math'); // Перенаправляем на изначальную страницу
 			}
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (err) {
 			setError('Ошибка при входе. Попробуйте снова.');
+			console.error(err);
 		}
 	};
 
 	return (
-		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
+		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
 			<div className='p-8 flex flex-col items-center space-y-6'>
 				<h1 className='text-4xl text-center font-bold mb-4'>Вход</h1>
+				{/* <div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
+			<h1 className='text-2xl font-bold'>Войти в систему</h1> */}
+
 				<form onSubmit={handleSignIn} className='w-full max-w-md space-y-4'>
 					{error && <div className='text-red-500 text-sm'>{error}</div>}
 					<div className='flex flex-col'>
@@ -104,9 +94,7 @@ export default function SignInPage() {
 
 				<button
 					className='btn btn-outline w-full'
-					onClick={() => {
-						signIn('google', { callbackUrl });
-					}}
+					onClick={() => signIn('google', { callbackUrl })}
 				>
 					Войти через Google
 				</button>
@@ -114,3 +102,4 @@ export default function SignInPage() {
 		</div>
 	);
 }
+//1
