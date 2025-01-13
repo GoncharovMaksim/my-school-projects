@@ -45,7 +45,7 @@ export default function SignInPage() {
 				await update();
 
 				setRedirecting(true);
-				router.push('/math');
+				router.push('https://school112.ru/math');
 			}
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (err) {
