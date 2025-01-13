@@ -1,6 +1,5 @@
 'use client';
 
-import Loading from '@/app/loading';
 import { signIn, useSession } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -14,7 +13,6 @@ export default function SignInPage() {
 	const [password, setPassword] = useState('');
 	const [nickName, setNickName] = useState('');
 	const [error, setError] = useState('');
-const [isLoading, setisLoading]= useState(false);
 
 	useEffect(() => {
 		if (status === 'authenticated') {
@@ -26,7 +24,7 @@ const [isLoading, setisLoading]= useState(false);
 
 	const handleSignIn = async (e: React.FormEvent) => {
 		e.preventDefault();
-setisLoading(true);
+
 		try {
 			const result = await signIn('credentials', {
 				redirect: false,
@@ -50,9 +48,7 @@ setisLoading(true);
 			console.error(err);
 		}
 	};
-if(isLoading){
-	return <Loading/>
-}
+
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<div className='p-8 flex flex-col items-center space-y-6'>
