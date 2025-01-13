@@ -1,5 +1,5 @@
 // pages/signin.tsx (или ваш файл страницы)
-
+'use client'
 import { signIn } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
