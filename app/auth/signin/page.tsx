@@ -15,15 +15,18 @@ export default function SignInPage() {
 	const [error, setError] = useState('');
 
 	// Используем useSession для получения текущей сессии
-	const { data: session } = useSession();
+
+
+	const { data: session, status } = useSession();
 
 	useEffect(() => {
-		if (session?.user) {
-			// Если пользователь уже авторизован, сразу перенаправляем
-			console.log('User already logged in, redirecting...');
+		if (status === 'authenticated') {
+			// После того как сессия получена, можно делать редирект
+			console.log('User authenticated, redirecting...');
 			router.push(callbackUrl);
 		}
-	}, [session, callbackUrl, router]);
+	}, [status, session, callbackUrl, router]);
+
 
 	// Логируем состояния при изменении значений
 	useEffect(() => {
@@ -56,9 +59,9 @@ export default function SignInPage() {
 			} else {
 				setError('');
 				console.log('SignIn succeeded, redirecting...');
-				//router.push('/profile');
+				router.push('/profile');
 				//window.location.href = callbackUrl; // Перенаправляем на изначальную страницу
-				router.replace(callbackUrl);
+				//router.replace(callbackUrl);
 			}
 		} catch (err) {
 			setError('Ошибка при входе. Попробуйте снова.');
