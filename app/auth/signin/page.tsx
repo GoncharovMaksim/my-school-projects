@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { signIn, useSession } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -13,13 +13,13 @@ export default function SignInPage() {
 	const [password, setPassword] = useState('');
 	const [nickName, setNickName] = useState('');
 	const [error, setError] = useState('');
-	const [redirecting, setRedirecting] = useState(false); // Флаг для принудительного рендеринга
+	const [redirecting, setRedirecting] = useState(false);
 
-	const { data: session, status } = useSession();
+	const { data: session, status, update } = useSession(); // Подключаем update для обновления сессии
 
 	useEffect(() => {
 		if (status === 'authenticated' && !redirecting) {
-			setRedirecting(true); // Обновляем флаг перед редиректом
+			setRedirecting(true);
 			router.push(callbackUrl);
 		}
 	}, [status, session, callbackUrl, router, redirecting]);
@@ -40,7 +40,11 @@ export default function SignInPage() {
 				setError('Неверный email или пароль.');
 			} else {
 				setError('');
-				setRedirecting(true); // Обновляем флаг перед редиректом
+
+				// Принудительно обновляем сессию после успешного входа
+				await update();
+
+				setRedirecting(true);
 				router.push('/math');
 			}
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
