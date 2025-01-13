@@ -61,7 +61,6 @@ export const authConfig: AuthOptions = {
 	],
 	pages: {
 		signIn: '/auth/signin', // Укажите путь к кастомной странице
-		
 	},
 	callbacks: {
 		async signIn({ user }) {
@@ -107,7 +106,6 @@ export const authConfig: AuthOptions = {
 						session.user.nickName = dbUser.nickName;
 					}
 				}
-				
 				return session;
 			} catch (error) {
 				console.error('Ошибка при обновлении session:', error);
