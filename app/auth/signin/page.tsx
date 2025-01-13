@@ -41,7 +41,7 @@ export default function SignInPage() {
 			} else {
 				setError('');
 				setRedirecting(true); // Обновляем флаг перед редиректом
-				router.push('/profile');
+				router.push(callbackUrl);
 			}
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (err) {
