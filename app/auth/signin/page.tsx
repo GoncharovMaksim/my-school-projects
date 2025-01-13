@@ -18,7 +18,7 @@ export default function SignInPage() {
 		if (status === 'authenticated') {
 			console.log('sessionUseEf:', session);
 			// Если пользователь уже аутентифицирован, сразу перенаправляем
-			router.push(callbackUrl);
+			router.push('/english');
 		}
 	}, [status, router, callbackUrl, session]);
 
