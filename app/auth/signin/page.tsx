@@ -1,18 +1,8 @@
+'use client';
 
-'use client'
 import { signIn } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
-
-export async function getServerSideProps(context: { res: { setHeader: (arg0: string, arg1: string) => void; }; }) {
-	// Устанавливаем заголовки для отключения кеширования
-	context.res.setHeader('Cache-Control', 'no-store');
-
-	// Можно вернуть пустые props или что-то еще, если необходимо
-	return {
-		props: {}, // данные для страницы
-	};
-}
+import { useState, useEffect } from 'react';
 
 export default function SignInPage() {
 	const router = useRouter();
@@ -24,8 +14,19 @@ export default function SignInPage() {
 	const [nickName, setNickName] = useState('');
 	const [error, setError] = useState('');
 
+	// Логируем состояния при изменении значений
+	useEffect(() => {
+		console.log('Email:', email);
+		console.log('Password:', password);
+		console.log('NickName:', nickName);
+		console.log('Callback URL:', callbackUrl);
+	}, [email, password, nickName, callbackUrl]);
+
 	const handleSignIn = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		console.log('Form submitted');
+		console.log('Attempting to sign in with:', { email, password, nickName });
 
 		try {
 			const result = await signIn('credentials', {
@@ -35,25 +36,27 @@ export default function SignInPage() {
 				nickName,
 			});
 
+			console.log('SignIn result:', result);
+
 			if (!result?.ok) {
 				setError('Неверный email или пароль.');
+				console.error('SignIn failed:', result?.error || 'Unknown error');
 			} else {
 				setError('');
-				console.log('Callback URL:', callbackUrl);
-				console.log('SignIn Result:', result);
-
+				console.log('SignIn succeeded, redirecting...');
 				router.push(callbackUrl); // Перенаправляем на изначальную страницу
 			}
 		} catch (err) {
 			setError('Ошибка при входе. Попробуйте снова.');
-			console.error(err);
+			console.error('SignIn error:', err);
 		}
 	};
 
 	return (
-		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
+		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
 			<div className='p-8 flex flex-col items-center space-y-6'>
 				<h1 className='text-4xl text-center font-bold mb-4'>Вход</h1>
+
 				<form onSubmit={handleSignIn} className='w-full max-w-md space-y-4'>
 					{error && <div className='text-red-500 text-sm'>{error}</div>}
 					<div className='flex flex-col'>
@@ -101,7 +104,10 @@ export default function SignInPage() {
 
 				<button
 					className='btn btn-outline w-full'
-					onClick={() => signIn('google', { callbackUrl })}
+					onClick={() => {
+						console.log('Attempting Google sign-in');
+						signIn('google', { callbackUrl });
+					}}
 				>
 					Войти через Google
 				</button>
