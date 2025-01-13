@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-//import DarkNav from '../components/DarkNav';
+import DarkNav from '../components/DarkNav';
 import Providers from '../components/Providers';
 import BottomNavigation from '@/components/BottomNavigation';
 
@@ -32,7 +32,7 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100 min-h-screen flex flex-col`}
 			>
 				<Providers>
-					
+					<DarkNav />
 					<main className='flex-1 pb-[60px]'>
 						{/* отступ равен высоте меню */}
 						{children}
