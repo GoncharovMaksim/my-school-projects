@@ -70,7 +70,7 @@ export const authConfig: AuthOptions = {
 
 				if (existingUser) {
 					existingUser.lastVisit = new Date();
-					existingUser.image = user.image;
+					existingUser.image = user.image ? user.image : existingUser.image;
 					existingUser.name = existingUser.name ? user.name : '';
 					if (!existingUser.nickName) {
 						existingUser.nickName = user.nickName;
@@ -104,6 +104,9 @@ export const authConfig: AuthOptions = {
 						session.user.id = dbUser._id.toString();
 						session.user.isAdmin = dbUser.isAdmin;
 						session.user.nickName = dbUser.nickName;
+						session.user.name = dbUser.name;
+						session.user.image = dbUser.image || '';
+						session.user.email = dbUser.email;
 					}
 				}
 				return session;
