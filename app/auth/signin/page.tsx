@@ -56,7 +56,7 @@ export default function SignInPage() {
 							value={email}
 							onChange={e => setEmail(e.target.value)}
 							required
-							className='border px-3 py-2 rounded w-full'
+							className='input input-bordered w-full max-w-xs'
 						/>
 					</div>
 					<div className='flex flex-col'>
@@ -68,7 +68,7 @@ export default function SignInPage() {
 							id='nickName'
 							value={nickName}
 							onChange={e => setNickName(e.target.value)}
-							className='border px-3 py-2 rounded w-full'
+							className='input input-bordered w-full max-w-xs'
 						/>
 					</div>
 					<div className='flex flex-col'>
@@ -81,7 +81,7 @@ export default function SignInPage() {
 							value={password}
 							onChange={e => setPassword(e.target.value)}
 							required
-							className='border px-3 py-2 rounded w-full'
+							className='input input-bordered w-full max-w-xs'
 						/>
 					</div>
 					<button type='submit' className='btn btn-outline w-full'>
@@ -89,15 +89,14 @@ export default function SignInPage() {
 					</button>
 				</form>
 
-				
-					<button
-						className='btn btn-outline w-full'
-						onClick={() => signIn('google', { callbackUrl })}
-					>
-						Войти через Google
-					</button>
-				
+				<button
+					className='btn btn-outline w-full'
+					onClick={() => signIn('google', { callbackUrl })}
+				>
+					Войти через Google
+				</button>
 			</div>
 		</div>
 	);
 }
+//1
