@@ -41,7 +41,7 @@ export default function SignInPage() {
 			} else {
 				setError('');
 				setRedirecting(true); // Обновляем флаг перед редиректом
-				router.push(callbackUrl);
+				router.push('/math');
 			}
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (err) {
