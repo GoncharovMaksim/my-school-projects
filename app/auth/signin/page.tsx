@@ -29,10 +29,9 @@ export default function SignInPage() {
 				setError('Неверный email или пароль.');
 			} else {
 				setError('');
-				console.log('Callback URL:', callbackUrl);
-				console.log('SignIn Result:', result);
+				
 
-				router.push('/statistics/math'); // Перенаправляем на изначальную страницу
+				router.push(callbackUrl); // Перенаправляем на изначальную страницу
 			}
 		} catch (err) {
 			setError('Ошибка при входе. Попробуйте снова.');
