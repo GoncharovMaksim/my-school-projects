@@ -43,6 +43,13 @@ export default function Home() {
 								</button>
 							</Link>
 						</div>
+						<div>
+							<Link href='/profile'>
+								<button className='btn btn-outline min-w-[200px]'>
+									Профиль
+								</button>
+							</Link>
+						</div>
 
 						{/* <img src='./images/71.png' alt='' /> */}
 						{/* <img src='./next.svg' alt='' /> */}
