@@ -40,7 +40,7 @@ export default function DarkNav() {
 	const user = {
 		name: session.data?.user?.name || 'Гость',
 		email: session.data?.user?.email || '',
-		imageUrl: session?.data?.user?.image || '/globe.svg',
+		imageUrl: session?.data?.user?.image || '',
 	};
 
 	return (
