@@ -1,5 +1,6 @@
 'use client';
 
+import DarkNav from '@/components/DarkNav';
 import { signIn } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -112,6 +113,7 @@ export default function SignInPage() {
 					Войти через Google
 				</button>
 			</div>
+			<DarkNav />
 		</div>
 	);
 }
