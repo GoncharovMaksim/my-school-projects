@@ -26,7 +26,7 @@ function classNames(...classes: string[]) {
 export default function DarkNav() {
 	const session = useSession();
 
-	console.log(session);
+	//console.log(session);
 	const userNavigation = session.data
 		? [
 				{ name: 'Профиль', href: '/profile' },

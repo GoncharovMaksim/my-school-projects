@@ -56,7 +56,8 @@ export default function SignInPage() {
 			} else {
 				setError('');
 				console.log('SignIn succeeded, redirecting...');
-				router.push(callbackUrl); // Перенаправляем на изначальную страницу
+				router.push('/profile');
+				window.location.href = callbackUrl; // Перенаправляем на изначальную страницу
 			}
 		} catch (err) {
 			setError('Ошибка при входе. Попробуйте снова.');
