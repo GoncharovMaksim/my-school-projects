@@ -33,14 +33,14 @@ export const authConfig: AuthOptions = {
 					user = await User.create({
 						email: credentials.email,
 						password: hashedPassword,
-						name: credentials.email.split('@')[0], // Имя по умолчанию (можно изменить логику)
+						name: credentials.email.split('@')[0], // Имя по умолчанию
 						isAdmin: false,
-						nickName: credentials.nickName ? credentials.nickName : '',
+						nickName: credentials.nickName || '',
 						lastVisit: new Date(),
 					});
 				}
 
-				// Проверка пароля, если пользователь был найден в базе
+				// Проверка пароля, если пользователь найден
 				const isPasswordValid = await bcrypt.compare(
 					credentials.password,
 					user.password
@@ -54,14 +54,13 @@ export const authConfig: AuthOptions = {
 					email: user.email,
 					name: user.name,
 					isAdmin: user.isAdmin,
-					nickName: user.nickName ? user.nickName : credentials.nickName,
+					nickName: user.nickName || credentials.nickName,
 				};
 			},
 		}),
 	],
 	pages: {
-		signIn: '/auth/signin', // Укажите путь к кастомной странице
-		
+		signIn: '/auth/signin',
 	},
 	callbacks: {
 		async signIn({ user }) {
@@ -72,7 +71,6 @@ export const authConfig: AuthOptions = {
 				if (existingUser) {
 					existingUser.lastVisit = new Date();
 					existingUser.image = user.image;
-					existingUser.name = existingUser.name ? user.name : '';
 					if (!existingUser.nickName) {
 						existingUser.nickName = user.nickName;
 					}
@@ -85,7 +83,7 @@ export const authConfig: AuthOptions = {
 						lastVisit: new Date(),
 						isAdmin: false,
 						nickName: '',
-						password: bcrypt.hashSync('defaultPassword', 10), // Для Google авторизации (в случае необходимости)
+						password: bcrypt.hashSync('defaultPassword', 10),
 					});
 				}
 
