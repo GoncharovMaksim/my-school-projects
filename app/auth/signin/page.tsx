@@ -32,7 +32,7 @@ export default function SignInPage() {
 				console.log('Callback URL:', callbackUrl);
 				console.log('SignIn Result:', result);
 
-				router.push(callbackUrl); // Перенаправляем на изначальную страницу
+			await router.push(callbackUrl); // Перенаправляем на изначальную страницу
 			}
 		} catch (err) {
 			setError('Ошибка при входе. Попробуйте снова.');
