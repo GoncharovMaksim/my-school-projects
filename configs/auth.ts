@@ -6,6 +6,9 @@ import User from '@/models/User';
 import bcrypt from 'bcrypt';
 
 export const authConfig: AuthOptions = {
+	session: {
+		strategy: 'jwt', // Используйте JWT для избежания задержек
+	},
 	providers: [
 		GoogleProvider({
 			clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -59,9 +62,9 @@ export const authConfig: AuthOptions = {
 			},
 		}),
 	],
+	debug: true,
 	pages: {
 		signIn: '/auth/signin', // Укажите путь к кастомной странице
-		
 	},
 	callbacks: {
 		async signIn({ user }) {

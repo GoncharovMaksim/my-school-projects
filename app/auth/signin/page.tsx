@@ -1,13 +1,13 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
+import { signIn, getSession } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function SignInPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const callbackUrl = searchParams.get('callbackUrl') || '/'; // Получаем изначальную страницу или используем `/`
+	const callbackUrl = searchParams.get('callbackUrl') || '/';
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -29,16 +29,15 @@ export default function SignInPage() {
 				setError('Неверный email или пароль.');
 			} else {
 				setError('');
-
-				router.refresh();
-				router.push(callbackUrl); // Перенаправляем на изначальную страницу
+				// Явно обновляем данные сессии
+				await getSession();
+				router.push(callbackUrl); // Перенаправляем
 			}
 		} catch (err) {
 			setError('Ошибка при входе. Попробуйте снова.');
 			console.error(err);
 		}
 	};
-
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
 			<div className='p-8 flex flex-col items-center space-y-6'>
