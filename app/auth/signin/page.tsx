@@ -27,11 +27,12 @@ export default function SignInPage() {
 
 		try {
 			const result = await signIn('credentials', {
-				redirect: false,
+				//redirect: false,
 				email,
 				password,
 				nickName,
 				callbackUrl: callbackUrl,
+				redirectTo: callbackUrl,
 			});
 
 			if (!result?.ok) {
@@ -39,7 +40,8 @@ export default function SignInPage() {
 			} else {
 				setError('');
 				console.log('session:', session); // логируем сессию
-				router.push(callbackUrl); // Перенаправляем на изначальную страницу
+				//router.push(callbackUrl); // Перенаправляем на изначальную страницу
+				
 			}
 		} catch (err) {
 			setError('Ошибка при входе. Попробуйте снова.');
