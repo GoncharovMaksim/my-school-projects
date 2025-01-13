@@ -27,19 +27,19 @@ export default function SignInPage() {
 
 		try {
 			const result = await signIn('credentials', {
-				//redirect: false,
+				redirect: false,
 				email,
 				password,
 				nickName,
 				callbackUrl: callbackUrl,
-				redirectTo: callbackUrl,
+				
 			});
 
 			if (!result?.ok) {
 				setError('Неверный email или пароль.');
 			} else {
 				setError('');
-				console.log('session:', session); // логируем сессию
+				window.location.href = callbackUrl;
 				//router.push(callbackUrl); // Перенаправляем на изначальную страницу
 				
 			}
