@@ -1,27 +1,26 @@
 'use client';
 
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState,  } from 'react';
 
 export default function SignInPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const callbackUrl = searchParams.get('callbackUrl') || '/'; // Получаем изначальную страницу или используем `/`
+	const callbackUrl = searchParams.get('callbackUrl') || '/';
 
-	const { data: session, status } = useSession(); // Получаем сессию пользователя
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [nickName, setNickName] = useState('');
 	const [error, setError] = useState('');
 
-	// Проверка сессии, если сессия активна, перенаправляем на callbackUrl
-	useEffect(() => {
-		if (status === 'authenticated') {
+	// Функция для проверки сессии
+	const checkSession = async () => {
+		const session = await fetch('/api/auth/session').then(res => res.json());
+		if (session?.user) {
 			router.push(callbackUrl);
-			console.log(session)
 		}
-	}, [status, callbackUrl, router, session]);
+	};
 
 	const handleSignIn = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -41,8 +40,8 @@ export default function SignInPage() {
 				console.log('Callback URL:', callbackUrl);
 				console.log('SignIn Result:', result);
 
-				// Перенаправляем на изначальную страницу
-				router.push(callbackUrl);
+				// Проверяем сессию и перенаправляем пользователя
+				checkSession();
 			}
 		} catch (err) {
 			setError('Ошибка при входе. Попробуйте снова.');

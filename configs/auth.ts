@@ -107,7 +107,6 @@ export const authConfig: AuthOptions = {
 						session.user.nickName = dbUser.nickName;
 					}
 				}
-				
 				return session;
 			} catch (error) {
 				console.error('Ошибка при обновлении session:', error);
