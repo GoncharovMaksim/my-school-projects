@@ -1,5 +1,3 @@
-'use client';
-
 import { signIn, useSession } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -7,40 +5,25 @@ import { useState, useEffect } from 'react';
 export default function SignInPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const callbackUrl = searchParams.get('callbackUrl') || '/'; // Получаем изначальную страницу или используем `/`
+	const callbackUrl = searchParams.get('callbackUrl') || '/';
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [nickName, setNickName] = useState('');
 	const [error, setError] = useState('');
-
-	// Используем useSession для получения текущей сессии
-
+	const [redirecting, setRedirecting] = useState(false); // Флаг для принудительного рендеринга
 
 	const { data: session, status } = useSession();
 
 	useEffect(() => {
-		if (status === 'authenticated') {
-			// После того как сессия получена, можно делать редирект
-			console.log('User authenticated, redirecting...');
+		if (status === 'authenticated' && !redirecting) {
+			setRedirecting(true); // Обновляем флаг перед редиректом
 			router.push(callbackUrl);
 		}
-	}, [status, session, callbackUrl, router]);
-
-
-	// Логируем состояния при изменении значений
-	useEffect(() => {
-		console.log('Email:', email);
-		console.log('Password:', password);
-		console.log('NickName:', nickName);
-		console.log('Callback URL:', callbackUrl);
-	}, [email, password, nickName, callbackUrl]);
+	}, [status, session, callbackUrl, router, redirecting]);
 
 	const handleSignIn = async (e: React.FormEvent) => {
 		e.preventDefault();
-
-		console.log('Form submitted');
-		console.log('Attempting to sign in with:', { email, password, nickName });
 
 		try {
 			const result = await signIn('credentials', {
@@ -51,21 +34,16 @@ export default function SignInPage() {
 				callbackUrl,
 			});
 
-			console.log('SignIn result:', result);
-
 			if (!result?.ok) {
 				setError('Неверный email или пароль.');
-				console.error('SignIn failed:', result?.error || 'Unknown error');
 			} else {
 				setError('');
-				console.log('SignIn succeeded, redirecting...');
+				setRedirecting(true); // Обновляем флаг перед редиректом
 				router.push('/profile');
-				//window.location.href = callbackUrl; // Перенаправляем на изначальную страницу
-				//router.replace(callbackUrl);
 			}
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (err) {
 			setError('Ошибка при входе. Попробуйте снова.');
-			console.error('SignIn error:', err);
 		}
 	};
 
@@ -73,7 +51,6 @@ export default function SignInPage() {
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<div className='p-8 flex flex-col items-center space-y-6'>
 				<h1 className='text-4xl text-center font-bold mb-4'>Вход</h1>
-
 				<form onSubmit={handleSignIn} className='w-full max-w-md space-y-4'>
 					{error && <div className='text-red-500 text-sm'>{error}</div>}
 					<div className='flex flex-col'>
@@ -122,7 +99,6 @@ export default function SignInPage() {
 				<button
 					className='btn btn-outline w-full'
 					onClick={() => {
-						console.log('Attempting Google sign-in');
 						signIn('google', { callbackUrl });
 					}}
 				>
