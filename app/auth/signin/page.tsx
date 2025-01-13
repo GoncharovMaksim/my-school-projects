@@ -29,6 +29,9 @@ export default function SignInPage() {
 				setError('Неверный email или пароль.');
 			} else {
 				setError('');
+				console.log('Callback URL:', callbackUrl);
+				console.log('SignIn Result:', result);
+
 				router.push(callbackUrl); // Перенаправляем на изначальную страницу
 			}
 		} catch (err) {
