@@ -31,6 +31,7 @@ export default function SignInPage() {
 				setError('');
 				// Явно обновляем данные сессии
 				await getSession();
+				router.replace(callbackUrl);
 				router.push(callbackUrl); // Перенаправляем
 			}
 		} catch (err) {
