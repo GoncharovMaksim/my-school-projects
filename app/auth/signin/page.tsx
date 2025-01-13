@@ -1,7 +1,6 @@
 'use client';
 
-import DarkNav from '@/components/DarkNav';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
@@ -14,6 +13,17 @@ export default function SignInPage() {
 	const [password, setPassword] = useState('');
 	const [nickName, setNickName] = useState('');
 	const [error, setError] = useState('');
+
+	// Используем useSession для получения текущей сессии
+	const { data: session } = useSession();
+
+	useEffect(() => {
+		if (session?.user) {
+			// Если пользователь уже авторизован, сразу перенаправляем
+			console.log('User already logged in, redirecting...');
+			router.push(callbackUrl);
+		}
+	}, [session, callbackUrl, router]);
 
 	// Логируем состояния при изменении значений
 	useEffect(() => {
@@ -54,7 +64,7 @@ export default function SignInPage() {
 	};
 
 	return (
-		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
+		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<div className='p-8 flex flex-col items-center space-y-6'>
 				<h1 className='text-4xl text-center font-bold mb-4'>Вход</h1>
 
@@ -113,7 +123,6 @@ export default function SignInPage() {
 					Войти через Google
 				</button>
 			</div>
-			<DarkNav />
 		</div>
 	);
 }
