@@ -18,7 +18,7 @@ export default function SignInPage() {
 		if (status === 'authenticated') {
 			console.log('sessionUseEf:', session);
 			// Если пользователь уже аутентифицирован, сразу перенаправляем
-			router.push('/english');
+			router.push(callbackUrl);
 		}
 	}, [status, router, callbackUrl, session]);
 
@@ -31,6 +31,7 @@ export default function SignInPage() {
 				email,
 				password,
 				nickName,
+				callbackUrl: callbackUrl,
 			});
 
 			if (!result?.ok) {
