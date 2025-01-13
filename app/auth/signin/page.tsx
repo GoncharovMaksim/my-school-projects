@@ -30,8 +30,8 @@ export default function SignInPage() {
 			} else {
 				setError('');
 
-				router.refresh();
-				router.push(callbackUrl); // Перенаправляем на изначальную страницу
+				router.push('/profile');
+				//router.push(callbackUrl); // Перенаправляем на изначальную страницу
 			}
 		} catch (err) {
 			setError('Ошибка при входе. Попробуйте снова.');
