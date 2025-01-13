@@ -1,27 +1,18 @@
 'use client';
 
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function SignInPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const callbackUrl = searchParams.get('callbackUrl') || '/'; // Получаем изначальную страницу или используем `/`
 
-	const { data: session, status } = useSession(); // Получаем сессию пользователя
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [nickName, setNickName] = useState('');
 	const [error, setError] = useState('');
-
-	// Проверка сессии, если сессия активна, перенаправляем на callbackUrl
-	useEffect(() => {
-		if (status === 'authenticated') {
-			router.push(callbackUrl);
-			console.log(session)
-		}
-	}, [status, callbackUrl, router, session]);
 
 	const handleSignIn = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -41,8 +32,7 @@ export default function SignInPage() {
 				console.log('Callback URL:', callbackUrl);
 				console.log('SignIn Result:', result);
 
-				// Перенаправляем на изначальную страницу
-				router.push(callbackUrl);
+			 router.push(callbackUrl); // Перенаправляем на изначальную страницу
 			}
 		} catch (err) {
 			setError('Ошибка при входе. Попробуйте снова.');
@@ -54,6 +44,8 @@ export default function SignInPage() {
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
 			<div className='p-8 flex flex-col items-center space-y-6'>
 				<h1 className='text-4xl text-center font-bold mb-4'>Вход</h1>
+				{/* <div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
+			<h1 className='text-2xl font-bold'>Войти в систему</h1> */}
 
 				<form onSubmit={handleSignIn} className='w-full max-w-md space-y-4'>
 					{error && <div className='text-red-500 text-sm'>{error}</div>}
@@ -110,3 +102,4 @@ export default function SignInPage() {
 		</div>
 	);
 }
+//1
