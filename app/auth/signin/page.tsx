@@ -28,7 +28,7 @@ export default function SignInPage() {
 
 	const handleSignIn = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setisLoading(true);
+		//setisLoading(true);
 		try {
 			const result = await signIn('credentials', {
 				redirect: false,
@@ -42,6 +42,7 @@ export default function SignInPage() {
 				setError('Неверный email или пароль.');
 			} else {
 				setError('');
+				setisLoading(true);
 				window.location.href = callbackUrl;
 			}
 		} catch (err) {
