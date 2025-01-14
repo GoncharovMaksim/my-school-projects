@@ -86,30 +86,34 @@ export default function SignInPage() {
 							className='input input-bordered w-full max-w-xs'
 						/>
 					</div>
-					<div className='flex flex-col relative'>
+					<div className='flex flex-col'>
 						<label htmlFor='password' className='mb-1 font-medium'>
 							Пароль
 						</label>
-						<input
-							type={showPassword ? 'text' : 'password'}
-							id='password'
-							value={password}
-							onChange={e => setPassword(e.target.value)}
-							required
-							className='input input-bordered w-full max-w-xs pr-10'
-						/>
-						<button
-							type='button'
-							onClick={() => setShowPassword(!showPassword)}
-							className='absolute right-2 top-10 p-2'
-						>
-							{showPassword ? (
-								<EyeSlashIcon className='h-6 w-6 text-gray-600' />
-							) : (
-								<EyeIcon className='h-6 w-6 text-gray-600' />
-							)}
-						</button>
+						<div className='relative w-full max-w-xs'>
+							<input
+								type={showPassword ? 'text' : 'password'}
+								id='password'
+								value={password}
+								onChange={e => setPassword(e.target.value)}
+								required
+								className='input input-bordered w-full pr-10'
+							/>
+
+							<button
+								type='button'
+								onClick={() => setShowPassword(!showPassword)}
+								className='absolute inset-y-0 right-0 w-16 mr-2'
+							>
+								{showPassword ? (
+									<EyeSlashIcon className='h-6 w-6 text-gray-600' />
+								) : (
+									<EyeIcon className='h-6 w-6 text-gray-600' />
+								)}
+							</button>
+						</div>
 					</div>
+
 					<button type='submit' className='btn btn-outline w-full'>
 						Войти
 					</button>

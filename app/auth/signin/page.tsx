@@ -4,6 +4,7 @@ import Loading from '@/app/loading';
 import { signIn, useSession } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'; // Импортируем иконки глаз
 
 export default function SignInPage() {
 	const router = useRouter();
@@ -14,7 +15,8 @@ export default function SignInPage() {
 	const [password, setPassword] = useState('');
 	const [nickName, setNickName] = useState('');
 	const [error, setError] = useState('');
-const [isLoading, setisLoading]= useState(false);
+	const [isLoading, setisLoading] = useState(false);
+	const [showPassword, setShowPassword] = useState(false); // Новое состояние для управления видимостью пароля
 
 	useEffect(() => {
 		if (status === 'authenticated') {
@@ -26,7 +28,7 @@ const [isLoading, setisLoading]= useState(false);
 
 	const handleSignIn = async (e: React.FormEvent) => {
 		e.preventDefault();
-setisLoading(true);
+		setisLoading(true);
 		try {
 			const result = await signIn('credentials', {
 				redirect: false,
@@ -34,7 +36,6 @@ setisLoading(true);
 				password,
 				nickName,
 				callbackUrl: callbackUrl,
-				
 			});
 
 			if (!result?.ok) {
@@ -42,17 +43,17 @@ setisLoading(true);
 			} else {
 				setError('');
 				window.location.href = callbackUrl;
-				//router.push(callbackUrl); // Перенаправляем на изначальную страницу
-				
 			}
 		} catch (err) {
 			setError('Ошибка при входе. Попробуйте снова.');
 			console.error(err);
 		}
 	};
-if(isLoading){
-	return <Loading/>
-}
+
+	if (isLoading) {
+		return <Loading />;
+	}
+
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center'>
 			<div className='p-8 flex flex-col items-center space-y-6'>
@@ -89,15 +90,30 @@ if(isLoading){
 						<label htmlFor='password' className='mb-1 font-medium'>
 							Пароль
 						</label>
-						<input
-							type='password'
-							id='password'
-							value={password}
-							onChange={e => setPassword(e.target.value)}
-							required
-							className='input input-bordered w-full max-w-xs'
-						/>
+						<div className='relative w-full max-w-xs'>
+							<input
+								type={showPassword ? 'text' : 'password'}
+								id='password'
+								value={password}
+								onChange={e => setPassword(e.target.value)}
+								required
+								className='input input-bordered w-full p-8'
+							/>
+
+							<button
+								type='button'
+								onClick={() => setShowPassword(!showPassword)}
+								className='absolute inset-y-0 right-0 w-16 mr-2'
+							>
+								{showPassword ? (
+									<EyeSlashIcon className='h-6 w-6 text-gray-600' />
+								) : (
+									<EyeIcon className='h-6 w-6 text-gray-600' />
+								)}
+							</button>
+						</div>
 					</div>
+
 					<button type='submit' className='btn btn-outline w-full'>
 						Войти
 					</button>
