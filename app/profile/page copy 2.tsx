@@ -18,7 +18,6 @@ export default function Profile() {
 	const { data: session } = useSession() as { data: UserSession | null };
 	const userImage = session?.user?.image || '/default-avatar.png';
 	const [inputValue, setInputValue] = useState<string>('');
-	const [successMessage, setSuccessMessage] = useState<string>('');
 	const urlFetchSetPassword = '/api/userParametrs';
 
 	const saveNewPassword = async (userId: string, newPassword: string) => {
@@ -38,8 +37,6 @@ export default function Profile() {
 			}
 
 			console.log('Пароль успешно обновлен:', data.message);
-			setSuccessMessage('Пароль успешно обновлен!');
-			setInputValue(''); // Очистить поле ввода пароля
 		} catch (error: unknown) {
 			if (error instanceof Error) {
 				console.error('Ошибка при обновлении пароля:', error.message);
@@ -93,13 +90,11 @@ export default function Profile() {
 								return;
 							}
 							saveNewPassword(session.user.id, inputValue);
+							
 						}}
 					>
 						Сохранить
 					</button>
-					{successMessage && (
-						<p className='text-gray-500 mt-2'>{successMessage}</p>
-					)}
 				</div>
 			</div>
 		</div>
