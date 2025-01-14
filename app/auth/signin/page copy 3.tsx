@@ -94,7 +94,7 @@ export default function SignInPage() {
 							<button
 								type='button'
 								onClick={() => setShowPassword(!showPassword)}
-								className='w-16 ml-auto'
+								className='w-16'
 							>
 								{showPassword ? (
 									<EyeSlashIcon className='h-6 w-6 text-gray-600' />
