@@ -60,9 +60,9 @@ export default function DarkNav() {
 							<div className='flex items-center'>
 								<div className='shrink-0'>
 									<img
-										alt='Your Company'
-										src='https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500'
-										className='size-8'
+										alt='Школа112'
+										src='/favicon.png'
+										className='size-8 rounded-full bg-gray-200 p-1 shadow-md'
 									/>
 								</div>
 								<div className='hidden md:block'>
