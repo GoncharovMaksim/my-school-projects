@@ -46,7 +46,7 @@ export default function Home() {
 						
 
 						{/* <img src='./images/71.png' alt='' /> */}
-						{/* <img src='./next.svg' alt='' /> */}
+						 <img src='./next.svg' alt='' /> 
 					</div>
 				</main>
 			</div>

@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import {
 	Disclosure,
 	DisclosureButton,
@@ -59,11 +60,15 @@ export default function DarkNav() {
 						<div className='flex h-16 items-center justify-between'>
 							<div className='flex items-center'>
 								<div className='shrink-0'>
-									<img
-										alt='Школа112'
-										src='/schoolLogo.png'
-										className='size-8 rounded-full bg-gray-200 p-1 shadow-md'
-									/>
+									<div>
+										<Image
+											alt='Школа112'
+											src='/schoolLogo.png'
+											width={500}
+											height={500}
+											className='size-10 rounded-full bg-gray-200 p-1 shadow-md'
+										/>
+									</div>
 								</div>
 								<div className='hidden md:block'>
 									<div className='ml-10 flex items-baseline space-x-4'>
@@ -102,11 +107,17 @@ export default function DarkNav() {
 											<MenuButton className='relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
 												<span className='absolute -inset-1.5' />
 												<span className='sr-only'>Open user menu</span>
-												<img
-													alt=''
-													src={user.imageUrl}
-													className='size-8 rounded-full'
-												/>
+												<div>
+													{user?.imageUrl && (
+														<Image
+															src={user.imageUrl}
+															alt='User Avatar'
+															width={500}
+															height={500}
+															className='size-8 rounded-full'
+														/>
+													)}
+												</div>
 											</MenuButton>
 										</div>
 										<MenuItems
@@ -174,11 +185,17 @@ export default function DarkNav() {
 						<div className='border-t border-gray-700 pb-3 pt-4'>
 							<div className='flex items-center px-5'>
 								<div className='shrink-0'>
-									<img
-										alt=''
-										src={user.imageUrl}
-										className='size-10 rounded-full'
-									/>
+									<div>
+										{user?.imageUrl && (
+											<Image
+												src={user.imageUrl}
+												alt='User Avatar'
+												width={500}
+												height={500}
+												className='size-10 rounded-full'
+											/>
+										)}
+									</div>
 								</div>
 								<div className='ml-3'>
 									<div className='text-base/5 font-medium text-white'>
