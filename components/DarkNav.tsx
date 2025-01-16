@@ -114,7 +114,7 @@ export default function DarkNav() {
 															alt='User Avatar'
 															width={500}
 															height={500}
-															className='size-8 rounded-full'
+															className='size-10 rounded-full'
 														/>
 													)}
 												</div>
