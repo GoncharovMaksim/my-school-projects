@@ -61,7 +61,7 @@ export default function DarkNav() {
 								<div className='shrink-0'>
 									<img
 										alt='Школа112'
-										src='/favicon.png'
+										src='/schoolLogo.png'
 										className='size-8 rounded-full bg-gray-200 p-1 shadow-md'
 									/>
 								</div>
