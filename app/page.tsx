@@ -13,16 +13,18 @@ export default function Home() {
 	useEffect(() => {
 		dispatch(loadEnglishStatistics());
 		dispatch(loadWords());
-			dispatch(loadMathStatistics());
+		dispatch(loadMathStatistics());
 	}, [dispatch]);
 	return (
 		//<div className='bg-gray-100 min-h-screen flex flex-col'>
 		<div className='bg-gray-100 min-h-screen flex flex-col '>
 			<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
+				
 				<header className=''>
-					<div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8'>
+					<div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 items-center'>
+						<img src='./112noWWW.svg' alt='Школа 112' />
 						<h1 className='text-3xl text-center font-bold tracking-tight text-gray-900'>
-							Школа112 - Лучший проект для помощи ученику
+							Проект для помощи ученику
 						</h1>
 					</div>
 				</header>
@@ -43,10 +45,9 @@ export default function Home() {
 								</button>
 							</Link>
 						</div>
-						
 
-						{/* <img src='./images/71.png' alt='' /> */}
-						 <img src='./next.svg' alt='' /> 
+						{/* <img className='bg-black' src='./images/72.png' alt='' />  */}
+						<img src='./112sWWW.svg' alt='Школа 112' />
 					</div>
 				</main>
 			</div>
