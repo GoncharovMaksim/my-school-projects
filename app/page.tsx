@@ -85,6 +85,17 @@ export default function Home() {
 				</div>
 
 				<div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex flex-col items-center space-y-8'>
+					{!isInstalled && deferredPrompt && (
+						<div className='mt-4'>
+							<button
+								className='btn btn-outline min-w-[200px]'
+								onClick={handleInstallClick}
+							>
+								Установить приложение
+							</button>
+						</div>
+					)}
+
 					<div>
 						<Link href='/english'>
 							<button className='btn btn-outline min-w-[200px]'>
@@ -101,17 +112,6 @@ export default function Home() {
 						</Link>
 					</div>
 				</div>
-
-				{!isInstalled && deferredPrompt && (
-					<div className='mt-4'>
-						<button
-							className='btn btn-outline min-w-[200px]'
-							onClick={handleInstallClick}
-						>
-							Установить приложение
-						</button>
-					</div>
-				)}
 
 				<hr className='my-4 border-black border-2 w-full' />
 
