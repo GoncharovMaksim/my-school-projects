@@ -1,69 +1,24 @@
 'use client';
 import Link from 'next/link';
+
 import { loadEnglishStatistics } from './statistics/english/loadEnglishStatistics';
 import { useDispatch } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { loadWords } from './english/components/loadWords';
 import { AppDispatch } from '@/lib/store';
 import { loadMathStatistics } from './statistics/math/loadMathStatistics';
+import PushNotification from './PushNotification';
 
-// Определяем интерфейс для события beforeinstallprompt
-interface BeforeInstallPromptEvent extends Event {
-	prompt: () => Promise<void>;
-	userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
-}
 
 export default function Home() {
 	const dispatch = useDispatch<AppDispatch>();
-	const [deferredPrompt, setDeferredPrompt] =
-		useState<BeforeInstallPromptEvent | null>(null); // Состояние для события установки
-	const [isInstalled, setIsInstalled] = useState(false); // Для отслеживания установки
-
 	useEffect(() => {
 		dispatch(loadEnglishStatistics());
 		dispatch(loadWords());
 		dispatch(loadMathStatistics());
-
-		// Слушаем событие `beforeinstallprompt`
-		const handleBeforeInstallPrompt = (e: Event) => {
-			const promptEvent = e as BeforeInstallPromptEvent;
-			e.preventDefault();
-			setDeferredPrompt(promptEvent); // Сохраняем событие
-		};
-
-		// Слушаем событие `appinstalled`
-		const handleAppInstalled = () => {
-			setIsInstalled(true); // Приложение установлено
-		};
-
-		window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-		window.addEventListener('appinstalled', handleAppInstalled);
-
-		// Очистка слушателей при размонтировании
-		return () => {
-			window.removeEventListener(
-				'beforeinstallprompt',
-				handleBeforeInstallPrompt
-			);
-			window.removeEventListener('appinstalled', handleAppInstalled);
-		};
 	}, [dispatch]);
-
-	// Обработчик клика для кнопки установки
-	const handleInstallClick = async () => {
-		if (deferredPrompt) {
-			await deferredPrompt.prompt(); // Показываем диалог установки
-			const choice = await deferredPrompt.userChoice;
-			if (choice.outcome === 'accepted') {
-				console.log('PWA установлено пользователем');
-			} else {
-				console.log('Пользователь отказался от установки');
-			}
-			setDeferredPrompt(null); // Сбрасываем сохранённое событие
-		}
-	};
-
 	return (
+		//<div className='bg-gray-100 min-h-screen flex flex-col'>
 		<div className='bg-gray-100 min-h-screen flex flex-col '>
 			<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
 				<div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 items-center'>
@@ -85,17 +40,6 @@ export default function Home() {
 				</div>
 
 				<div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex flex-col items-center space-y-8'>
-					{!isInstalled && deferredPrompt && (
-						<div className='mt-4'>
-							<button
-								className='btn btn-outline min-w-[200px]'
-								onClick={handleInstallClick}
-							>
-								Установить приложение
-							</button>
-						</div>
-					)}
-
 					<div>
 						<Link href='/english'>
 							<button className='btn btn-outline min-w-[200px]'>
@@ -112,7 +56,6 @@ export default function Home() {
 						</Link>
 					</div>
 				</div>
-
 				<hr className='my-4 border-black border-2 w-full' />
 
 				<h3
@@ -122,6 +65,9 @@ export default function Home() {
 					school112.ru
 				</h3>
 			</div>
+			
+			
 		</div>
 	);
 }
+//

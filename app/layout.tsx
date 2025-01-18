@@ -4,7 +4,7 @@ import './globals.css';
 import DarkNav from '../components/DarkNav';
 import Providers from '../components/Providers';
 import BottomNavigation from '@/components/BottomNavigation';
-import { Rubik_Doodle_Shadow } from 'next/font/google';
+//import { Rubik_Doodle_Shadow } from 'next/font/google';
 
 const geistSans = localFont({
 	src: './fonts/GeistVF.woff',
@@ -18,9 +18,10 @@ const geistMono = localFont({
 });
 
 
-const rubikDoodleShadow = Rubik_Doodle_Shadow({
+const rubikDoodleShadow = localFont({
+	src: './fonts/RubikDoodleShadow-Regular.ttf',
 	variable: '--font-rubik-doodle-shadow',
-	subsets: ['cyrillic'],
+	//subsets: ['cyrillic'],
 	display: 'swap',
 	weight: '400', // Укажите корректный вес шрифта, если он известен
 });
