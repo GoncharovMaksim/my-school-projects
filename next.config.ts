@@ -1,15 +1,9 @@
 import type { NextConfig } from 'next';
 
-const nextConfig: NextConfig = {};
-module.exports = {
+const nextConfig: NextConfig = {
 	images: {
-		domains: ['lh3.googleusercontent.com'], // добавьте сюда хост, с которого хотите загружать изображения
+		domains: ['lh3.googleusercontent.com'], // Добавьте сюда хост, с которого хотите загружать изображения
 	},
-};
-export default nextConfig;
-
-
-module.exports = {
 	async headers() {
 		return [
 			{
@@ -49,3 +43,5 @@ module.exports = {
 		];
 	},
 };
+
+export default nextConfig;

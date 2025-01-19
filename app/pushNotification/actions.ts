@@ -1,6 +1,6 @@
 'use server';
 
-import webpush, { PushSubscription } from 'web-push';
+import webpush, { PushSubscription, WebPushError } from 'web-push';
 import Subscription from '@/models/Subscription';
 
 // Настройка VAPID-ключей
@@ -10,8 +10,20 @@ webpush.setVapidDetails(
 	process.env.VAPID_PRIVATE_KEY! // Приватный ключ
 );
 
+// Типизация для результата работы функций
+interface SubscribeResult {
+	success: boolean;
+}
+
+interface SendNotificationResult {
+	success: boolean;
+	results: { endpoint: string; success: boolean }[];
+}
+
 // Сохранить подписку в MongoDB
-export async function subscribeUser(subscription: PushSubscription) {
+export async function subscribeUser(
+	subscription: PushSubscription
+): Promise<SubscribeResult> {
 	const { endpoint, keys } = subscription;
 
 	// Проверка на null или undefined для keys
@@ -36,7 +48,9 @@ export async function subscribeUser(subscription: PushSubscription) {
 }
 
 // Удалить подписку из MongoDB
-export async function unsubscribeUser(endpoint: string) {
+export async function unsubscribeUser(
+	endpoint: string
+): Promise<SubscribeResult> {
 	try {
 		await Subscription.deleteOne({ endpoint });
 		return { success: true };
@@ -50,8 +64,10 @@ export async function unsubscribeUser(endpoint: string) {
 }
 
 // Отправить уведомления всем пользователям
-export async function sendNotification(message: string) {
-	const results = [];
+export async function sendNotification(
+	message: string
+): Promise<SendNotificationResult> {
+	const results: { endpoint: string; success: boolean }[] = [];
 	const subscriptions = await Subscription.find(); // Получить все подписки
 
 	for (const sub of subscriptions) {
@@ -83,7 +99,7 @@ export async function sendNotification(message: string) {
 				);
 			}
 
-			if (error instanceof webpush.WebPushError && error.statusCode === 410) {
+			if (error instanceof WebPushError && error.statusCode === 410) {
 				// Удалить недействительную подписку
 				await Subscription.deleteOne({ endpoint: sub.endpoint });
 				console.log(`Subscription ${sub.endpoint} has been removed.`);
@@ -95,4 +111,3 @@ export async function sendNotification(message: string) {
 
 	return { success: true, results };
 }
-//
