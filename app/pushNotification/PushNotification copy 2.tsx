@@ -122,17 +122,17 @@ function PushNotificationManager() {
 
 	return (
 		<div>
-			<h3>Push-уведомления</h3>
+			<h3>Push Notifications</h3>
 			{state.loading && <p>Loading...</p>}
 			{state.subscription ? (
 				<>
-					<p>Вы подписаны на push-уведомления.</p>
+					<p>You are subscribed to push notifications.</p>
 					<button onClick={unsubscribeFromPush} disabled={state.loading}>
 						Unsubscribe
 					</button>
 					<input
 						type='text'
-						placeholder='Введите сообщение'
+						placeholder='Enter notification message'
 						value={state.message}
 						onChange={e =>
 							setState(prev => ({ ...prev, message: e.target.value }))
@@ -140,14 +140,14 @@ function PushNotificationManager() {
 						disabled={state.loading}
 					/>
 					<button onClick={sendTestNotification} disabled={state.loading}>
-						Отправить
+						Send Test
 					</button>
 				</>
 			) : (
 				<>
-					<p>Вы не подписаны на push-уведомления.</p>
+					<p>You are not subscribed to push notifications.</p>
 					<button onClick={subscribeToPush} disabled={state.loading}>
-						Подписаться
+						Subscribe
 					</button>
 				</>
 			)}

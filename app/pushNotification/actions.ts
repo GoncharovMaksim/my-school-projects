@@ -100,9 +100,9 @@ export async function sendNotification(
 						keys: sub.keys,
 					},
 					JSON.stringify({
-						title: 'Test Notification',
+						title: 'Школа112',
 						body: message,
-						icon: '/icon.png',
+						icon: '/icon-192x192.png',
 					})
 				);
 				console.log(`Notification sent to endpoint: ${sub.endpoint}`);
