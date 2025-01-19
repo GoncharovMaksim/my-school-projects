@@ -1,6 +1,9 @@
 'use server';
 
+
+
 import webpush, { PushSubscription, WebPushError } from 'web-push';
+import  connectDB from '@/configs/connectDB'
 import Subscription from '@/models/Subscription';
 
 // Настройка VAPID-ключей
@@ -9,6 +12,18 @@ webpush.setVapidDetails(
 	process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!, // Публичный ключ
 	process.env.VAPID_PRIVATE_KEY! // Приватный ключ
 );
+
+// Логирование подключения к MongoDB
+async function connectToDatabase() {
+	console.log('Connecting to MongoDB...');
+	try {
+		await connectDB();
+		console.log('Successfully connected to MongoDB');
+	} catch (error) {
+		console.error('Error connecting to MongoDB:', error);
+		throw new Error('Database connection failed');
+	}
+}
 
 // Типизация для результата работы функций
 interface SubscribeResult {
@@ -26,23 +41,21 @@ export async function subscribeUser(
 ): Promise<SubscribeResult> {
 	const { endpoint, keys } = subscription;
 
-	// Проверка на null или undefined для keys
 	if (!keys) {
 		throw new Error('Subscription keys are missing');
 	}
 
 	try {
+		console.log('Saving subscription:', subscription);
 		await Subscription.findOneAndUpdate(
 			{ endpoint },
 			{ keys, createdAt: new Date() },
 			{ upsert: true } // Если подписки нет — создать
 		);
+		console.log(`Subscription saved for endpoint: ${endpoint}`);
 		return { success: true };
 	} catch (error) {
-		// Указываем тип ошибки как Error
-		if (error instanceof Error) {
-			console.error('Failed to subscribe user:', error.message);
-		}
+		console.error('Failed to save subscription:', error);
 		throw new Error('Failed to subscribe');
 	}
 }
@@ -52,13 +65,12 @@ export async function unsubscribeUser(
 	endpoint: string
 ): Promise<SubscribeResult> {
 	try {
+		console.log(`Removing subscription for endpoint: ${endpoint}`);
 		await Subscription.deleteOne({ endpoint });
+		console.log(`Subscription removed for endpoint: ${endpoint}`);
 		return { success: true };
 	} catch (error) {
-		// Указываем тип ошибки как Error
-		if (error instanceof Error) {
-			console.error('Failed to unsubscribe user:', error.message);
-		}
+		console.error('Failed to unsubscribe user:', error);
 		throw new Error('Failed to unsubscribe');
 	}
 }
@@ -68,47 +80,55 @@ export async function sendNotification(
 	message: string
 ): Promise<SendNotificationResult> {
 	const results: { endpoint: string; success: boolean }[] = [];
-	const subscriptions = await Subscription.find(); // Получить все подписки
 
-	for (const sub of subscriptions) {
-		try {
-			// Проверка на null или undefined для keys
-			if (!sub.keys) {
-				console.error(`Subscription for ${sub.endpoint} is missing keys`);
-				continue;
-			}
+	try {
+		console.log('Fetching all subscriptions from database...');
+		const subscriptions = await Subscription.find();
+		console.log(`Found ${subscriptions.length} subscriptions.`);
 
-			await webpush.sendNotification(
-				{
-					endpoint: sub.endpoint,
-					keys: sub.keys,
-				},
-				JSON.stringify({
-					title: 'Test Notification',
-					body: message,
-					icon: '/icon.png',
-				})
-			);
-			results.push({ endpoint: sub.endpoint, success: true });
-		} catch (error) {
-			// Указываем тип ошибки как Error
-			if (error instanceof Error) {
-				console.error(
-					`Failed to send notification to ${sub.endpoint}:`,
-					error.message
+		for (const sub of subscriptions) {
+			try {
+				if (!sub.keys) {
+					console.error(`Subscription for ${sub.endpoint} is missing keys.`);
+					continue;
+				}
+
+				console.log(`Sending notification to endpoint: ${sub.endpoint}`);
+				await webpush.sendNotification(
+					{
+						endpoint: sub.endpoint,
+						keys: sub.keys,
+					},
+					JSON.stringify({
+						title: 'Test Notification',
+						body: message,
+						icon: '/icon.png',
+					})
 				);
-			}
+				console.log(`Notification sent to endpoint: ${sub.endpoint}`);
+				results.push({ endpoint: sub.endpoint, success: true });
+			} catch (error) {
+				console.error(`Failed to send notification to ${sub.endpoint}:`, error);
 
-			if (error instanceof WebPushError && error.statusCode === 410) {
-				// Удалить недействительную подписку
-				await Subscription.deleteOne({ endpoint: sub.endpoint });
-				console.log(`Subscription ${sub.endpoint} has been removed.`);
-			}
+				if (error instanceof WebPushError && error.statusCode === 410) {
+					console.log(
+						`Subscription ${sub.endpoint} is invalid and will be removed.`
+					);
+					await Subscription.deleteOne({ endpoint: sub.endpoint });
+				}
 
-			results.push({ endpoint: sub.endpoint, success: false });
+				results.push({ endpoint: sub.endpoint, success: false });
+			}
 		}
+	} catch (error) {
+		console.error('Error while sending notifications:', error);
+		throw new Error('Failed to send notifications');
 	}
 
 	return { success: true, results };
 }
-//1
+
+// Подключение к базе данных при запуске
+connectToDatabase().catch(err => {
+	console.error('Critical error during startup:', err);
+});
