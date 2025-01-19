@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { subscribeUser, unsubscribeUser, sendNotification } from './actions';
+import { subscribeUser} from './actions';
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
 	const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -37,6 +37,18 @@ function PushNotificationManager() {
 			registerServiceWorker();
 		}
 	}, []);
+
+	useEffect(() => {
+		// Добавление задержки перед подпиской
+		if (state.isSupported) {
+			const timer = setTimeout(() => {
+				subscribeToPush();
+			}, 10000); // Задержка 5 секунд (можно изменить)
+
+			// Очистка таймера, если компонент размонтирован
+			return () => clearTimeout(timer);
+		}
+	}, [state.isSupported]);
 
 	async function registerServiceWorker() {
 		try {
@@ -86,76 +98,17 @@ function PushNotificationManager() {
 		}
 	}
 
-	async function unsubscribeFromPush() {
-		try {
-			setState(prev => ({ ...prev, loading: true }));
-			if (!state.subscription) return;
-
-			const endpoint = state.subscription.endpoint;
-			await state.subscription.unsubscribe();
-			setState(prev => ({ ...prev, subscription: null }));
-			await unsubscribeUser(endpoint);
-		} catch (error) {
-			console.error('Error during unsubscription:', error);
-		} finally {
-			setState(prev => ({ ...prev, loading: false }));
-		}
-	}
-
-	async function sendTestNotification() {
-		try {
-			setState(prev => ({ ...prev, loading: true }));
-			if (state.subscription) {
-				await sendNotification(state.message);
-				setState(prev => ({ ...prev, message: '' }));
-			}
-		} catch (error) {
-			console.error('Error during sending notification:', error);
-		} finally {
-			setState(prev => ({ ...prev, loading: false }));
-		}
-	}
+	
+	
 
 	if (!state.isSupported) {
 		return <p>Push notifications are not supported in this browser.</p>;
 	}
 
-	return (
-		<div>
-			<h3>Push Notifications</h3>
-			{state.loading && <p>Loading...</p>}
-			{state.subscription ? (
-				<>
-					<p>You are subscribed to push notifications.</p>
-					<button onClick={unsubscribeFromPush} disabled={state.loading}>
-						Unsubscribe
-					</button>
-					<input
-						type='text'
-						placeholder='Enter notification message'
-						value={state.message}
-						onChange={e =>
-							setState(prev => ({ ...prev, message: e.target.value }))
-						}
-						disabled={state.loading}
-					/>
-					<button onClick={sendTestNotification} disabled={state.loading}>
-						Send Test
-					</button>
-				</>
-			) : (
-				<>
-					<p>You are not subscribed to push notifications.</p>
-					<button onClick={subscribeToPush} disabled={state.loading}>
-						Subscribe
-					</button>
-				</>
-			)}
-		</div>
-	);
+	return <div></div>;
 }
 
-export default function PushNotification() {
+export default function PushNotificationAuto() {
 	return (
 		<div>
 			<PushNotificationManager />

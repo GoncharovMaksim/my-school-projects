@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { subscribeUser, unsubscribeUser, sendNotification } from './actions';
 
-function urlBase64ToUint8Array(base64String: string) {
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
 	const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
 	const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
 
@@ -16,17 +16,24 @@ function urlBase64ToUint8Array(base64String: string) {
 	return outputArray;
 }
 
+interface SubscriptionState {
+	isSupported: boolean;
+	subscription: PushSubscription | null;
+	message: string;
+	loading: boolean;
+}
+
 function PushNotificationManager() {
-	const [isSupported, setIsSupported] = useState(false);
-	const [subscription, setSubscription] = useState<PushSubscription | null>(
-		null
-	);
-	const [message, setMessage] = useState('');
-	const [loading, setLoading] = useState(false);
+	const [state, setState] = useState<SubscriptionState>({
+		isSupported: false,
+		subscription: null,
+		message: '',
+		loading: false,
+	});
 
 	useEffect(() => {
 		if ('serviceWorker' in navigator && 'PushManager' in window) {
-			setIsSupported(true);
+			setState(prev => ({ ...prev, isSupported: true }));
 			registerServiceWorker();
 		}
 	}, []);
@@ -38,7 +45,7 @@ function PushNotificationManager() {
 				updateViaCache: 'none',
 			});
 			const sub = await registration.pushManager.getSubscription();
-			setSubscription(sub);
+			setState(prev => ({ ...prev, subscription: sub }));
 		} catch (error) {
 			console.error('Error during service worker registration:', error);
 		}
@@ -53,12 +60,12 @@ function PushNotificationManager() {
 		}
 
 		try {
-			setLoading(true);
+			setState(prev => ({ ...prev, loading: true }));
 			const registration = await navigator.serviceWorker.ready;
 			const existingSubscription =
 				await registration.pushManager.getSubscription();
 			if (existingSubscription) {
-				setSubscription(existingSubscription);
+				setState(prev => ({ ...prev, subscription: existingSubscription }));
 				console.log('Already subscribed to push notifications.');
 				return;
 			}
@@ -69,76 +76,78 @@ function PushNotificationManager() {
 					process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
 				),
 			});
-			setSubscription(sub);
+			setState(prev => ({ ...prev, subscription: sub }));
 			const serializedSub = JSON.parse(JSON.stringify(sub));
 			await subscribeUser(serializedSub);
 		} catch (error) {
 			console.error('Error during subscription:', error);
 		} finally {
-			setLoading(false);
+			setState(prev => ({ ...prev, loading: false }));
 		}
 	}
 
 	async function unsubscribeFromPush() {
 		try {
-			setLoading(true);
-			if (!subscription) return;
+			setState(prev => ({ ...prev, loading: true }));
+			if (!state.subscription) return;
 
-			const endpoint = subscription.endpoint;
-			await subscription.unsubscribe();
-			setSubscription(null);
+			const endpoint = state.subscription.endpoint;
+			await state.subscription.unsubscribe();
+			setState(prev => ({ ...prev, subscription: null }));
 			await unsubscribeUser(endpoint);
 		} catch (error) {
 			console.error('Error during unsubscription:', error);
 		} finally {
-			setLoading(false);
+			setState(prev => ({ ...prev, loading: false }));
 		}
 	}
 
 	async function sendTestNotification() {
 		try {
-			setLoading(true);
-			if (subscription) {
-				await sendNotification(message);
-				setMessage('');
+			setState(prev => ({ ...prev, loading: true }));
+			if (state.subscription) {
+				await sendNotification(state.message);
+				setState(prev => ({ ...prev, message: '' }));
 			}
 		} catch (error) {
 			console.error('Error during sending notification:', error);
 		} finally {
-			setLoading(false);
+			setState(prev => ({ ...prev, loading: false }));
 		}
 	}
 
-	if (!isSupported) {
+	if (!state.isSupported) {
 		return <p>Push notifications are not supported in this browser.</p>;
 	}
 
 	return (
 		<div>
-			<h3>Push Notifications</h3>
-			{loading && <p>Loading...</p>}
-			{subscription ? (
+			<h3>Push-уведомления</h3>
+			{state.loading && <p>Loading...</p>}
+			{state.subscription ? (
 				<>
-					<p>You are subscribed to push notifications.</p>
-					<button onClick={unsubscribeFromPush} disabled={loading}>
+					<p>Вы подписаны на push-уведомления.</p>
+					<button onClick={unsubscribeFromPush} disabled={state.loading}>
 						Unsubscribe
 					</button>
 					<input
 						type='text'
-						placeholder='Enter notification message'
-						value={message}
-						onChange={e => setMessage(e.target.value)}
-						disabled={loading}
+						placeholder='Введите сообщение'
+						value={state.message}
+						onChange={e =>
+							setState(prev => ({ ...prev, message: e.target.value }))
+						}
+						disabled={state.loading}
 					/>
-					<button onClick={sendTestNotification} disabled={loading}>
-						Send Test
+					<button onClick={sendTestNotification} disabled={state.loading}>
+						Отправить
 					</button>
 				</>
 			) : (
 				<>
-					<p>You are not subscribed to push notifications.</p>
-					<button onClick={subscribeToPush} disabled={loading}>
-						Subscribe
+					<p>Вы не подписаны на push-уведомления.</p>
+					<button onClick={subscribeToPush} disabled={state.loading}>
+						Подписаться
 					</button>
 				</>
 			)}

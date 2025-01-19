@@ -1,4 +1,4 @@
-'use client';
+// hooks/usePushSubscription.ts
 
 import { useState, useEffect } from 'react';
 import { subscribeUser, unsubscribeUser, sendNotification } from './actions';
@@ -6,10 +6,8 @@ import { subscribeUser, unsubscribeUser, sendNotification } from './actions';
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
 	const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
 	const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-
 	const rawData = window.atob(base64);
 	const outputArray = new Uint8Array(rawData.length);
-
 	for (let i = 0; i < rawData.length; ++i) {
 		outputArray[i] = rawData.charCodeAt(i);
 	}
@@ -23,7 +21,7 @@ interface SubscriptionState {
 	loading: boolean;
 }
 
-function PushNotificationManager() {
+export function usePushSubscription() {
 	const [state, setState] = useState<SubscriptionState>({
 		isSupported: false,
 		subscription: null,
@@ -37,18 +35,6 @@ function PushNotificationManager() {
 			registerServiceWorker();
 		}
 	}, []);
-
-	// useEffect(() => {
-	// 	// Добавление задержки перед подпиской
-	// 	if (state.isSupported) {
-	// 		const timer = setTimeout(() => {
-	// 			subscribeToPush();
-	// 		}, 10000); // Задержка 5 секунд (можно изменить)
-
-	// 		// Очистка таймера, если компонент размонтирован
-	// 		return () => clearTimeout(timer);
-	// 	}
-	// }, [state.isSupported]);
 
 	async function registerServiceWorker() {
 		try {
@@ -128,49 +114,10 @@ function PushNotificationManager() {
 		}
 	}
 
-	if (!state.isSupported) {
-		return <p>Push notifications are not supported in this browser.</p>;
-	}
-
-	return (
-		<div>
-			<h3>Push-уведомления</h3>
-			{state.loading && <p>Loading...</p>}
-			{state.subscription ? (
-				<>
-					<p>Вы подписаны на push-уведомления.</p>
-					<button onClick={unsubscribeFromPush} disabled={state.loading}>
-						Unsubscribe
-					</button>
-					<input
-						type='text'
-						placeholder='Введите сообщение'
-						value={state.message}
-						onChange={e =>
-							setState(prev => ({ ...prev, message: e.target.value }))
-						}
-						disabled={state.loading}
-					/>
-					<button onClick={sendTestNotification} disabled={state.loading}>
-						Отправить
-					</button>
-				</>
-			) : (
-				<>
-					<p>Вы не подписаны на push-уведомления.</p>
-					<button onClick={subscribeToPush} disabled={state.loading}>
-						Подписаться
-					</button>
-				</>
-			)}
-		</div>
-	);
-}
-
-export default function PushNotification() {
-	return (
-		<div>
-			<PushNotificationManager />
-		</div>
-	);
+	return {
+		state,
+		subscribeToPush,
+		unsubscribeFromPush,
+		sendTestNotification,
+	};
 }

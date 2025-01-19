@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { loadWords } from './english/components/loadWords';
 import { AppDispatch } from '@/lib/store';
 import { loadMathStatistics } from './statistics/math/loadMathStatistics';
+import { usePushSubscription } from './pushNotification/usePushSubscription';
 
 // Определяем интерфейс для события beforeinstallprompt
 interface BeforeInstallPromptEvent extends Event {
@@ -13,12 +14,16 @@ interface BeforeInstallPromptEvent extends Event {
 	userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
 }
 
+
 export default function Home() {
 	const dispatch = useDispatch<AppDispatch>();
 	const [deferredPrompt, setDeferredPrompt] =
 		useState<BeforeInstallPromptEvent | null>(null); // Состояние для события установки
 	const [isInstalled, setIsInstalled] = useState(false); // Для отслеживания установки
+const { subscribeToPush } =
+	usePushSubscription();
 
+	 
 	useEffect(() => {
 		dispatch(loadEnglishStatistics());
 		dispatch(loadWords());
@@ -62,6 +67,10 @@ export default function Home() {
 			setDeferredPrompt(null); // Сбрасываем сохранённое событие
 		}
 	};
+	useEffect(() => {
+		subscribeToPush();
+	}, []);
+
 
 	return (
 		<div className='bg-gray-100 min-h-screen flex flex-col '>
@@ -122,6 +131,7 @@ export default function Home() {
 					school112.ru
 				</h3>
 			</div>
+			
 		</div>
 	);
 }
