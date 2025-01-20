@@ -9,7 +9,7 @@ const SubscriptionSchema = new mongoose.Schema({
 	userId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',
-		required: false,
+		required: true,
 	}, // Связь с пользователем (если нужна)
 	createdAt: { type: Date, default: Date.now },
 });

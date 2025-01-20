@@ -37,8 +37,7 @@ interface SendNotificationResult {
 
 // Сохранить подписку в MongoDB
 export async function subscribeUser(
-	subscription: PushSubscription,
-	userId: string
+	subscription: PushSubscription
 ): Promise<SubscribeResult> {
 	const { endpoint, keys } = subscription;
 
@@ -49,13 +48,11 @@ export async function subscribeUser(
 	try {
 		console.log('Saving subscription:', subscription);
 		await Subscription.findOneAndUpdate(
-			{ endpoint }, // Найти по endpoint
-			{ keys, userId, createdAt: new Date() }, // Обновить или добавить userId
-			{ upsert: true, new: true } // Если подписки нет — создать
+			{ endpoint },
+			{ keys, createdAt: new Date() },
+			{ upsert: true } // Если подписки нет — создать
 		);
-		console.log(
-			`Subscription saved for user: ${userId}, endpoint: ${endpoint}`
-		);
+		console.log(`Subscription saved for endpoint: ${endpoint}`);
 		return { success: true };
 	} catch (error) {
 		console.error('Failed to save subscription:', error);

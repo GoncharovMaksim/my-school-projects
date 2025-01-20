@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { subscribeUser, unsubscribeUser, sendNotification } from './actions';
-import { useSession } from 'next-auth/react';
-
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
 	const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -22,15 +20,6 @@ interface SubscriptionState {
 	message: string;
 	loading: boolean;
 }
-type UserSession = {
-	user?: {
-		id?: string;
-		name?: string;
-		nickName?: string;
-		email?: string;
-		image?: string;
-	};
-};
 
 export function usePushSubscription() {
 	const [state, setState] = useState<SubscriptionState>({
@@ -39,8 +28,6 @@ export function usePushSubscription() {
 		message: '',
 		loading: false,
 	});
-
-	const { data: session } = useSession() as { data: UserSession | null };
 
 	useEffect(() => {
 		if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -72,11 +59,7 @@ export function usePushSubscription() {
 
 		try {
 			setState(prev => ({ ...prev, loading: true }));
-
-			// Получение готового service worker
 			const registration = await navigator.serviceWorker.ready;
-
-			// Проверка на существующую подписку
 			const existingSubscription =
 				await registration.pushManager.getSubscription();
 			if (existingSubscription) {
@@ -85,31 +68,15 @@ export function usePushSubscription() {
 				return;
 			}
 
-			// Запрос новой подписки
 			const sub = await registration.pushManager.subscribe({
 				userVisibleOnly: true,
 				applicationServerKey: urlBase64ToUint8Array(
 					process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
 				),
 			});
-
 			setState(prev => ({ ...prev, subscription: sub }));
-
-			// Получение `userId` (например, из cookies, sessionStorage или API)
-
-			
-			const userId = session?.user?.id; 
-
-			if (!userId) {
-				throw new Error('User ID is not available in the session.');
-			}
-
-			// Сериализация подписки
-			// const serializedSub = JSON.parse(JSON.stringify(sub));
-			// await subscribeUser({ ...serializedSub, userId });
 			const serializedSub = JSON.parse(JSON.stringify(sub));
-			await subscribeUser(serializedSub, userId);
-
+			await subscribeUser(serializedSub);
 		} catch (error) {
 			console.error('Error during subscription:', error);
 		} finally {
