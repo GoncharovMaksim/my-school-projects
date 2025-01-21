@@ -148,7 +148,7 @@ export function usePushSubscription() {
 	}
 
 	return {
-		state,
+		state, setState,
 		subscribeToPush,
 		unsubscribeFromPush,
 		sendTestNotification,
