@@ -21,7 +21,6 @@ interface SubscriptionState {
 	subscription: PushSubscription | null;
 	message: string;
 	loading: boolean;
-	selectedUserId: string;
 }
 type UserSession = {
 	user?: {
@@ -39,7 +38,6 @@ export function usePushSubscription() {
 		subscription: null,
 		message: '',
 		loading: false,
-		selectedUserId: '',
 	});
 
 	const { data: session } = useSession() as { data: UserSession | null };
@@ -138,31 +136,16 @@ export function usePushSubscription() {
 	async function sendTestNotification() {
 		try {
 			setState(prev => ({ ...prev, loading: true }));
-
-			if (!state.subscription) {
-				console.error('No subscription found.');
-				return;
+			if (state.subscription) {
+				await sendNotification(state.message);
+				setState(prev => ({ ...prev, message: '' }));
 			}
-
-			if (!state.selectedUserId) {
-				console.error('No user selected.');
-				return;
-			}
-
-			// Отправляем уведомление с сообщением и идентификатором пользователя
-			await sendNotification(state.message, state.selectedUserId);
-
-			// После успешной отправки очищаем сообщение
-			setState(prev => ({ ...prev, message: '' }));
 		} catch (error) {
 			console.error('Error during sending notification:', error);
-			alert('Ошибка отправки уведомления. Попробуйте еще раз.');
 		} finally {
 			setState(prev => ({ ...prev, loading: false }));
 		}
 	}
-
-
 
 	return {
 		state, setState,

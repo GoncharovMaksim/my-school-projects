@@ -1,6 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-const SubscriptionSchema = new mongoose.Schema({
+// Ваши поля схемы
+const SubscriptionSchema = new Schema({
 	endpoint: { type: String, required: true, unique: true },
 	keys: {
 		p256dh: { type: String, required: true },
@@ -10,8 +11,13 @@ const SubscriptionSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',
 		required: true,
-	}, // Связь с пользователем (если нужна)
+	},
 	createdAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.model('Subscription', SubscriptionSchema);
+// Предотвращение повторного создания модели
+const Subscription =
+	mongoose.models.Subscription ||
+	mongoose.model('Subscription', SubscriptionSchema);
+
+export default Subscription;

@@ -80,17 +80,14 @@ export async function unsubscribeUser(
 
 // Отправить уведомления всем пользователям
 export async function sendNotification(
-	message: string,
-	userId: string // ID пользователя, которому нужно отправить уведомление
+	message: string
 ): Promise<SendNotificationResult> {
 	const results: { endpoint: string; success: boolean }[] = [];
 
 	try {
-		console.log(`Fetching subscriptions for user ID: ${userId}...`);
-		const subscriptions = await Subscription.find({ userId }); // Фильтрация по userId
-		console.log(
-			`Found ${subscriptions.length} subscriptions for user ${userId}.`
-		);
+		console.log('Fetching all subscriptions from database...');
+		const subscriptions = await Subscription.find();
+		console.log(`Found ${subscriptions.length} subscriptions.`);
 
 		for (const sub of subscriptions) {
 			try {

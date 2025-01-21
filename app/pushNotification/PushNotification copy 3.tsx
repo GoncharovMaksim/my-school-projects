@@ -66,8 +66,11 @@ function PushNotificationManager() {
 							>
 								<option value=''>Выберите пользователя</option>
 								{users.map((user, index) => (
-									<option key={`${user.userId}-${index}`} value={user.userId}>
-										{user.userId}
+									<option 
+										key={`${user.userId}-${index}`}
+										value={user.userId}
+									>
+										{user.name}
 									</option>
 								))}
 							</select>
