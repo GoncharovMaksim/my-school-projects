@@ -1,7 +1,9 @@
 'use server';
 
+
+
 import webpush, { PushSubscription, WebPushError } from 'web-push';
-import connectDB from '@/configs/connectDB';
+import  connectDB from '@/configs/connectDB'
 import Subscription from '@/models/Subscription';
 
 // Настройка VAPID-ключей

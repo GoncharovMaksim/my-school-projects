@@ -40,12 +40,11 @@ export function usePushSubscription() {
 		loading: false,
 		selectedUserId: '',
 	});
-console.log('state.subscription', state.subscription);
+
 	const { data: session } = useSession() as { data: UserSession | null };
 	const [users, setUsers] = useState<{ userId: string; name: string }[]>([]);
 	const [loadingUsers, setLoadingUsers] = useState(false);
-	
-	
+
 	// Загрузка списка пользователей
 	useEffect(() => {
 		async function fetchUsers() {
@@ -64,34 +63,23 @@ console.log('state.subscription', state.subscription);
 		fetchUsers();
 	}, []);
 
-
 	useEffect(() => {
-		if (!session?.user?.id) return; // Проверяем, есть ли текущий пользователь
-		if (!('serviceWorker' in navigator && 'PushManager' in window)) {
-			setState(prev => ({ ...prev, isSupported: false }));
+		if (
+			users.length > 0 &&
+			users.some(user => user.userId === session?.user?.id)
+		) {
 			return;
 		}
 
-		// Проверяем, существует ли подписка для текущего пользователя
-		const isUserSubscribed = users.some(
-			user => user.userId === session?.user?.id
-		);
-
-		if (isUserSubscribed) {
-			console.log('state.subscription isUserSubscribed', state.subscription);
-			console.log('User is already subscribed.');
+		if ('serviceWorker' in navigator && 'PushManager' in window) {
+			setState(prev => ({
+				...prev,
+				isSupported: true,
+				selectedUserId: '',
+				subscription: null,
+			}));
 			registerServiceWorker();
-			return;
 		}
-
-		// Инициализация поддержки уведомлений
-		setState(prev => ({
-			...prev,
-			isSupported: true,
-			selectedUserId: '',
-			subscription: null,
-		}));
-
 	}, [session?.user?.id, users]);
 
 	async function registerServiceWorker() {
@@ -212,7 +200,5 @@ console.log('state.subscription', state.subscription);
 		subscribeToPush,
 		unsubscribeFromPush,
 		sendTestNotification,
-		loadingUsers,
-		users
 	};
 }

@@ -1,8 +1,7 @@
 'use client';
 
-
+import { useEffect, useState } from 'react';
 import { usePushSubscription } from './usePushSubscription';
-import DropdownMenu from '@/components/DropdownMenu';
 
 function PushNotificationManager() {
 	const {
@@ -11,13 +10,28 @@ function PushNotificationManager() {
 		subscribeToPush,
 		unsubscribeFromPush,
 		sendTestNotification,
-		users,
-		loadingUsers
 	} = usePushSubscription();
 
-console.log('state.subscription', state.subscription);
+	const [users, setUsers] = useState<{ userId: string; name: string }[]>([]);
+	const [loadingUsers, setLoadingUsers] = useState(false);
 
-	
+	// Загрузка списка пользователей
+	useEffect(() => {
+		async function fetchUsers() {
+			setLoadingUsers(true);
+			try {
+				const response = await fetch('/api/subscriptions');
+				const data = await response.json();
+				setUsers(data);
+			} catch (error) {
+				console.error('Failed to fetch users:', error);
+			} finally {
+				setLoadingUsers(false);
+			}
+		}
+
+		fetchUsers();
+	}, []);
 
 	if (!state.isSupported) {
 		return <p>Push notifications are not supported in this browser.</p>;
@@ -66,32 +80,6 @@ console.log('state.subscription', state.subscription);
 								</select>
 							)}
 						</div>
-
-						<DropdownMenu
-						
-							defaultLabel={`Выберите пользователя:`}
-							options={[
-								{
-									label: 'Все пользователи',
-									// onClick: () => {
-									// 	return (
-									// 		localStorage.setItem('unitStep', JSON.stringify('')),
-									// 		setUnitStep('')
-									// 	);
-									//},
-								},
-								...users.map((user, ) => ({
-									label: ` ${user.name}`,
-									onClick: () => {
-										
-											setState(prev => ({
-												...prev,
-												selectedUserId: user.userId,
-											}));
-									},
-								})),
-							]}
-						/>
 
 						<input
 							type='text'
