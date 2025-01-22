@@ -45,7 +45,7 @@ function PushNotificationManager() {
 				<>
 					<p>Вы подписаны на push-уведомления.</p>
 					<button onClick={unsubscribeFromPush} disabled={state.loading}>
-						Unsubscribe
+						Отписаться
 					</button>
 
 					<div style={{ margin: '10px 0' }}>
@@ -67,7 +67,7 @@ function PushNotificationManager() {
 								<option value=''>Выберите пользователя</option>
 								{users.map((user, index) => (
 									<option key={`${user.userId}-${index}`} value={user.userId}>
-										{user.userId}
+										{user.name}
 									</option>
 								))}
 							</select>

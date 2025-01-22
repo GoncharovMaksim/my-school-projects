@@ -6,7 +6,7 @@ export async function GET() {
 	try {
     await connectDB();
 		// Получаем подписки из базы данных
-		const subscriptions = await Subscription.find().select('userId');
+		const subscriptions = await Subscription.find();
 		return NextResponse.json(subscriptions);
 	} catch (error) {
 		console.error('Failed to fetch subscriptions:', error);

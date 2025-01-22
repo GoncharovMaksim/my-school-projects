@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { subscribeUser, unsubscribeUser, sendNotification } from './actions';
 import { useSession } from 'next-auth/react';
 
-
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
 	const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
 	const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -99,19 +98,20 @@ export function usePushSubscription() {
 
 			// Получение `userId` (например, из cookies, sessionStorage или API)
 
-			
-			const userId = session?.user?.id; 
-
+			const userId = session?.user?.id;
+			const name = session?.user?.name;
 			if (!userId) {
 				throw new Error('User ID is not available in the session.');
+			}
+			if (!name) {
+				throw new Error('name is not available in the session.');
 			}
 
 			// Сериализация подписки
 			// const serializedSub = JSON.parse(JSON.stringify(sub));
 			// await subscribeUser({ ...serializedSub, userId });
 			const serializedSub = JSON.parse(JSON.stringify(sub));
-			await subscribeUser(serializedSub, userId);
-
+			await subscribeUser(serializedSub, userId,name);
 		} catch (error) {
 			console.error('Error during subscription:', error);
 		} finally {
@@ -162,10 +162,9 @@ export function usePushSubscription() {
 		}
 	}
 
-
-
 	return {
-		state, setState,
+		state,
+		setState,
 		subscribeToPush,
 		unsubscribeFromPush,
 		sendTestNotification,
