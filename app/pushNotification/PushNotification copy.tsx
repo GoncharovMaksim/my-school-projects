@@ -65,7 +65,7 @@ console.log('state.subscription', state.subscription);
 									))}
 								</select>
 							)}
-						</div> 
+						</div>
 
 						<DropdownMenu
 							defaultLabel={`Выберите пользователя:`}
@@ -75,7 +75,7 @@ console.log('state.subscription', state.subscription);
 									onClick: () => {
 										setState(prev => ({
 											...prev,
-											selectedUserId: '',
+											selectedUserId:'',
 										}));
 									},
 								},
@@ -103,7 +103,7 @@ console.log('state.subscription', state.subscription);
 						/>
 						<button
 							onClick={sendTestNotification}
-							// disabled={state.loading || !state.selectedUserId}
+							disabled={state.loading || !state.selectedUserId}
 							className='btn btn-outline w-full max-w-xs'
 						>
 							Отправить

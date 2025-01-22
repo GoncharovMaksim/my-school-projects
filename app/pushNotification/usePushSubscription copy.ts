@@ -42,7 +42,7 @@ export function usePushSubscription() {
 		selectedUserId: '',
 		isServiceWorkerRegistered: false,
 	});
-
+console.log('state.subscription', state.subscription);
 	const { data: session } = useSession() as { data: UserSession | null };
 	const [users, setUsers] = useState<{ userId: string; name: string }[]>([]);
 	const [loadingUsers, setLoadingUsers] = useState(false);
@@ -68,7 +68,7 @@ export function usePushSubscription() {
 
 
 	useEffect(() => {
-		//if (!session?.user?.id || state.isServiceWorkerRegistered) return;
+		if (!session?.user?.id || state.isServiceWorkerRegistered) return;
 		if (!('serviceWorker' in navigator && 'PushManager' in window)) {
 			setState(prev => ({ ...prev, isSupported: false }));
 			return;
@@ -190,10 +190,10 @@ export function usePushSubscription() {
 				return;
 			}
 
-			// if (!state.selectedUserId) {
-			// 	console.error('No user selected.');
-			// 	return;
-			// }
+			if (!state.selectedUserId) {
+				console.error('No user selected.');
+				return;
+			}
 
 			// Отправляем уведомление с сообщением и идентификатором пользователя
 			await sendNotification(state.message, state.selectedUserId);

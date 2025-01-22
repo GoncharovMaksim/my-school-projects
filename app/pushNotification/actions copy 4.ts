@@ -86,9 +86,7 @@ export async function sendNotification(
 
 	try {
 		console.log(`Fetching subscriptions for user ID: ${userId}...`);
-		const subscriptions = userId
-			? await Subscription.find({ userId })
-			: await Subscription.find(); // Фильтрация по userId
+		const subscriptions = await Subscription.find({ userId }); // Фильтрация по userId
 		console.log(
 			`Found ${subscriptions.length} subscriptions for user ${userId}.`
 		);

@@ -65,27 +65,29 @@ console.log('state.subscription', state.subscription);
 									))}
 								</select>
 							)}
-						</div> 
+						</div>
 
 						<DropdownMenu
+						
 							defaultLabel={`Выберите пользователя:`}
 							options={[
 								{
 									label: 'Все пользователи',
-									onClick: () => {
-										setState(prev => ({
-											...prev,
-											selectedUserId: '',
-										}));
-									},
+									// onClick: () => {
+									// 	return (
+									// 		localStorage.setItem('unitStep', JSON.stringify('')),
+									// 		setUnitStep('')
+									// 	);
+									//},
 								},
-								...users.map(user => ({
+								...users.map((user, ) => ({
 									label: ` ${user.name}`,
 									onClick: () => {
-										setState(prev => ({
-											...prev,
-											selectedUserId: user.userId,
-										}));
+										
+											setState(prev => ({
+												...prev,
+												selectedUserId: user.userId,
+											}));
 									},
 								})),
 							]}
@@ -103,7 +105,7 @@ console.log('state.subscription', state.subscription);
 						/>
 						<button
 							onClick={sendTestNotification}
-							// disabled={state.loading || !state.selectedUserId}
+							disabled={state.loading || !state.selectedUserId}
 							className='btn btn-outline w-full max-w-xs'
 						>
 							Отправить
