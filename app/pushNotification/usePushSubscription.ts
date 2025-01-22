@@ -21,6 +21,7 @@ interface SubscriptionState {
 	message: string;
 	loading: boolean;
 	selectedUserId: string;
+	isServiceWorkerRegistered: boolean;
 }
 type UserSession = {
 	user?: {
@@ -39,6 +40,7 @@ export function usePushSubscription() {
 		message: '',
 		loading: false,
 		selectedUserId: '',
+		isServiceWorkerRegistered: false,
 	});
 console.log('state.subscription', state.subscription);
 	const { data: session } = useSession() as { data: UserSession | null };
@@ -66,7 +68,7 @@ console.log('state.subscription', state.subscription);
 
 
 	useEffect(() => {
-		if (!session?.user?.id) return; // Проверяем, есть ли текущий пользователь
+		if (!session?.user?.id || state.isServiceWorkerRegistered) return;
 		if (!('serviceWorker' in navigator && 'PushManager' in window)) {
 			setState(prev => ({ ...prev, isSupported: false }));
 			return;
@@ -80,19 +82,19 @@ console.log('state.subscription', state.subscription);
 		// if (isUserSubscribed) {
 		// 	console.log('state.subscription isUserSubscribed', state.subscription);
 		// 	console.log('User is already subscribed.');
-			registerServiceWorker();
+			//registerServiceWorker();
 		// 	return;
 		// }
 
 		// // Инициализация поддержки уведомлений
+		
+    registerServiceWorker();
 		setState(prev => ({
 			...prev,
 			isSupported: true,
-		// 	selectedUserId: '',
-		// 	subscription: null,
+			isServiceWorkerRegistered: true,
 		}));
-
-	}, [session?.user?.id, users]);
+	}, []);
 
 	async function registerServiceWorker() {
 		try {
@@ -213,6 +215,7 @@ console.log('state.subscription', state.subscription);
 		unsubscribeFromPush,
 		sendTestNotification,
 		loadingUsers,
-		users
+		users,
+		registerServiceWorker,
 	};
 }

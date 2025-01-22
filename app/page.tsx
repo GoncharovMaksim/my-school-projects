@@ -20,8 +20,7 @@ export default function Home() {
 	const [deferredPrompt, setDeferredPrompt] =
 		useState<BeforeInstallPromptEvent | null>(null); // Состояние для события установки
 	const [isInstalled, setIsInstalled] = useState(false); // Для отслеживания установки
-const { subscribeToPush } =
-	usePushSubscription();
+const { subscribeToPush,  } = usePushSubscription();
 
 	 
 	useEffect(() => {
@@ -68,8 +67,9 @@ const { subscribeToPush } =
 		}
 	};
 	useEffect(() => {
+	
 		subscribeToPush();
-	}, []);
+	 }, []);
 
 
 	return (
