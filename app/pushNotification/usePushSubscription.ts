@@ -73,23 +73,23 @@ console.log('state.subscription', state.subscription);
 		}
 
 		// Проверяем, существует ли подписка для текущего пользователя
-		const isUserSubscribed = users.some(
-			user => user.userId === session?.user?.id
-		);
+		// const isUserSubscribed = users.some(
+		// 	user => user.userId === session?.user?.id
+		// );
 
-		if (isUserSubscribed) {
-			console.log('state.subscription isUserSubscribed', state.subscription);
-			console.log('User is already subscribed.');
+		// if (isUserSubscribed) {
+		// 	console.log('state.subscription isUserSubscribed', state.subscription);
+		// 	console.log('User is already subscribed.');
 			registerServiceWorker();
-			return;
-		}
+		// 	return;
+		// }
 
-		// Инициализация поддержки уведомлений
+		// // Инициализация поддержки уведомлений
 		setState(prev => ({
 			...prev,
 			isSupported: true,
-			selectedUserId: '',
-			subscription: null,
+		// 	selectedUserId: '',
+		// 	subscription: null,
 		}));
 
 	}, [session?.user?.id, users]);
