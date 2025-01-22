@@ -123,14 +123,14 @@ console.log('state.subscription', state.subscription);
 			// Получение готового service worker
 			const registration = await navigator.serviceWorker.ready;
 
-			// Проверка на существующую подписку
-			const existingSubscription =
-				await registration.pushManager.getSubscription();
-			if (existingSubscription) {
-				setState(prev => ({ ...prev, subscription: existingSubscription }));
-				console.log('Already subscribed to push notifications.');
-				return;
-			}
+			// // Проверка на существующую подписку
+			// const existingSubscription =
+			// 	await registration.pushManager.getSubscription();
+			// if (existingSubscription) {
+			// 	setState(prev => ({ ...prev, subscription: existingSubscription }));
+			// 	console.log('Already subscribed to push notifications.');
+			// 	return;
+			// }
 
 			// Запрос новой подписки
 			const sub = await registration.pushManager.subscribe({
