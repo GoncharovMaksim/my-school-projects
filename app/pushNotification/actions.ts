@@ -82,6 +82,7 @@ export async function sendNotification(
 	message: string,
 	userId: string // ID пользователя, которому нужно отправить уведомление
 ): Promise<SendNotificationResult> {
+	await connectToDatabase();
 	const results: { endpoint: string; success: boolean }[] = [];
 
 	try {
