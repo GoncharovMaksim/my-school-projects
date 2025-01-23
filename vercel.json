@@ -3,19 +3,18 @@
 	"crons": [
 		{
 			"path": "/api/cron",
-			"schedule": "30 04 * * *"
+			"schedule": "00 04 * * *"
 		},
 		{
-			"path": "/api/cron",
-			"schedule": "30 05 * * *"
-		},
-		{
-			"path": "/api/cron",
-			"schedule": "30 11 * * *"
-		},
-		{
-			"path": "/api/cron",
-			"schedule": "30 13 * * *"
+			"version": 2,
+			"crons": [
+				{
+					"path": "/api/cron",
+					"schedule": "0 5,13,14 * * *"
+				}
+			]
 		}
+
+		
 	]
 }
