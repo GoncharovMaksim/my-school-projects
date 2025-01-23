@@ -6,15 +6,9 @@
 			"schedule": "00 04 * * *"
 		},
 		{
-			"version": 2,
-			"crons": [
-				{
-					"path": "/api/cron",
-					"schedule": "0 5,13,14 * * *"
-				}
-			]
+			"path": "/api/cron",
+			"schedule": "0 5,13,14 * * *"
 		}
-
 		
 	]
 }
