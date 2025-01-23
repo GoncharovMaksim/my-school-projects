@@ -1,13 +1,17 @@
-import cronPushNotification from "@/app/pushNotification/cronPushNotification";
+
+import filterCronPushNotificationEnglish from "@/app/pushNotification/filterCronPushNotificationEnglish";
+
+import filterCronPushNotificationMath from "@/app/pushNotification/filterCronPushNotificationMath";
 
 export async function GET() {
 	
 
-  const result= cronPushNotification();
-	
+  const resultMath= await filterCronPushNotificationMath();
+	const resultEnglish = await filterCronPushNotificationEnglish();
 
 	// Верните ответ
-	return new Response(JSON.stringify(result), {
+	const combinedResult = { resultMath, resultEnglish };
+	return new Response(JSON.stringify(combinedResult), {
 		status: 200,
 		headers: { 'Content-Type': 'application/json' },
 	});
