@@ -26,7 +26,7 @@ export default function Home() {
 	useEffect(() => {
 		dispatch(loadEnglishStatistics());
 		dispatch(loadWords());
-		dispatch(loadMathStatistics());
+		dispatch(loadMathStatistics({}));
 
 		// Слушаем событие `beforeinstallprompt`
 		const handleBeforeInstallPrompt = (e: Event) => {

@@ -13,7 +13,9 @@ export interface Task {
 	_id: string; // Результат выполнения задания
 }
 export type Results = Task[];
+
 export interface MathStat {
+	_id: string; // Идентификатор записи в MongoDB
 	userId: string; // Идентификатор пользователя
 	userName: string;
 	userNickName: string; // Имя пользователя

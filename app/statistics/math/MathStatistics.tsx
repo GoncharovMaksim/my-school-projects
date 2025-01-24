@@ -162,7 +162,7 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 
 	useEffect(() => {
 		if (allUsersStatisticsList.length === 0) {
-			dispatch(loadMathStatistics());
+			dispatch(loadMathStatistics({}));
 		}
 	}, [dispatch, allUsersStatisticsList.length]);
 

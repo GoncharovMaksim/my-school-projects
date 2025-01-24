@@ -1,9 +1,6 @@
 import DropdownMenu from '../../../components/DropdownMenu';
 import { useEffect, useState } from 'react';
 import { GameProps } from './types';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/lib/store';
-import { loadMathStatistics } from '@/app/statistics/math/loadMathStatistics';
 
 export default function Settings({ setGameSettings }: GameProps) {
 	const [operator, setOperator] = useState('*'); // Значение по умолчанию '*'
@@ -65,10 +62,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 	};
 
 	
-	const dispatch = useDispatch<AppDispatch>();
-	useEffect(() => {
-		dispatch(loadMathStatistics({ today: true }));
-	}, [dispatch]);
+	
 
 
 	if (isLoading) {
