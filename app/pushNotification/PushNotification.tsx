@@ -1,8 +1,9 @@
 'use client';
 
-
 import { usePushSubscription } from './usePushSubscription';
 import DropdownMenu from '@/components/DropdownMenu';
+import { UserSession } from '@/types/userSession';
+import { useSession } from 'next-auth/react';
 
 function PushNotificationManager() {
 	const {
@@ -12,12 +13,15 @@ function PushNotificationManager() {
 		unsubscribeFromPush,
 		sendTestNotification,
 		users,
-		loadingUsers
+		loadingUsers,
 	} = usePushSubscription();
 
-console.log('state.subscription', state.subscription);
-
-	
+	const { data: session } = useSession() as { data: UserSession | null };
+	let isAdmin = false;
+	if (session?.user?.isAdmin === true) {
+		isAdmin = true;
+	}
+	console.log('state.subscription', state.subscription);
 
 	if (!state.isSupported) {
 		return <p>Push notifications are not supported in this browser.</p>;
@@ -41,73 +45,57 @@ console.log('state.subscription', state.subscription);
 							Отписаться
 						</button>
 
-						<div style={{ margin: '10px 0' }}>
-							<label htmlFor='userSelect'>Выберите пользователя: </label>
-							{loadingUsers ? (
-								<p>Загрузка списка пользователей...</p>
-							) : (
-								<select
-									id='userSelect'
-									value={state.selectedUserId}
+						{isAdmin ? (
+							<>
+								{loadingUsers ? (
+									<p>Загрузка списка пользователей...</p>
+								) : (
+									<DropdownMenu
+										defaultLabel={`Выберите пользователя:`}
+										options={[
+											{
+												label: 'Все пользователи',
+												onClick: () => {
+													setState(prev => ({
+														...prev,
+														selectedUserId: '',
+													}));
+												},
+											},
+											...users.map(user => ({
+												label: ` ${user.name}`,
+												onClick: () => {
+													setState(prev => ({
+														...prev,
+														selectedUserId: user.userId,
+													}));
+												},
+											})),
+										]}
+									/>
+								)}
+
+								<input
+									type='text'
+									placeholder='Введите сообщение'
+									value={state.message}
 									onChange={e =>
-										setState(prev => ({
-											...prev,
-											selectedUserId: e.target.value,
-										}))
+										setState(prev => ({ ...prev, message: e.target.value }))
 									}
 									disabled={state.loading}
+									className='input input-bordered w-full max-w-xs text-3xl'
+								/>
+								<button
+									onClick={sendTestNotification}
+									// disabled={state.loading || !state.selectedUserId}
+									className='btn btn-outline w-full max-w-xs'
 								>
-									<option value=''>Выберите пользователя</option>
-									{users.map((user, index) => (
-										<option key={`${user.userId}-${index}`} value={user.userId}>
-											{user.name}
-										</option>
-									))}
-								</select>
-							)}
-						</div> 
-
-						<DropdownMenu
-							defaultLabel={`Выберите пользователя:`}
-							options={[
-								{
-									label: 'Все пользователи',
-									onClick: () => {
-										setState(prev => ({
-											...prev,
-											selectedUserId: '',
-										}));
-									},
-								},
-								...users.map(user => ({
-									label: ` ${user.name}`,
-									onClick: () => {
-										setState(prev => ({
-											...prev,
-											selectedUserId: user.userId,
-										}));
-									},
-								})),
-							]}
-						/>
-
-						<input
-							type='text'
-							placeholder='Введите сообщение'
-							value={state.message}
-							onChange={e =>
-								setState(prev => ({ ...prev, message: e.target.value }))
-							}
-							disabled={state.loading}
-							className='input input-bordered w-full max-w-xs text-3xl'
-						/>
-						<button
-							onClick={sendTestNotification}
-							// disabled={state.loading || !state.selectedUserId}
-							className='btn btn-outline w-full max-w-xs'
-						>
-							Отправить
-						</button>
+									Отправить
+								</button>
+							</>
+						) : (
+							<div>Для отправки уведомлений нужны права Администратора</div>
+						)}
 					</>
 				) : (
 					<>

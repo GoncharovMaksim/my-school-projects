@@ -3,16 +3,9 @@
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { UserSession } from '@/types/userSession';
 
-type UserSession = {
-	user?: {
-		id?: string;
-		name?: string;
-		nickName?: string;
-		email?: string;
-		image?: string;
-	};
-};
+
 
 export default function Profile() {
 	const { data: session } = useSession() as { data: UserSession | null };
