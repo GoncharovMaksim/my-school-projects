@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { loadMathStatistics } from '@/app/statistics/math/loadMathStatistics'; // Импортируем асинхронное действи
+import { loadMathStatistics } from '@/app/statistics/math/loadMathStatistics'; // Импортируем асинхронное действие
 import { MathStat } from '@/types/mathStat';
 
 interface MathStatState {
@@ -42,9 +42,10 @@ const mathStatSlice = createSlice({
 				};
 			}
 		},
+		// Изменяем на использование _id вместо userId для удаления
 		removeMathStat(state, action: PayloadAction<string>) {
 			state.mathStatList = state.mathStatList.filter(
-				stat => stat.userId !== action.payload
+				stat => stat._id !== action.payload
 			);
 		},
 		setError(state, action: PayloadAction<boolean>) {
@@ -60,7 +61,15 @@ const mathStatSlice = createSlice({
 			})
 			.addCase(loadMathStatistics.fulfilled, (state, action) => {
 				state.loading = false;
-				state.mathStatList = action.payload; // Обновляем список статистики
+
+				// Обновляем статистику, добавляя только новые записи
+				const newStats = action.payload.filter((newStat: MathStat) => {
+					// Проверяем, есть ли уже такая запись в хранилище
+					return !state.mathStatList.some(stat => stat._id === newStat._id);
+				});
+
+				// Добавляем новые записи в существующий список
+				state.mathStatList = [...state.mathStatList, ...newStats];
 			})
 			.addCase(loadMathStatistics.rejected, (state, action) => {
 				state.loading = false;
