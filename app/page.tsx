@@ -7,6 +7,8 @@ import { loadWords } from './english/components/loadWords';
 import { AppDispatch } from '@/lib/store';
 import { loadMathStatistics } from './statistics/math/loadMathStatistics';
 import { usePushSubscription } from './pushNotification/usePushSubscription';
+import { useSession } from 'next-auth/react';
+import { UserSession } from '@/types/userSession';
 
 // Определяем интерфейс для события beforeinstallprompt
 interface BeforeInstallPromptEvent extends Event {
@@ -14,15 +16,13 @@ interface BeforeInstallPromptEvent extends Event {
 	userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
 }
 
-
 export default function Home() {
 	const dispatch = useDispatch<AppDispatch>();
 	const [deferredPrompt, setDeferredPrompt] =
 		useState<BeforeInstallPromptEvent | null>(null); // Состояние для события установки
 	const [isInstalled, setIsInstalled] = useState(false); // Для отслеживания установки
-const { subscribeToPush,  } = usePushSubscription();
+	const { subscribeToPush } = usePushSubscription();
 
-	 
 	useEffect(() => {
 		dispatch(loadEnglishStatistics());
 		dispatch(loadWords());
@@ -66,11 +66,27 @@ const { subscribeToPush,  } = usePushSubscription();
 			setDeferredPrompt(null); // Сбрасываем сохранённое событие
 		}
 	};
-	useEffect(() => {
-	
-		subscribeToPush();
-	 }, []);
 
+	const { data: session } = useSession() as { data: UserSession | null };
+
+	useEffect(() => {
+		if (!session?.user?.id) {
+			return;
+		}
+		if (localStorage.getItem('notificationsDisabled') === null) {
+			localStorage.setItem('notificationsDisabled', 'false'); // По умолчанию автоподписка активна
+		}
+		const isNotificationsDisabled =
+			localStorage.getItem('notificationsDisabled') === 'true';
+		if (isNotificationsDisabled) {
+			console.log('Автоподписка отключена.');
+		} else {
+			subscribeToPush();
+			console.log('Автоподписка активна.');
+		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [session?.user?.id]);
 
 	return (
 		<div className='bg-gray-100 min-h-screen flex flex-col '>
@@ -131,7 +147,6 @@ const { subscribeToPush,  } = usePushSubscription();
 					school112.ru
 				</h3>
 			</div>
-			
 		</div>
 	);
 }

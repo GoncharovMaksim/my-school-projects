@@ -38,7 +38,10 @@ function PushNotificationManager() {
 					<>
 						<p>Вы подписаны на push-уведомления.</p>
 						<button
-							onClick={unsubscribeFromPush}
+							onClick={() => {
+								unsubscribeFromPush();
+								localStorage.setItem('notificationsDisabled', 'true');
+							}}
 							disabled={state.loading}
 							className='btn btn-outline w-full max-w-xs'
 						>
@@ -101,7 +104,10 @@ function PushNotificationManager() {
 					<>
 						<p>Вы не подписаны на push-уведомления.</p>
 						<button
-							onClick={subscribeToPush}
+							onClick={() => {
+								subscribeToPush();
+								localStorage.setItem('notificationsDisabled', 'false');
+							}}
 							disabled={state.loading}
 							className='btn btn-outline w-full max-w-xs'
 						>
