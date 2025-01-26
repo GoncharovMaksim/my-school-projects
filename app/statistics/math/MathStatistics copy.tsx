@@ -24,7 +24,6 @@ interface MathStatisticsProps {
 
 export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 	const dispatch = useDispatch<AppDispatch>();
-	const [isLoading, setIsLoading] = useState(false);
 	const error = useSelector((state: RootState) => state.mathStat.error);
 	const allUsersStatisticsList = useSelector(
 		(state: RootState) => state.mathStat.mathStatList
@@ -156,15 +155,18 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 		'timeSpent'
 	);
 
-	const timeAllTests = currentUsersFilterStatisticsList.reduce((sum, item) => {
-		return sum + item.timeSpent;
+  const timeAllTests = currentUsersFilterStatisticsList.reduce((sum, item) => {
+		return (sum + item.timeSpent);
 	}, 0);
+ 
 
 	useEffect(() => {
 		if (allUsersStatisticsList.length === 0) {
 			dispatch(loadMathStatistics({}));
 		}
 	}, [dispatch, allUsersStatisticsList.length]);
+
+  
 
 	useEffect(() => {
 		const handleFilterChange = () => {
@@ -230,12 +232,6 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 		scrollMargin: listRef.current?.offsetTop ?? 0,
 		gap: 7,
 	});
-
-	const handleClick = async () => {
-		setIsLoading(true);
-		await dispatch(loadMathStatistics({}));
-		setIsLoading(false);
-	};
 
 	if (allUsersStatisticsList.length === 0) {
 		return <Loading />;
@@ -347,15 +343,8 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 			) : (
 				''
 			)}
-			<div>
-				<button
-					onClick={() => handleClick()}
-					disabled={isLoading}
-					className='btn btn-outline w-full min-w-[200px]'
-				>
-					{isLoading ? 'Загрузка...' : 'Загрузить всю статистику'}
-				</button>
-			</div>
+			
+		
 
 			<div className='datepicker-container'>
 				<h2>Выберите диапазон дат:</h2>
@@ -370,10 +359,7 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 							  )} - ${endDate.toLocaleDateString('ru-RU')}`
 							: ''
 					}
-					onClick={() => {
-						setIsCalendarOpen(true);
-						dispatch(loadMathStatistics({}))}
-					} // Показываем календарь
+					onClick={() => setIsCalendarOpen(true)} // Показываем календарь
 					readOnly
 					className='inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-6 py-3 text-xl font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 max-w-[280px] min-w-[280px]'
 					placeholder='За все время'
@@ -381,9 +367,7 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 
 				{/* Календарь, который отображается только при открытии */}
 				{isCalendarOpen && (
-					
 					<div className='flex justify-center items-center w-full'>
-						
 						<DatePicker
 							selected={startDate}
 							onChange={(dates: [Date | null, Date | null]) => {
