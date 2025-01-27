@@ -6,11 +6,6 @@ import { useSession } from 'next-auth/react';
 import TgApi from '@/lib/tgApi';
 import MathStatistics from '@/app/statistics/math/MathStatistics';
 
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/lib/store';
-import { loadMathStatistics } from '@/app/statistics/math/loadMathStatistics';
-
-
 export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const { operator, difficultyLevel, stepGame, limGame } = gameSettings;
 	const [argumentA, setArgumentA] = useState<number | null>(null);
@@ -30,8 +25,6 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
 	const session = useSession();
-
-	const dispatch = useDispatch<AppDispatch>();
 
 	function randomNumber(a: number, b: number): number {
 		return Math.floor(Math.random() * (b - a + 1)) + a;
@@ -201,16 +194,13 @@ export default function Game({ gameSettings, setGameSettings }: GameProps) {
 			});
 
 			if (!response.ok) {
-				alert('Статистика не отправлена, обновите страницу!');
 				throw new Error(
 					`Ошибка при отправке статистики: ${response.statusText}`
 				);
-				
 			}
 
 			const result = await response.json();
 			console.log('Статистика успешно сохранена:', result);
-			dispatch(loadMathStatistics({ today: true }));
 
 			// Telegram API
 			const resultText = `
@@ -233,7 +223,6 @@ ${session.data?.user?.email || ''}`;
 		} catch (error) {
 			console.error('Ошибка при сохранении статистики:', error);
 		}
-
 	}
 
 	useEffect(() => {
@@ -246,7 +235,7 @@ ${session.data?.user?.email || ''}`;
 	return (
 		<>
 			{endGame ? (
-				<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm text-xl'>
+				<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm text-xl items-center'>
 					<div className='space-y-4 max-w-screen-sm text-xl flex flex-col items-center'>
 						<h1>Результат:</h1>
 						<div>
@@ -268,8 +257,8 @@ ${session.data?.user?.email || ''}`;
 							Оценка: <span className='text-2xl font-bold'>{gradeAnswer}</span>
 						</div>
 						<div>Время: {(gameSettings.timeSpent / 1000).toFixed(2)} сек</div>
-						<MathStatistics minTimeSpent={true} />
 					</div>
+
 					<button
 						className='btn btn-outline w-full max-w-xs'
 						onClick={() => {
@@ -278,6 +267,7 @@ ${session.data?.user?.email || ''}`;
 					>
 						Продолжить
 					</button>
+					<MathStatistics minTimeSpent={true} />
 				</div>
 			) : (
 				<>

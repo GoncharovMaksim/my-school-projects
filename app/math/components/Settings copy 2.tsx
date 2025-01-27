@@ -1,11 +1,9 @@
 import DropdownMenu from '../../../components/DropdownMenu';
 import { useEffect, useState } from 'react';
 import { GameProps } from './types';
-// import { useDispatch } from 'react-redux';
-// import { AppDispatch } from '@/lib/store';
-// import { loadMathStatistics } from '@/app/statistics/math/loadMathStatistics';
-
-import MathStatisticsToday from '@/app/statistics/math/MathStatisticsToday';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/lib/store';
+import { loadMathStatistics } from '@/app/statistics/math/loadMathStatistics';
 
 export default function Settings({ setGameSettings }: GameProps) {
 	const [operator, setOperator] = useState('*'); // Значение по умолчанию '*'
@@ -66,10 +64,12 @@ export default function Settings({ setGameSettings }: GameProps) {
 		localStorage.setItem('difficultyLevel', difficultyLevel.toString()); // Сохраняем уровень сложности
 	};
 
-	// const dispatch = useDispatch<AppDispatch>();
-	// useEffect(() => {
-	// 	dispatch(loadMathStatistics({ today: true }));
-	// }, [dispatch]);
+	
+	const dispatch = useDispatch<AppDispatch>();
+	useEffect(() => {
+		dispatch(loadMathStatistics({ today: true }));
+	}, [dispatch]);
+
 
 	if (isLoading) {
 		return <div>Загрузка...</div>;
@@ -122,11 +122,6 @@ export default function Settings({ setGameSettings }: GameProps) {
 			>
 				Начать
 			</button>
-			<MathStatisticsToday
-				minTimeSpent={true}
-				operatorFromSettings={operator}
-				difficultyLevelFromSettings={difficultyLevel}
-			/>
 		</>
 	);
 }
