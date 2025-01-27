@@ -24,7 +24,7 @@ interface MathStatisticsProps {
 
 export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 	const dispatch = useDispatch<AppDispatch>();
-	const isLoading = useSelector((state: RootState) => state.mathStat.loading);
+	const [isLoading, setIsLoading] = useState(false);
 	const error = useSelector((state: RootState) => state.mathStat.error);
 	const allUsersStatisticsList = useSelector(
 		(state: RootState) => state.mathStat.mathStatList
@@ -231,14 +231,11 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 		gap: 7,
 	});
 
-	// const handleClick = async () => {
-	// 	setIsLoading(true);
-	// 	await dispatch(loadMathStatistics({}));
-	// 	setIsLoading(false);
-	// };
-    const handleClick = async () => {
-			 dispatch(loadMathStatistics({})); // Загрузка данных
-		};
+	const handleClick = async () => {
+		setIsLoading(true);
+		await dispatch(loadMathStatistics({}));
+		setIsLoading(false);
+	};
 
 	if (allUsersStatisticsList.length === 0) {
 		return <Loading />;
@@ -375,8 +372,7 @@ export default function MathStatistics({ minTimeSpent }: MathStatisticsProps) {
 					}
 					onClick={() => {
 						setIsCalendarOpen(true);
-						//dispatch(loadMathStatistics({}))
-						}
+						dispatch(loadMathStatistics({}))}
 					} // Показываем календарь
 					readOnly
 					className='inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-6 py-3 text-xl font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 max-w-[280px] min-w-[280px]'

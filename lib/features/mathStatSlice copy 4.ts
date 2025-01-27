@@ -55,27 +55,20 @@ const mathStatSlice = createSlice({
 	extraReducers: builder => {
 		builder
 			.addCase(loadMathStatistics.pending, state => {
-				state.loading = true;
-				state.error = false;
+				state.loading = true; // Устанавливаем loading в true при начале загрузки
+				state.error = false; // Сбрасываем ошибку
 			})
 			.addCase(loadMathStatistics.fulfilled, (state, action) => {
 				state.loading = false;
-				const newStats = action.payload.filter(
-					(newStat: MathStat) =>
-						!state.mathStatList.some(
-							existingStat => existingStat._id === newStat._id
-						)
-				);
-				state.mathStatList = [...state.mathStatList, ...newStats];
+				state.mathStatList = action.payload; // Обновляем список статистики
 			})
 			.addCase(loadMathStatistics.rejected, (state, action) => {
 				state.loading = false;
-				state.error = true;
-				console.error(action.payload);
+				state.error = true; // Устанавливаем ошибку
+				console.error(action.payload); // Выводим ошибку в консоль
 			});
 	},
 });
-
 
 export const {
 	setMathStatList,
