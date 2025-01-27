@@ -111,7 +111,7 @@ export default function MathStatisticsToday({
 
 			if (idSelectedUser) {
 				tempFilter = tempFilter.filter(el => el.userId === idSelectedUser);
-				localStorage.setItem('idSelectedUser', JSON.stringify(idSelectedUser));
+				//localStorage.setItem('idSelectedUser', JSON.stringify(idSelectedUser));
 			}
 
 			setCurrentUsersFilterStatisticsList(tempFilter);
