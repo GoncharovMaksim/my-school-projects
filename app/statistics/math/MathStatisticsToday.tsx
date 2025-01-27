@@ -66,14 +66,15 @@ export default function MathStatisticsToday({
 		const storedDifficultyLevel = localStorage.getItem('difficultyLevel');
 		const storedOperator = localStorage.getItem('operator');
 
-		const storedIdSelectedUser = localStorage.getItem('idSelectedUser');
+		//const storedIdSelectedUser = localStorage.getItem('idSelectedUser');
 
 		if (storedOperator) setOperator(storedOperator);
 		if (storedDifficultyLevel)
 			setDifficultyLevel(JSON.parse(storedDifficultyLevel));
-		if (storedIdSelectedUser)
-			setIdSelectedUser(JSON.parse(storedIdSelectedUser));
-	}, []);
+		// if (storedIdSelectedUser)
+		// 	setIdSelectedUser(JSON.parse(storedIdSelectedUser));
+		if (session?.user?.id) setIdSelectedUser(session?.user?.id);
+	}, [session?.user?.id]);
 
 	const [gradeStates, setGradeStates] = useState<boolean[]>([
 		true,
@@ -170,7 +171,7 @@ export default function MathStatisticsToday({
 
 	useEffect(() => {
 		if (allUsersStatisticsList.length === 0) {
-			dispatch(loadMathStatistics({ today:true }));
+			dispatch(loadMathStatistics({ today: true }));
 		}
 	}, [dispatch, allUsersStatisticsList.length]);
 
