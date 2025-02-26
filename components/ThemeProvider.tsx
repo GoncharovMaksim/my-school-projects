@@ -34,7 +34,7 @@ export default function ThemeProvider({
 	return (
 		<div
 			className={
-				darkTheme ? 'bg-gray-800 min-h-screen' : 'bg-gray-200 min-h-screen'
+				darkTheme ? 'bg-gray-700 min-h-screen' : 'bg-gray-200 min-h-screen'
 			}
 			data-theme={darkTheme ? 'dark' : undefined}
 		>
