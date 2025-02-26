@@ -129,7 +129,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 	return (
 		<div className='space-y-6 max-w-screen-sm items-center'>
 			<div className='p-2 flex flex-col items-center space-y-6'>
-				<div className='collapse collapse-arrow bg-base-200 overflow-visible p-4'>
+				<div className='collapse collapse-arrow bg-base-100 overflow-visible p-4'>
 					<input type='checkbox' name='my-accordion-2' />
 					<div className='collapse-title text-xl font-bold text-center '>
 						Параметры:
@@ -286,7 +286,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 						filterWordsList.map((el, index) => (
 							<div
 								key={`${el.englishWord}-${index}`}
-								className='border p-4 rounded-lg grid grid-cols-2 gap-4 place-content-center bg-base-200 shadow-md w-full h-full'
+								className='border p-4 rounded-lg grid grid-cols-2 gap-4 place-content-center bg-base-100 shadow-md w-full h-full'
 							>
 								<div className='text-2xl font-bold break-words overflow-hidden text-ellipsis'>
 									{el.englishWord}
