@@ -1,23 +1,19 @@
-interface ThemeSwapProps {
-	darkTheme: boolean;
-	setDarkTheme: (value: boolean) => void;
-}
+import { useTheme } from './ThemeProvider';
 
-//1
-export default function ThemeSwap({ darkTheme, setDarkTheme }: ThemeSwapProps) {
+export default function ThemeSwap() {
+	const { darkTheme, setDarkTheme } = useTheme();
+
 	const themeSwitcher = () => {
 		setDarkTheme(!darkTheme);
-		localStorage?.setItem('darkTheme', JSON.stringify(!darkTheme));
 	};
 
 	return (
 		<label className='swap swap-rotate p-2 hover:bg-gray-700 rounded-md group'>
-			{/* this hidden checkbox controls the state */}
 			<input
 				type='checkbox'
 				className='theme-controller'
-				value='synthwave'
-				onChange={() => themeSwitcher()}
+				checked={darkTheme}
+				onChange={themeSwitcher}
 			/>
 
 			{/* sun icon */}

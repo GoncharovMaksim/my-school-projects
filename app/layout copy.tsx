@@ -17,6 +17,7 @@ const geistMono = localFont({
 	weight: '100 900',
 });
 
+
 const rubikDoodleShadow = localFont({
 	src: './fonts/RubikDoodleShadow-Regular.ttf',
 	variable: '--font-rubik-doodle-shadow',
@@ -24,6 +25,8 @@ const rubikDoodleShadow = localFont({
 	display: 'swap',
 	weight: '400', // Укажите корректный вес шрифта, если он известен
 });
+
+
 
 export const metadata: Metadata = {
 	title: 'Школа112',
@@ -38,7 +41,7 @@ export default function RootLayout({
 	return (
 		<html lang='ru'>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} ${rubikDoodleShadow.variable} antialiased min-h-screen flex flex-col`}
+				className={`${geistSans.variable} ${geistMono.variable} ${rubikDoodleShadow.variable} antialiased bg-gray-100 min-h-screen flex flex-col`}
 			>
 				<Providers>
 					<DarkNav />

@@ -13,7 +13,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import ThemeSwap from './ThemeSwap';
-import { useState } from 'react';
+
 
 const navigation = [
 	{ name: 'Главное меню', href: '/', current: false },
@@ -28,8 +28,7 @@ function classNames(...classes: string[]) {
 
 export default function DarkNav() {
 	const session = useSession();
-const [darkTheme, setDarkTheme] = useState(false);
-	//console.log(session);
+
 	const userNavigation = session.data
 		? [
 				{ name: 'Профиль', href: '/profile' },
@@ -96,10 +95,7 @@ const [darkTheme, setDarkTheme] = useState(false);
 
 							<div className='hidden md:block'>
 								<div className='ml-4 flex items-center md:ml-6'>
-									<ThemeSwap
-										darkTheme={darkTheme}
-										setDarkTheme={setDarkTheme}
-									/>
+									<ThemeSwap />
 									<Link
 										href={'/pushNotification'}
 										className='relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'
@@ -154,7 +150,7 @@ const [darkTheme, setDarkTheme] = useState(false);
 								</div>
 							</div>
 							<div className='-mr-2 flex md:hidden'>
-								<ThemeSwap darkTheme={darkTheme} setDarkTheme={setDarkTheme} />
+								<ThemeSwap />
 								{/* Mobile menu button */}
 								<DisclosureButton className='group relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
 									<span className='absolute -inset-0.5' />

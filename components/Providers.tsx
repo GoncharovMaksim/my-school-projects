@@ -3,6 +3,7 @@ import { SessionProvider } from 'next-auth/react';
 import { useRef } from 'react';
 import { Provider } from 'react-redux';
 import { makeStore, AppStore } from '../lib/store';
+import ThemeProvider from './ThemeProvider';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
 	const storeRef = useRef<AppStore | null>(null);
@@ -13,7 +14,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
 	return (
 		<SessionProvider>
-			<Provider store={storeRef.current}>{children}</Provider>
+			<Provider store={storeRef.current}>
+				<ThemeProvider>{children}</ThemeProvider>
+			</Provider>
 		</SessionProvider>
 	);
 }
