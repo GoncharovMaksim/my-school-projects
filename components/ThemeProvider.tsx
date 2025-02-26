@@ -33,7 +33,9 @@ export default function ThemeProvider({
 
 	return (
 		<div
-			className={darkTheme ? 'bg-gray-900' : 'bg-gray-200'}
+			className={
+				darkTheme ? 'bg-gray-900 min-h-screen' : 'bg-gray-200 min-h-screen'
+			}
 			data-theme={darkTheme ? 'dark' : undefined}
 		>
 			<ThemeContext.Provider value={{ darkTheme, setDarkTheme }}>
