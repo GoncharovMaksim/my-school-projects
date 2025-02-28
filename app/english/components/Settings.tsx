@@ -136,7 +136,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 					</div>
 					<div className='flex justify-center items-center'>
 						<button
-							className='btn btn-outline min-w-[200px] '
+							className='btn btn-outline min-w-[280px] '
 							onClick={handleStartGame}
 						>
 							Пройти тест

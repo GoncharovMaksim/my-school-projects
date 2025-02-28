@@ -44,7 +44,7 @@ export default function DropdownMenu({
 									<button
 										onClick={() => handleSelect(option.label, option.onClick)}
 										className={`block w-full px-6 py-3 text-left text-lg ${
-											active ? 'bg-base-200' : 'text-base-400'
+											active ? 'bg-base-200 text-gray-900' : 'text-gray-700'
 										}`}
 									>
 										{option.label}

@@ -6,9 +6,7 @@ export default function Home() {
 			<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
 				<header className=''>
 					<div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8'>
-						<h1 className='text-3xl text-center font-bold tracking-tight text-gray-900'>
-							Статистика
-						</h1>
+						<h1 className='text-4xl text-center font-bold mb-4 '>Статистика</h1>
 					</div>
 				</header>
 				<main>
@@ -20,7 +18,7 @@ export default function Home() {
 								</button>
 							</Link>
 						</div>
-						
+
 						<div>
 							<Link href='statistics//math'>
 								<button className='btn btn-outline min-w-[200px]'>
@@ -28,8 +26,6 @@ export default function Home() {
 								</button>
 							</Link>
 						</div>
-
-						
 					</div>
 				</main>
 			</div>

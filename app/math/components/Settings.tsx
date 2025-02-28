@@ -117,7 +117,7 @@ export default function Settings({ setGameSettings }: GameProps) {
 				]}
 			/>
 			<button
-				className='btn btn-outline w-full max-w-xs'
+				className='btn btn-outline min-w-[280px]'
 				onClick={handleStartGame}
 			>
 				Начать
