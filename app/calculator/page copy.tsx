@@ -1,35 +1,24 @@
 'use client';
-
 import { evaluate } from 'mathjs';
-import { useRef, useState } from 'react';
+import { useRef, useState } from "react";
 
 export default function App() {
-	//const [answer, setAnswer] = useState('');
-	const [userQwestion, setUserQwestion] = useState('');
-	const inputRef = useRef<HTMLInputElement | null>(null);
-	const [bgNoUserQwestion, setBgNoUserQwestion] = useState(false);
-	const [arrQwestions, setArrQwestions] = useState<string[]>([]);
+const [answer, setAnswer]= useState('0');
+const [userQwestion, setUserQwestion]= useState('');
+const inputRef = useRef<HTMLInputElement | null>(null);
+const [bgNoUserQwestion,
+	setBgNoUserQwestion] = useState(false);
 
-	function userQwestionCheck() {
-		if (inputRef.current) {
-			inputRef.current.focus();
-		}
-		if (!userQwestion) {
-			setBgNoUserQwestion(true);
-			return;
-		}
-		try {
-			const result = evaluate(userQwestion);
-			if (result) {
-				setArrQwestions(prev => [ `${userQwestion} = ${result}`,...prev]);
-				console.log(arrQwestions);
-				return setUserQwestion('');
-			}
-			return new Error();
-		} catch (error) {
-			return error;
-		}
+function userQwestionCheck(){
+	if (inputRef.current) {
+		inputRef.current.focus();
 	}
+	if (!userQwestion) {
+		setBgNoUserQwestion(true);
+		return;
+	}
+	setAnswer(evaluate(userQwestion));
+}
 
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
@@ -37,7 +26,7 @@ export default function App() {
 				<h1 className='text-4xl text-center font-bold mb-4 '>Калькулятор</h1>
 
 				<>
-					
+					<div className='text-5xl '>{answer}</div>
 					<input
 						ref={inputRef}
 						type='text'
@@ -64,13 +53,6 @@ export default function App() {
 						Решить
 					</button>
 				</>
-				{arrQwestions.map((el,index) => {
-					return (
-						<div key={`${el}+${index}`} className='text-5xl w-full max-w-xs'>
-							{el}
-						</div>
-					);
-				})}
 			</div>
 		</div>
 	);

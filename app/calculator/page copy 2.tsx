@@ -21,7 +21,7 @@ export default function App() {
 		try {
 			const result = evaluate(userQwestion);
 			if (result) {
-				setArrQwestions(prev => [ `${userQwestion} = ${result}`,...prev]);
+				setArrQwestions(prev => [...prev, `${userQwestion} = ${result}`]);
 				console.log(arrQwestions);
 				return setUserQwestion('');
 			}
@@ -66,7 +66,7 @@ export default function App() {
 				</>
 				{arrQwestions.map((el,index) => {
 					return (
-						<div key={`${el}+${index}`} className='text-5xl w-full max-w-xs'>
+						<div key={`${el}+${index}`} className='text-5xl '>
 							{el}
 						</div>
 					);
