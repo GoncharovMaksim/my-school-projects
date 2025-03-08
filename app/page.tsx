@@ -81,6 +81,13 @@ export default function Home() {
 							</button>
 						</Link>
 					</div>
+					<div>
+						<Link href='/calculator'>
+							<button className='btn btn-outline min-w-[200px]'>
+								КАЛЬКУЛЯТОР
+							</button>
+						</Link>
+					</div>
 				</div>
 
 				<hr className='my-4 border-base-content border-2 w-full' />
