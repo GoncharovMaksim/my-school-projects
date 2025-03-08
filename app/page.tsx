@@ -49,19 +49,19 @@ export default function Home() {
 			<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
 				<div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 items-center'>
 					<h1
-						className='text-5xl text-center font-bold tracking-tight text-gray-900'
-						style={{ fontFamily: 'var(--font-rubik-doodle-shadow)' }}
+						className='text-5xl text-center font-bold tracking-tight '
+						// style={{ fontFamily: 'var(--font-rubik-doodle-shadow)' }}
 					>
 						ШКОЛА 112
 					</h1>
 
-					<hr className='my-4 border-black border-2' />
+					<hr className='my-4 border-base-content border-2' />
 
 					<h3
-						className='text-3xl text-center font-bold tracking-tight text-gray-900'
-						style={{ fontFamily: 'var(--font-rubik-doodle-shadow)' }}
+						className='text-3xl text-center font-bold tracking-tight '
+						// style={{ fontFamily: 'var(--font-rubik-doodle-shadow)' }}
 					>
-						Проект для помощи ученику
+						Проект помощи ученику
 					</h3>
 				</div>
 
@@ -83,11 +83,11 @@ export default function Home() {
 					</div>
 				</div>
 
-				<hr className='my-4 border-black border-2 w-full' />
+				<hr className='my-4 border-base-content border-2 w-full' />
 				<HandleBeforeInstallPrompt />
 				<h3
-					className='text-3xl text-center font-bold tracking-tight text-gray-900'
-					style={{ fontFamily: 'var(--font-rubik-doodle-shadow)' }}
+					className='text-3xl text-center font-bold tracking-tight '
+					// style={{ fontFamily: 'var(--font-rubik-doodle-shadow)' }}
 				>
 					school112.ru
 				</h3>
