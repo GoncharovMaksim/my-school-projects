@@ -19,6 +19,7 @@ const navigation = [
 	{ name: 'Главное меню', href: '/', current: false },
 	{ name: 'Английский', href: '/english', current: false },
 	{ name: 'Математика', href: '/math', current: false },
+	{ name: 'Калькулятор', href: '/calculator', current: false },
 	{ name: 'Статистика', href: '/statistics', current: false },
 ];
 
