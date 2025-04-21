@@ -18,7 +18,8 @@ export default function App() {
 			return;
 		}
 		try {
-			const result = evaluate(userQuestion);
+			const clearUserQuestion = userQuestion.replace(/\s+/g, '');
+			const result = evaluate(clearUserQuestion);
 			setArrQuestions(prev => [`${userQuestion} = ${result}`, ...prev]);
 			setUserQuestion('');
 		} catch (error) {
@@ -40,7 +41,7 @@ export default function App() {
 							? 'input input-bordered w-full max-w-xs text-3xl bg-red-500'
 							: 'input input-bordered w-full max-w-xs text-3xl'
 					}
-					value={userQuestion}
+					value={userQuestion.replace(/[^0-9+\-*/(). ]/g, '')}
 					onChange={event => setUserQuestion(event.target.value)}
 					onKeyDown={event => {
 						if (event.key === 'Enter') {

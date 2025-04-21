@@ -1,58 +1,65 @@
 'use client';
+
 import { evaluate } from 'mathjs';
-import { useRef, useState } from "react";
+import { useRef, useState } from 'react';
 
 export default function App() {
-const [answer, setAnswer]= useState('0');
-const [userQwestion, setUserQwestion]= useState('');
-const inputRef = useRef<HTMLInputElement | null>(null);
-const [bgNoUserQwestion,
-	setBgNoUserQwestion] = useState(false);
+	const [userQuestion, setUserQuestion] = useState('');
+	const inputRef = useRef<HTMLInputElement | null>(null);
+	const [bgNoUserQuestion, setBgNoUserQuestion] = useState(false);
+	const [arrQuestions, setArrQuestions] = useState<string[]>([]);
 
-function userQwestionCheck(){
-	if (inputRef.current) {
-		inputRef.current.focus();
+	function userQuestionCheck() {
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
+		if (!userQuestion) {
+			setBgNoUserQuestion(true);
+			return;
+		}
+		try {
+			const result = evaluate(userQuestion);
+			setArrQuestions(prev => [`${userQuestion} = ${result}`, ...prev]);
+			setUserQuestion('');
+		} catch (error) {
+			console.error('Ошибка вычисления:', error);
+		}
 	}
-	if (!userQwestion) {
-		setBgNoUserQwestion(true);
-		return;
-	}
-	setAnswer(evaluate(userQwestion));
-}
 
 	return (
 		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
 			<div className='my-8 flex flex-col items-center space-y-6'>
 				<h1 className='text-4xl text-center font-bold mb-4 '>Калькулятор</h1>
 
-				<>
-					<div className='text-5xl '>{answer}</div>
-					<input
-						ref={inputRef}
-						type='text'
-						placeholder='Ваш пример'
-						className={
-							bgNoUserQwestion
-								? 'input input-bordered w-full max-w-xs text-3xl bg-red-500'
-								: 'input input-bordered w-full max-w-xs text-3xl'
+				<input
+					ref={inputRef}
+					type='text'
+					placeholder='Ваш пример'
+					className={
+						bgNoUserQuestion
+							? 'input input-bordered w-full max-w-xs text-3xl bg-red-500'
+							: 'input input-bordered w-full max-w-xs text-3xl'
+					}
+					value={userQuestion}
+					onChange={event => setUserQuestion(event.target.value)}
+					onKeyDown={event => {
+						if (event.key === 'Enter') {
+							userQuestionCheck();
 						}
-						value={userQwestion}
-						onChange={event => setUserQwestion(event.target.value)}
-						onKeyDown={event => {
-							if (event.key === 'Enter') {
-								userQwestionCheck();
-							}
-						}}
-					/>
-					<button
-						className='btn btn-outline w-full max-w-xs'
-						onClick={() => {
-							userQwestionCheck();
-						}}
-					>
-						Решить
-					</button>
-				</>
+					}}
+				/>
+				<button
+					className='btn btn-outline w-full max-w-xs'
+					onClick={userQuestionCheck}
+				>
+					Решить
+				</button>
+
+				{arrQuestions.map((el, index) => (
+					<div key={`${el}+${index}`} className='text-5xl w-full max-w-xs'>
+						{el}
+					</div>
+				))}
 			</div>
 		</div>
 	);
