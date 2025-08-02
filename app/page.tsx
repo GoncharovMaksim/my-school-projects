@@ -88,6 +88,13 @@ export default function Home() {
 							</button>
 						</Link>
 					</div>
+					<div>
+						<Link href='/literature'>
+							<button className='btn btn-outline min-w-[200px]'>
+								ЛИТЕРАТУРА
+							</button>
+						</Link>
+					</div>
 				</div>
 
 				<hr className='my-4 border-base-content border-2 w-full' />

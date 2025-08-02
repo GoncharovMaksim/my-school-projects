@@ -20,6 +20,7 @@ const navigation = [
 	{ name: 'Английский', href: '/english', current: false },
 	{ name: 'Математика', href: '/math', current: false },
 	{ name: 'Калькулятор', href: '/calculator', current: false },
+	{ name: 'Литература', href: '/literature', current: false },
 	{ name: 'Статистика', href: '/statistics', current: false },
 ];
 
