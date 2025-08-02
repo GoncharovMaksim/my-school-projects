@@ -10,40 +10,19 @@ export default function App() {
 	const [isLoading, setisLoading] = useState(true);
 	const [optionsList, setOptionsList] = useState<string[]>([]);
 	const [userCheckOptions, setUserCheckOptions] = useState<string>('');
-	const [dropdownLabel, setDropdownLabel] = useState<string>('');
 	const [startTests, setStartTest] = useState<boolean>(false);
-
+	
 	useEffect(() => {
 		getOptionsList().then(response => {
 			setOptionsList(response);
-			// Получаем сохранённую опцию из localStorage
-			const savedOption =
-				typeof window !== 'undefined'
-					? localStorage.getItem('literatureOption')
-					: null;
-			const initialOption =
-				savedOption && response.includes(savedOption)
-					? savedOption
-					: response[0] || '';
-			setUserCheckOptions(initialOption);
-			setDropdownLabel(initialOption);
+			setUserCheckOptions(response[0] || '');
 			setisLoading(false);
 		});
 	}, []);
 
-const handleChange = (optionOrEvent: { label: string } | React.ChangeEvent<HTMLSelectElement>) => {
-	let value = '';
-	if (typeof optionOrEvent === 'object' && 'label' in optionOrEvent) {
-		value = optionOrEvent.label;
-	} else if ('target' in optionOrEvent) {
-		value = optionOrEvent.target.value;
-	}
-	setUserCheckOptions(value);
-	setDropdownLabel(value);
-	if (typeof window !== 'undefined') {
-		localStorage.setItem('literatureOption', value);
-	}
-};
+	const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		setUserCheckOptions(e.target.value);
+	};
 
 	const handleStartTest = () => {
 		setStartTest(true);
@@ -57,15 +36,26 @@ const handleChange = (optionOrEvent: { label: string } | React.ChangeEvent<HTMLS
 			<div className='my-8 flex flex-col items-center space-y-6'>
 				<h1 className='text-4xl text-center font-bold mb-4 '>Литература</h1>
 				<h3>Выберите тему теста</h3>
-				
+				<select
+					className={styles.optionsList}
+					name='optionsList'
+					id='optionsList'
+					value={userCheckOptions}
+					onChange={handleChange}
+				>
+					{optionsList.map(option => (
+						<option key={option} value={option}>
+							{option}
+						</option>
+					))}
+				</select>
 
-<DropdownMenu
-	onChange={handleChange}
-	defaultLabel={dropdownLabel}
-	options={optionsList.map(option => ({
-		label: option,
-	}))}
-/>
+				<DropdownMenu
+					//defaultLabel={getOperatorLabel(operator)} // Отображаем правильную метку
+					options={optionsList.map(option => ({
+						label: option
+					}))}
+				/>
 
 				<button
 					className='btn btn-outline w-full max-w-xs'
@@ -80,5 +70,5 @@ const handleChange = (optionOrEvent: { label: string } | React.ChangeEvent<HTMLS
 			userCheckOptions={`topic=${userCheckOptions}`}
 			setStartTest={setStartTest}
 		/>
-		);
-	}
+	);
+}

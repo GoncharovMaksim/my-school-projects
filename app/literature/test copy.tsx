@@ -134,49 +134,45 @@ export default function Test({
 	}
 
 	return (
-		<div className='container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center '>
-			<div className='my-8 flex flex-col items-center space-y-6'>
-				<h1 className='text-4xl text-center font-bold mb-4 '>
-					{questions[0].topic}
-				</h1>
+		<div className={styles.page}>
+			<h1>Тест по теме: {questions[0].topic}</h1>
 
-				<main className={styles.main}>
-					{questions.map((question, index) => (
-						<div key={question.id}>
-							<h3 className={styles.questionTitle}>Вопрос №{index + 1}</h3>
-							<p>{question.questionText}</p>
-							<ul className={styles.optionsList}>
-								{question.options.map(option => (
-									<li key={`${question.id}-${option.id}`}>
-										<label htmlFor={`${question.id}-${option.id}`}>
-											<input
-												type={question.type === 'single' ? 'radio' : 'checkbox'}
-												id={`${question.id}-${option.id}`}
-												name={`question-${question.id}`}
-												onChange={e =>
-													handleAnswerChange(
-														question.id,
-														option.id,
-														e.target.checked,
-														question.type as 'single' | 'multiple'
-													)
-												}
-											/>
-											<span>{option.text}</span>
-										</label>
-									</li>
-								))}
-							</ul>
-						</div>
-					))}
-					<button
-						className='btn btn-outline w-full max-w-xs'
-						onClick={handleUserAnswerCheck}
-					>
-						Проверить
-					</button>
-				</main>
-			</div>
+			<main className={styles.main}>
+				{questions.map((question, index) => (
+					<div key={question.id}>
+						<h3 className={styles.questionTitle}>Вопрос №{index + 1}</h3>
+						<p>{question.questionText}</p>
+						<ul className={styles.optionsList}>
+							{question.options.map(option => (
+								<li key={`${question.id}-${option.id}`}>
+									<label htmlFor={`${question.id}-${option.id}`}>
+										<input
+											type={question.type === 'single' ? 'radio' : 'checkbox'}
+											id={`${question.id}-${option.id}`}
+											name={`question-${question.id}`}
+											onChange={e =>
+												handleAnswerChange(
+													question.id,
+													option.id,
+													e.target.checked,
+													question.type as 'single' | 'multiple'
+												)
+											}
+										/>
+										<span>{option.text}</span>
+									</label>
+								</li>
+							))}
+						</ul>
+					</div>
+				))}
+				<button
+					className='btn btn-outline w-full max-w-xs'
+					onClick={handleUserAnswerCheck}
+				>
+					Проверить
+				</button>
+			</main>
 		</div>
 	);
 }

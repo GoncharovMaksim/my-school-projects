@@ -7,24 +7,18 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 interface DropdownMenuProps {
 	options: { label: string; onClick?: () => void }[]; // Список опций
 	defaultLabel?: string; // Текст кнопки по умолчанию
-	onChange?: (e: { label: string }) => void;
 }
-
 
 export default function DropdownMenu({
 	options,
 	defaultLabel = 'Options',
-	onChange,
 }: DropdownMenuProps) {
 	const [selectedLabel, setSelectedLabel] = useState(defaultLabel);
 
 	const handleSelect = (label: string, onClick?: () => void) => {
-		setSelectedLabel(label);
+		setSelectedLabel(label); // Обновляем текст кнопки
 		if (onClick) {
-			onClick();
-		}
-		if (onChange) {
-			onChange({ label });
+			onClick(); // Вызываем пользовательскую функцию
 		}
 	};
 
