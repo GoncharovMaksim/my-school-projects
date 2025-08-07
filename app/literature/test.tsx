@@ -20,7 +20,7 @@ interface Question {
 	questionText: string;
 	type: 'single' | 'multiple';
 	options: {
-		id: 'a' | 'b' | 'c';
+		id: 'a' | 'b' | 'c' | 'd' | 'e';
 		text: string;
 	}[];
 

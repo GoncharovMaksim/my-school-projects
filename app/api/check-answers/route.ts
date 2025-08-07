@@ -1,14 +1,15 @@
-import { questions } from '@/app/data/questions';
 import { NextResponse } from 'next/server';
 
+import Questions from '@/models/Questions';
 
 interface UserAnswer {
 	questionId: number;
-	selected: string[]; 
+	selected: string[];
 }
 
 export async function POST(req: Request) {
 	try {
+		const questions = await Questions.find().lean();
 		const userAnswers: UserAnswer[] = await req.json();
 
 		const result = userAnswers.map(answer => {
@@ -24,11 +25,10 @@ export async function POST(req: Request) {
 
 		return NextResponse.json({ result });
 	} catch (error) {
-    console.error(error)
+		console.error(error);
 		return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
 	}
 }
-
 
 function arraysEqual(a: string[], b: string[]) {
 	if (a.length !== b.length) return false;
