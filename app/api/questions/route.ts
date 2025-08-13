@@ -10,13 +10,22 @@ const questions = await Questions.find().lean();
 	const partFilter = searchParams.get('part');
 
 	if (optionsListParam !== null) {
-		const optionsList = [...new Set(questions.map(q => q.topic))];
+		const optionsList = [];
+				const topicList = [...new Set(questions.map(q => q.topic))];
+				
+				
+				for (const option of topicList) {
+					const tempQuestions = questions.filter(q => q.topic === option);
+					const tempOptionsList = [...new Set(tempQuestions.map(q => q.part))];
+					optionsList.push({topic: option, part: tempOptionsList});
+				}
+	
 		return Response.json(optionsList);
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let result = questions.map(({ correctOptions, ...question }) => question);
-console.log('result', result);
+//console.log('result', result);
 	if (topicFilter !== null) {
 		result = result.filter(q => q.topic === topicFilter);
 	}
