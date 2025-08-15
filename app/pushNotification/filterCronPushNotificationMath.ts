@@ -113,108 +113,92 @@ export default async function filterCronPushNotificationMath() {
         byDifficulty: userData.byDifficulty,
       });
 
-      // Проверяем выполнение для каждого уровня сложности
-      const level1Complete =
-        NOTIFICATION_CRITERIA.math.difficultyLevels[1].operators.every(
-          op =>
-            userData.byDifficulty[1][op] >=
-            NOTIFICATION_CRITERIA.math.difficultyLevels[1].requiredRecords
-        );
+      // Проверяем выполнение каждого оператора на любом уровне сложности
+      const operatorCompletion: { [key: string]: boolean } = {};
+      const operatorDetails: {
+        [key: string]: {
+          level1: { count: number; required: number; complete: boolean };
+          level2: { count: number; required: number; complete: boolean };
+          level3: { count: number; required: number; complete: boolean };
+          overallComplete: boolean;
+        };
+      } = {};
 
-      const level2Complete =
-        NOTIFICATION_CRITERIA.math.difficultyLevels[2].operators.every(
-          op =>
-            userData.byDifficulty[2][op] >=
-            NOTIFICATION_CRITERIA.math.difficultyLevels[2].requiredRecords
-        );
+      NOTIFICATION_CRITERIA.math.requiredOperators.forEach(operator => {
+        // Проверяем каждый уровень сложности для данного оператора
+        const level1Count = userData.byDifficulty[1][operator] || 0;
+        const level2Count = userData.byDifficulty[2][operator] || 0;
+        const level3Count = userData.byDifficulty[3][operator] || 0;
 
-      const level3Complete =
-        NOTIFICATION_CRITERIA.math.difficultyLevels[3].operators.every(
-          op =>
-            userData.byDifficulty[3][op] >=
-            NOTIFICATION_CRITERIA.math.difficultyLevels[3].requiredRecords
-        );
+        // Оператор выполнен, если на любом уровне достигнуто требуемое количество
+        const level1Complete =
+          level1Count >=
+          NOTIFICATION_CRITERIA.math.difficultyLevels[1].requiredRecords;
+        const level2Complete =
+          level2Count >=
+          NOTIFICATION_CRITERIA.math.difficultyLevels[2].requiredRecords;
+        const level3Complete =
+          level3Count >=
+          NOTIFICATION_CRITERIA.math.difficultyLevels[3].requiredRecords;
 
-      console.log(`[DEBUG] User ${userId} completion status:`, {
-        level1Complete,
-        level2Complete,
-        level3Complete,
-        level1Details:
-          NOTIFICATION_CRITERIA.math.difficultyLevels[1].operators.map(op => ({
-            operator: op,
+        operatorCompletion[operator] =
+          level1Complete || level2Complete || level3Complete;
+
+        operatorDetails[operator] = {
+          level1: {
+            count: level1Count,
             required:
               NOTIFICATION_CRITERIA.math.difficultyLevels[1].requiredRecords,
-            actual: userData.byDifficulty[1][op],
-          })),
-        level2Details:
-          NOTIFICATION_CRITERIA.math.difficultyLevels[2].operators.map(op => ({
-            operator: op,
+            complete: level1Complete,
+          },
+          level2: {
+            count: level2Count,
             required:
               NOTIFICATION_CRITERIA.math.difficultyLevels[2].requiredRecords,
-            actual: userData.byDifficulty[2][op],
-          })),
-        level3Details:
-          NOTIFICATION_CRITERIA.math.difficultyLevels[3].operators.map(op => ({
-            operator: op,
+            complete: level2Complete,
+          },
+          level3: {
+            count: level3Count,
             required:
               NOTIFICATION_CRITERIA.math.difficultyLevels[3].requiredRecords,
-            actual: userData.byDifficulty[3][op],
-          })),
+            complete: level3Complete,
+          },
+          overallComplete: level1Complete || level2Complete || level3Complete,
+        };
       });
 
-      // Пользователь выполнил требования, если завершил хотя бы один уровень
-      if (level1Complete || level2Complete || level3Complete) {
+      console.log(`[DEBUG] User ${userId} operator completion status:`, {
+        operatorCompletion,
+        operatorDetails,
+      });
+
+      // Пользователь выполнил требования, если ВСЕ операторы выполнены
+      const allOperatorsComplete =
+        NOTIFICATION_CRITERIA.math.requiredOperators.every(
+          operator => operatorCompletion[operator]
+        );
+
+      if (allOperatorsComplete) {
         usersWithSufficientStats.push({
           userId,
           totalRecords: userData.totalRecords,
-          level1Complete,
-          level2Complete,
-          level3Complete,
+          operatorCompletion,
+          operatorDetails,
           byDifficulty: userData.byDifficulty,
         });
         console.log(
-          `[DEBUG] User ${userId} meets criteria - added to sufficient stats`
+          `[DEBUG] User ${userId} meets criteria - ALL operators completed - added to sufficient stats`
         );
       } else {
-        // Альтернативная проверка: пользователь выполнил хотя бы один оператор с достаточным количеством записей
-        const hasAnySufficientOperator = Object.values(
-          userData.byDifficulty
-        ).some(level =>
-          Object.values(level as Record<string, number>).some(
-            count => count >= 1
-          )
-        );
-
-        console.log(`[DEBUG] User ${userId} alternative criteria check:`, {
-          hasAnySufficientOperator,
-          operatorCounts: Object.fromEntries(
-            Object.entries(userData.byDifficulty).map(([level, operators]) => [
-              level,
-              Object.fromEntries(
-                Object.entries(operators as Record<string, number>).filter(
-                  ([, count]) => count > 0
-                )
-              ),
-            ])
-          ),
-        });
-
-        if (hasAnySufficientOperator) {
-          usersWithSufficientStats.push({
-            userId,
-            totalRecords: userData.totalRecords,
-            level1Complete,
-            level2Complete,
-            level3Complete,
-            byDifficulty: userData.byDifficulty,
-            alternativeCriteria: true,
-          });
-          console.log(
-            `[DEBUG] User ${userId} meets alternative criteria - added to sufficient stats`
+        // Проверяем, какие операторы не выполнены
+        const incompleteOperators =
+          NOTIFICATION_CRITERIA.math.requiredOperators.filter(
+            operator => !operatorCompletion[operator]
           );
-        } else {
-          console.log(`[DEBUG] User ${userId} does NOT meet criteria`);
-        }
+        console.log(
+          `[DEBUG] User ${userId} does NOT meet criteria - incomplete operators:`,
+          incompleteOperators
+        );
       }
     }
 
@@ -223,9 +207,7 @@ export default async function filterCronPushNotificationMath() {
       usersWithSufficientStats.map(user => ({
         userId: user.userId,
         totalRecords: user.totalRecords,
-        level1Complete: user.level1Complete,
-        level2Complete: user.level2Complete,
-        level3Complete: user.level3Complete,
+        operatorCompletion: user.operatorCompletion,
         byDifficulty: user.byDifficulty,
       }))
     );
