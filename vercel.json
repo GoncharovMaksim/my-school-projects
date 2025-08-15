@@ -1,14 +1,13 @@
 {
-	"version": 2,
-	"crons": [
-		{
-			"path": "/api/cron",
-			"schedule": "0 04 * * *" 
-		},
-		{
-			"path": "/api/cron",
-			"schedule": "0 13 * * *" 
-		}
-		
-	]
+  "version": 2,
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "30 06 * * *"
+    },
+    {
+      "path": "/api/cron",
+      "schedule": "0 13 * * *"
+    }
+  ]
 }
