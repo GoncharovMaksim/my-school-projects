@@ -126,10 +126,28 @@ export default async function filterCronPushNotificationMath() {
       stat => stat.userId
     );
 
-    // Убираем из списка пользователей из подписок тех, у кого есть достаточная статистика
-    const usersToNotify = userIdsFromSubscriptions.filter(
-      userId => !userIdsWithSufficientStats.includes(userId)
-    );
+    // Уведомления отправляем только тем, кто НЕ выполнил критерии
+    // Это включает пользователей без записей за сегодня и тех, кто не выполнил требования
+    const usersToNotify = userIdsFromSubscriptions.filter(userId => {
+      // Если у пользователя нет записей за сегодня, он должен получить уведомление
+      if (!userStats.has(userId)) {
+        console.log(
+          `[DEBUG] User ${userId} has no records today - will notify`
+        );
+        return true;
+      }
+
+      // Если у пользователя есть записи, но он не выполнил критерии, он должен получить уведомление
+      const shouldNotify = !userIdsWithSufficientStats.includes(userId);
+      if (shouldNotify) {
+        console.log(
+          `[DEBUG] User ${userId} has records but didn't meet criteria - will notify`
+        );
+      } else {
+        console.log(`[DEBUG] User ${userId} met criteria - will NOT notify`);
+      }
+      return shouldNotify;
+    });
 
     if (usersToNotify.length === 0) {
       console.log('[INFO] No users to notify.');
@@ -138,7 +156,7 @@ export default async function filterCronPushNotificationMath() {
 
     console.log('[INFO] Users to notify:', usersToNotify);
 
-    // Отправка уведомлений оставшимся пользователям
+    // Отправка уведомлений пользователям, которые не выполнили критерии
     const message = 'Математика не сделана! Выполните задания по математике.';
     for (const userId of usersToNotify) {
       console.log(`[INFO] Sending notification to userId: ${userId}`);

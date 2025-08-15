@@ -35,13 +35,13 @@ export default async function filterCronPushNotificationEnglish() {
     console.log('[INFO] Found subscriptions:', userIdsFromSubscriptions);
 
     // Поиск пользователей с достаточным количеством записей в статистике
-    // Учитываем только записи с оценкой 5
+    // Учитываем любые записи за сегодня (оценка >= 1)
     const usersWithSufficientStats = await EnglishStatistics.aggregate([
       {
         $match: {
-          // Фильтр: только записи за сегодня с оценкой 5
+          // Фильтр: только записи за сегодня с любой оценкой
           createdAt: { $gte: today },
-          grade: { $gte: NOTIFICATION_CRITERIA.english.minGrade }, // Оценка 5
+          grade: { $gte: NOTIFICATION_CRITERIA.english.minGrade }, // Оценка >= 1
         },
       },
       {
@@ -65,15 +65,24 @@ export default async function filterCronPushNotificationEnglish() {
       }))
     );
 
-    // Получаем список пользователей с достаточной статистикой
-    const userIdsWithSufficientStats = usersWithSufficientStats.map(stat =>
-      stat._id.toString()
-    );
+    // Уведомления отправляем только тем, кто НЕ выполнил критерии
+    // Это включает пользователей без записей за сегодня и тех, кто не выполнил требования
+    const usersToNotify = userIdsFromSubscriptions.filter(userId => {
+      // Если у пользователя нет записей за сегодня, он должен получить уведомление
+      const userHasRecords = usersWithSufficientStats.some(
+        stat => stat._id.toString() === userId
+      );
 
-    // Убираем из списка пользователей из подписок тех, у кого есть достаточная статистика
-    const usersToNotify = userIdsFromSubscriptions.filter(
-      userId => !userIdsWithSufficientStats.includes(userId)
-    );
+      if (!userHasRecords) {
+        console.log(
+          `[DEBUG] User ${userId} has no records today - will notify`
+        );
+      } else {
+        console.log(`[DEBUG] User ${userId} has records - will NOT notify`);
+      }
+
+      return !userHasRecords;
+    });
 
     if (usersToNotify.length === 0) {
       console.log('[INFO] No users to notify.');
@@ -82,9 +91,9 @@ export default async function filterCronPushNotificationEnglish() {
 
     console.log('[INFO] Users to notify:', usersToNotify);
 
-    // Отправка уведомлений оставшимся пользователям
+    // Отправка уведомлений пользователям, которые не выполнили критерии
     const message =
-      'Английский не сделан! Выполните хотя бы одно задание с отличной оценкой.';
+      'Английский не сделан! Выполните хотя бы одно задание по английскому языку.';
     for (const userId of usersToNotify) {
       console.log(`[INFO] Sending notification to userId: ${userId}`);
       try {

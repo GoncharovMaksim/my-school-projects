@@ -4,11 +4,9 @@ import { sendNotification } from './actions';
 import MathStatistics from '@/models/MathStatistics'; // Модель статистики
 import Subscription from '@/models/Subscription'; // Модель подписок
 import connectDB from '@/configs/connectDB';
+import { NOTIFICATION_CRITERIA } from '@/configs/notificationCriteria';
 
 export default async function filterCronPushNotificationMath() {
-  // Минимальное количество записей в статистике за день
-  const MIN_LIMIT = 12;
-
   async function connectToDatabase() {
     console.log('[INFO] Connecting to MongoDB...');
     try {
@@ -36,38 +34,96 @@ export default async function filterCronPushNotificationMath() {
 
     console.log('[INFO] Found subscriptions:', userIdsFromSubscriptions);
 
-    // Поиск пользователей с достаточным количеством записей в статистике
-    const usersWithSufficientStats = await MathStatistics.aggregate([
-      {
-        $match: {
-          // Фильтр: только записи за сегодня
-          createdAt: { $gte: today },
-        },
-      },
-      {
-        $group: {
-          _id: '$userId', // Группировка по ID пользователя
-          count: { $sum: 1 }, // Подсчет записей
-        },
-      },
-      {
-        $match: {
-          count: { $gte: MIN_LIMIT }, // Условие: больше или равно минимальному лимиту
-        },
-      },
-    ]);
+    // Получаем все записи за сегодня с оценкой 4 или 5
+    const todayStats = await MathStatistics.find({
+      createdAt: { $gte: today },
+      grade: { $gte: NOTIFICATION_CRITERIA.math.minGrade },
+    });
+
+    console.log(
+      '[INFO] Found records for today with grade >= 4:',
+      todayStats.length
+    );
+
+    // Группируем записи по пользователям и анализируем выполнение
+    const userStats = new Map();
+
+    todayStats.forEach(stat => {
+      const userId = stat.userId.toString();
+      const difficultyLevel = stat.difficultyLevel;
+      const operator = stat.operator;
+
+      if (!userStats.has(userId)) {
+        userStats.set(userId, {
+          userId,
+          totalRecords: 0,
+          byDifficulty: {
+            1: { '+': 0, '-': 0, '*': 0, '/': 0 },
+            2: { '+': 0, '-': 0, '*': 0, '/': 0 },
+            3: { '+': 0, '-': 0, '*': 0, '/': 0 },
+          },
+        });
+      }
+
+      const userData = userStats.get(userId);
+      userData.totalRecords++;
+      userData.byDifficulty[difficultyLevel][operator]++;
+    });
+
+    // Проверяем выполнение критериев для каждого пользователя
+    const usersWithSufficientStats = [];
+
+    for (const [userId, userData] of userStats) {
+      // Проверяем выполнение для каждого уровня сложности
+      const level1Complete =
+        NOTIFICATION_CRITERIA.math.difficultyLevels[1].operators.every(
+          op =>
+            userData.byDifficulty[1][op] >=
+            NOTIFICATION_CRITERIA.math.difficultyLevels[1].requiredRecords
+        );
+
+      const level2Complete =
+        NOTIFICATION_CRITERIA.math.difficultyLevels[2].operators.every(
+          op =>
+            userData.byDifficulty[2][op] >=
+            NOTIFICATION_CRITERIA.math.difficultyLevels[2].requiredRecords
+        );
+
+      const level3Complete =
+        NOTIFICATION_CRITERIA.math.difficultyLevels[3].operators.every(
+          op =>
+            userData.byDifficulty[3][op] >=
+            NOTIFICATION_CRITERIA.math.difficultyLevels[3].requiredRecords
+        );
+
+      // Пользователь выполнил требования, если завершил хотя бы один уровень
+      if (level1Complete || level2Complete || level3Complete) {
+        usersWithSufficientStats.push({
+          userId,
+          totalRecords: userData.totalRecords,
+          level1Complete,
+          level2Complete,
+          level3Complete,
+          byDifficulty: userData.byDifficulty,
+        });
+      }
+    }
 
     console.log(
       '[INFO] Found users with sufficient stats:',
       usersWithSufficientStats.map(user => ({
-        userId: user._id,
-        count: user.count,
+        userId: user.userId,
+        totalRecords: user.totalRecords,
+        level1Complete: user.level1Complete,
+        level2Complete: user.level2Complete,
+        level3Complete: user.level3Complete,
+        byDifficulty: user.byDifficulty,
       }))
     );
 
     // Получаем список пользователей с достаточной статистикой
-    const userIdsWithSufficientStats = usersWithSufficientStats.map(stat =>
-      stat._id.toString()
+    const userIdsWithSufficientStats = usersWithSufficientStats.map(
+      stat => stat.userId
     );
 
     // Убираем из списка пользователей из подписок тех, у кого есть достаточная статистика
@@ -83,7 +139,7 @@ export default async function filterCronPushNotificationMath() {
     console.log('[INFO] Users to notify:', usersToNotify);
 
     // Отправка уведомлений оставшимся пользователям
-    const message = 'Математика не сделана!';
+    const message = 'Математика не сделана! Выполните задания по математике.';
     for (const userId of usersToNotify) {
       console.log(`[INFO] Sending notification to userId: ${userId}`);
       try {
