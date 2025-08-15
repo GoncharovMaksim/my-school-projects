@@ -22,7 +22,7 @@ export const NOTIFICATION_CRITERIA = {
 
   english: {
     // Минимальная оценка для учета записи (любая оценка)
-    minGrade: 1,
+    minGrade: 4,
 
     // Минимальное количество записей за день
     minRecords: 1,
