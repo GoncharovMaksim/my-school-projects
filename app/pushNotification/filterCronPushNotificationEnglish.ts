@@ -57,6 +57,21 @@ export default async function filterCronPushNotificationEnglish() {
       },
     ]);
 
+    // Логируем детали найденных записей английского языка
+    const todayEnglishStats = await EnglishStatistics.find({
+      createdAt: { $gte: today },
+      grade: { $gte: NOTIFICATION_CRITERIA.english.minGrade },
+    });
+
+    console.log(
+      '[DEBUG] Today English stats details:',
+      todayEnglishStats.map(stat => ({
+        userId: stat.userId.toString(),
+        grade: stat.grade,
+        createdAt: stat.createdAt,
+      }))
+    );
+
     console.log(
       '[INFO] Found users with sufficient stats:',
       usersWithSufficientStats.map(user => ({

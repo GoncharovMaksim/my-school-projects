@@ -45,6 +45,18 @@ export default async function filterCronPushNotificationMath() {
       todayStats.length
     );
 
+    // Логируем детали найденных записей
+    console.log(
+      '[DEBUG] Today stats details:',
+      todayStats.map(stat => ({
+        userId: stat.userId.toString(),
+        difficultyLevel: stat.difficultyLevel,
+        operator: stat.operator,
+        grade: stat.grade,
+        createdAt: stat.createdAt,
+      }))
+    );
+
     // Группируем записи по пользователям и анализируем выполнение
     const userStats = new Map();
 
@@ -70,10 +82,24 @@ export default async function filterCronPushNotificationMath() {
       userData.byDifficulty[difficultyLevel][operator]++;
     });
 
+    console.log(
+      '[DEBUG] Grouped user stats:',
+      Array.from(userStats.entries()).map(([userId, data]) => ({
+        userId,
+        totalRecords: data.totalRecords,
+        byDifficulty: data.byDifficulty,
+      }))
+    );
+
     // Проверяем выполнение критериев для каждого пользователя
     const usersWithSufficientStats = [];
 
     for (const [userId, userData] of userStats) {
+      console.log(`[DEBUG] Analyzing user ${userId}:`, {
+        totalRecords: userData.totalRecords,
+        byDifficulty: userData.byDifficulty,
+      });
+
       // Проверяем выполнение для каждого уровня сложности
       const level1Complete =
         NOTIFICATION_CRITERIA.math.difficultyLevels[1].operators.every(
@@ -96,6 +122,33 @@ export default async function filterCronPushNotificationMath() {
             NOTIFICATION_CRITERIA.math.difficultyLevels[3].requiredRecords
         );
 
+      console.log(`[DEBUG] User ${userId} completion status:`, {
+        level1Complete,
+        level2Complete,
+        level3Complete,
+        level1Details:
+          NOTIFICATION_CRITERIA.math.difficultyLevels[1].operators.map(op => ({
+            operator: op,
+            required:
+              NOTIFICATION_CRITERIA.math.difficultyLevels[1].requiredRecords,
+            actual: userData.byDifficulty[1][op],
+          })),
+        level2Details:
+          NOTIFICATION_CRITERIA.math.difficultyLevels[2].operators.map(op => ({
+            operator: op,
+            required:
+              NOTIFICATION_CRITERIA.math.difficultyLevels[2].requiredRecords,
+            actual: userData.byDifficulty[2][op],
+          })),
+        level3Details:
+          NOTIFICATION_CRITERIA.math.difficultyLevels[3].operators.map(op => ({
+            operator: op,
+            required:
+              NOTIFICATION_CRITERIA.math.difficultyLevels[3].requiredRecords,
+            actual: userData.byDifficulty[3][op],
+          })),
+      });
+
       // Пользователь выполнил требования, если завершил хотя бы один уровень
       if (level1Complete || level2Complete || level3Complete) {
         usersWithSufficientStats.push({
@@ -106,6 +159,35 @@ export default async function filterCronPushNotificationMath() {
           level3Complete,
           byDifficulty: userData.byDifficulty,
         });
+        console.log(
+          `[DEBUG] User ${userId} meets criteria - added to sufficient stats`
+        );
+      } else {
+        // Альтернативная проверка: пользователь выполнил хотя бы один оператор с достаточным количеством записей
+        const hasAnySufficientOperator = Object.values(
+          userData.byDifficulty
+        ).some(level =>
+          Object.values(level as Record<string, number>).some(
+            count => count >= 1
+          )
+        );
+
+        if (hasAnySufficientOperator) {
+          usersWithSufficientStats.push({
+            userId,
+            totalRecords: userData.totalRecords,
+            level1Complete,
+            level2Complete,
+            level3Complete,
+            byDifficulty: userData.byDifficulty,
+            alternativeCriteria: true,
+          });
+          console.log(
+            `[DEBUG] User ${userId} meets alternative criteria - added to sufficient stats`
+          );
+        } else {
+          console.log(`[DEBUG] User ${userId} does NOT meet criteria`);
+        }
       }
     }
 
