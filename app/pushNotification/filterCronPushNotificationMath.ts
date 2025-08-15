@@ -79,7 +79,20 @@ export default async function filterCronPushNotificationMath() {
 
       const userData = userStats.get(userId);
       userData.totalRecords++;
-      userData.byDifficulty[difficultyLevel][operator]++;
+
+      // Преобразуем русские названия операторов в английские
+      const operatorMap: { [key: string]: string } = {
+        Сложение: '+',
+        Вычитание: '-',
+        Умножение: '*',
+        Деление: '/',
+      };
+
+      const mappedOperator = operatorMap[operator] || operator;
+      console.log(
+        `[DEBUG] Mapping operator: "${operator}" -> "${mappedOperator}" for user ${userId}, level ${difficultyLevel}`
+      );
+      userData.byDifficulty[difficultyLevel][mappedOperator]++;
     });
 
     console.log(
@@ -171,6 +184,20 @@ export default async function filterCronPushNotificationMath() {
             count => count >= 1
           )
         );
+
+        console.log(`[DEBUG] User ${userId} alternative criteria check:`, {
+          hasAnySufficientOperator,
+          operatorCounts: Object.fromEntries(
+            Object.entries(userData.byDifficulty).map(([level, operators]) => [
+              level,
+              Object.fromEntries(
+                Object.entries(operators as Record<string, number>).filter(
+                  ([, count]) => count > 0
+                )
+              ),
+            ])
+          ),
+        });
 
         if (hasAnySufficientOperator) {
           usersWithSufficientStats.push({
