@@ -68,6 +68,7 @@ export default function Settings({ setGameSettings }: GameProps) {
         console.error('Ошибка загрузки слов:', err);
         dispatch(setError(true)); // Устанавливаем ошибку в состояние
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, wordsList.length]);
 
   useEffect(() => {
