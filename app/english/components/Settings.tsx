@@ -20,6 +20,7 @@ export default function Settings({ setGameSettings }: GameProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [filterWordsList, setFilterWordsList] = useState<Word[]>([]);
   const [schoolClass, setSchoolClass] = useState<number | ''>('');
+  const [listSchoolClass, setListSchoolClass] = useState<number[]>([]);
   const [lessonUnit, setLessonUnit] = useState<number | ''>('');
   const [unitStep, setUnitStep] = useState<number | ''>('');
   const [listLessonUnit, setListLessonUnit] = useState<number[]>([]);
@@ -27,6 +28,7 @@ export default function Settings({ setGameSettings }: GameProps) {
   const [difficultyLevel, setDifficultyLevel] = useState<number>(1);
 
   const { speak } = useSpeaker();
+
   useEffect(() => {
     const storedSchoolClass = localStorage.getItem('schoolClass');
     const storedLessonUnit = localStorage.getItem('lessonUnit');
@@ -51,6 +53,11 @@ export default function Settings({ setGameSettings }: GameProps) {
   );
   useEffect(() => {
     if (wordsList.length > 0) {
+      const tempListSchoolClass = [
+        ...new Set(wordsList.map(el => el.schoolClass)),
+      ];
+      setListSchoolClass(tempListSchoolClass);
+
       return;
     } // Если слова уже загружены, не загружаем повторно
 
@@ -152,30 +159,6 @@ export default function Settings({ setGameSettings }: GameProps) {
               }
               options={[
                 {
-                  label: 'Класс: 2',
-                  onClick: () => {
-                    return (
-                      setSchoolClass(2), setLessonUnit(''), setUnitStep('')
-                    );
-                  },
-                },
-                {
-                  label: 'Класс: 3',
-                  onClick: () => {
-                    return (
-                      setSchoolClass(3), setLessonUnit(''), setUnitStep('')
-                    );
-                  },
-                },
-                {
-                  label: 'Класс: 4',
-                  onClick: () => {
-                    return (
-                      setSchoolClass(4), setLessonUnit(''), setUnitStep('')
-                    );
-                  },
-                },
-                {
                   label: 'Все классы',
                   onClick: () => {
                     return (
@@ -188,8 +171,17 @@ export default function Settings({ setGameSettings }: GameProps) {
                     );
                   },
                 },
+                ...listSchoolClass.map((el: number) => ({
+                  label: `Класс: ${el}`,
+                  onClick: () => {
+                    return (
+                      setSchoolClass(el), setLessonUnit(''), setUnitStep('')
+                    );
+                  },
+                })),
               ]}
             />
+
             <DropdownMenu
               key={`lessonUnit-${schoolClass}`}
               defaultLabel={
