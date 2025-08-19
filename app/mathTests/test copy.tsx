@@ -44,22 +44,17 @@ export default function Test({
   const [questions, setQuestions] = useState<MathQuestion[]>([]);
   const [isLoading, setisLoading] = useState(true);
   const [correctAnswerCount, setCorrectAnswerCount] = useState(0);
-
   useEffect(() => {
-    function shuffleArray<T>(array: T[]): T[] {
-      const arr = [...array];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-    // console.log('!!!!!!!!userCheckOptions', userCheckOptions);
+    console.log('!!!!!!!!userCheckOptions', userCheckOptions);
     getQuestions(userCheckOptions).then(response => {
-      const randomQuestions: MathQuestion[] = shuffleArray(response);
-      randomQuestions.forEach(question => {
-        question.options = shuffleArray(question.options);
-      });
+      const randomQuestions = [...response];
+      for (let i = randomQuestions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [randomQuestions[i], randomQuestions[j]] = [
+          randomQuestions[j],
+          randomQuestions[i],
+        ];
+      }
 
       setQuestions(randomQuestions.slice(0, 10));
       setisLoading(false);
