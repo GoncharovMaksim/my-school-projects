@@ -2,37 +2,36 @@
 import Questions from '@/models/Questions';
 
 export async function GET(request: Request) {
-const questions = await Questions.find().lean();
-	//console.log(questions);
-	const { searchParams } = new URL(request.url);
-	const optionsListParam = searchParams.get('optionsList');
-	const topicFilter = searchParams.get('topic');
-	const partFilter = searchParams.get('part');
+  const questions = await Questions.find().lean();
+  //console.log(questions);
+  const { searchParams } = new URL(request.url);
+  const optionsListParam = searchParams.get('optionsList');
+  const topicFilter = searchParams.get('topic');
+  const partFilter = searchParams.get('part');
 
-	if (optionsListParam !== null) {
-		const optionsList = [];
-				const topicList = [...new Set(questions.map(q => q.topic))];
-				
-				
-				for (const option of topicList) {
-					const tempQuestions = questions.filter(q => q.topic === option);
-					const tempOptionsList = [...new Set(tempQuestions.map(q => q.part))];
-					optionsList.push({topic: option, part: tempOptionsList});
-				}
-	
-		return Response.json(optionsList);
-	}
+  if (optionsListParam !== null) {
+    const optionsList = [];
+    const topicList = [...new Set(questions.map(q => q.topic))];
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	let result = questions.map(({ correctOptions, ...question }) => question);
-//console.log('result', result);
-	if (topicFilter !== null) {
-		result = result.filter(q => q.topic === topicFilter);
-	}
+    for (const option of topicList) {
+      const tempQuestions = questions.filter(q => q.topic === option);
+      const tempOptionsList = [...new Set(tempQuestions.map(q => q.part))];
+      optionsList.push({ topic: option, part: tempOptionsList });
+    }
 
-	if (partFilter !== null) {
-		result = result.filter(q => q.part === Number(partFilter));
-	}
-	console.log(result);
-	return Response.json(result);
+    return Response.json(optionsList);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let result = questions.map(({ correctOptions, ...question }) => question);
+  //console.log('result', result);
+  if (topicFilter !== null) {
+    result = result.filter(q => q.topic === topicFilter);
+  }
+
+  if (partFilter !== null) {
+    result = result.filter(q => q.part === Number(partFilter));
+  }
+  console.log(result);
+  return Response.json(result);
 }
