@@ -160,13 +160,12 @@ export default function App() {
           })()}
 
         <button
-          className="btn btn-outline w-full max-w-xs"
+          // className="btn btn-outline w-full max-w-xs"
+          className="btn btn-outline min-w-[280px]"
           onClick={handleStartTest}
           disabled={!dropdownLabel}
         >
-          {selectedPart
-            ? `Начать тест по части ${selectedPart}`
-            : 'Начать тест по всей теме'}
+          Начать тест
         </button>
       </div>
     </div>
