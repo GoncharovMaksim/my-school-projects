@@ -26,8 +26,8 @@ const rubikDoodleShadow = localFont({
 });
 
 export const metadata: Metadata = {
-	title: 'Школа112',
-	description: 'Проекты для школы',
+  title: 'Школа112',
+  description: 'Учебный материал, ГДЗ и тестирование по материалам учебников «Школа России»',
 };
 
 export default function RootLayout({
