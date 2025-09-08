@@ -1,0 +1,81 @@
+/* Task.module.css */
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* space-y-6 */
+  max-width: 640px; /* max-w-screen-sm */
+  align-items: center;
+}
+
+.header {
+  margin: 2rem 0; /* my-8 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem; /* space-y-6 */
+}
+
+.title {
+  font-size: 2.25rem; /* text-4xl */
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 1rem; /* mb-4 */
+}
+
+.taskCondition {
+  margin-top: 1rem;
+}
+
+.taskTheory {
+  margin-top: 1rem;
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem; /* rounded-lg */
+}
+
+.taskSolution {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb; /* border-gray-200 */
+  border-radius: 0.5rem;
+  width: 100%;
+}
+
+.taskSolution h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.task {
+  margin-bottom: 2rem;
+}
+
+.taskTheoryBlock {
+  margin-top: 1rem;
+}
+
+.toggleBtn {
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.toggleBtn:hover {
+  background: #e5e7eb;
+}
+
+.taskTheory {
+  margin-top: 0.75rem;
+  padding: 1rem;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
