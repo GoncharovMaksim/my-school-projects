@@ -438,16 +438,16 @@ export default function App() {
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
-            Предыдущая
+            Пред.
           </button>
           <span>
-            Страница {currentPage} из {totalPages}
+            Стр. {currentPage} из {totalPages}
           </span>
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
-            Следующая
+            След.
           </button>
         </div>
 
@@ -536,7 +536,7 @@ export default function App() {
             Пред.
           </button>
           <span>
-            Страница {currentPage} из {totalPages}
+            Стр. {currentPage} из {totalPages}
           </span>
           <button
             onClick={() => handlePageChange(currentPage + 1)}
