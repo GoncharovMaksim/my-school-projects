@@ -137,6 +137,7 @@ const LongDivision = ({ x, y }: { x: number; y: number }) => {
 export default function App() {
   const [isTheoryOpen, setIsTheoryOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [userFilterQuery, setUserFilterQuery] = useState('');
   const tasksPerPage = 5; // Показывать 5 задач на страницу
 
   const renderHTML = (html: string) => {
@@ -413,15 +414,32 @@ export default function App() {
     return renderFunction;
   }, []);
   // Пагинация
-  const typedTasks = tasks as unknown as Task[];
+  let typedTasks = tasks as unknown as Task[];
+  typedTasks= userFilterQuery.length>0?typedTasks.filter((task)=>task.title.split(' ').includes(`№${userFilterQuery}`)):typedTasks;
+
+
+
+
+
+
   const totalPages = Math.ceil(typedTasks.length / tasksPerPage);
   const startIndex = (currentPage - 1) * tasksPerPage;
   const endIndex = startIndex + tasksPerPage;
+ 
+
+
   const currentTasks = typedTasks.slice(startIndex, endIndex);
+ 
+
+
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     setIsTheoryOpen(false); // Скрыть теорию при смене страницы
+  };
+  const handleUserFilterQuer = (value: string) => {
+    setUserFilterQuery(value);
+   
   };
 
   return (
@@ -431,7 +449,9 @@ export default function App() {
           Готовые Домашние Задания
           <br /> «Школа России»
         </h1>
-
+        {/* <input type="text" value={userFilterQuery} onChange={(el)=>handleUserFilterQuer(el.target.value)} placeholder='Номер страницы' /> */}
+        <input type="text" value={userFilterQuery} onChange={(el)=>handleUserFilterQuer(el.target.value)} placeholder='Номер задания' />
+        <div>{userFilterQuery}</div>
         {/* Пагинация */}
         <div className={styles.pagination}>
           <button
