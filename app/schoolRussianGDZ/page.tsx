@@ -450,7 +450,7 @@ export default function App() {
           <br /> «Школа России»
         </h1>
         {/* <input type="text" value={userFilterQuery} onChange={(el)=>handleUserFilterQuer(el.target.value)} placeholder='Номер страницы' /> */}
-        <input type="text" value={userFilterQuery} onChange={(el)=>handleUserFilterQuery(el.target.value)} placeholder='Номер задания' />
+        <input type="number" value={userFilterQuery} onChange={(el)=>handleUserFilterQuery(el.target.value)} placeholder='Номер задания' />
        
         {/* Пагинация */}
         <div className={styles.pagination}>
