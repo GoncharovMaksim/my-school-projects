@@ -437,7 +437,7 @@ export default function App() {
     setCurrentPage(page);
     setIsTheoryOpen(false); // Скрыть теорию при смене страницы
   };
-  const handleUserFilterQuer = (value: string) => {
+  const handleUserFilterQuery = (value: string) => {
     setUserFilterQuery(value);
    
   };
@@ -450,8 +450,8 @@ export default function App() {
           <br /> «Школа России»
         </h1>
         {/* <input type="text" value={userFilterQuery} onChange={(el)=>handleUserFilterQuer(el.target.value)} placeholder='Номер страницы' /> */}
-        <input type="text" value={userFilterQuery} onChange={(el)=>handleUserFilterQuer(el.target.value)} placeholder='Номер задания' />
-        <div>{userFilterQuery}</div>
+        <input type="text" value={userFilterQuery} onChange={(el)=>handleUserFilterQuery(el.target.value)} placeholder='Номер задания' />
+       
         {/* Пагинация */}
         <div className={styles.pagination}>
           <button
