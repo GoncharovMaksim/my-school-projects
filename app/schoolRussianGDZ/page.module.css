@@ -10,6 +10,14 @@
   max-width: 640px; /* max-w-screen-sm */
   align-items: center;
 }
+/* Измененние вида спарсенного HTML */
+.container p span {
+  display: block;
+}
+.container > div {
+  width: 100%;
+  align-self: stretch;
+}
 
 .header {
   margin: 2rem 0; /* my-8 */
