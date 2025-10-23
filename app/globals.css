@@ -5,13 +5,16 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --border-color:#0a0a0a;
+  --input-bg: #ffffff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Замените @media на селектор data-theme */
+[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --border-color: #ededed;
+  --input-bg: #1f2937;
 }
 
 body {

@@ -7,49 +7,32 @@
   padding-bottom: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* space-y-6 */
-  max-width: 640px; /* max-w-screen-sm */
+  gap: 1.5rem;
+  max-width: 640px;
   align-items: center;
 }
-/* Измененние вида спарсенного HTML */
+
+/* Изменение вида спарсенного HTML */
 .container p span {
   display: block;
 }
+
 .container > div {
   width: 100%;
   align-self: stretch;
 }
 
-.header {
-  margin: 2rem 0; /* my-8 */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem; /* space-y-6 */
-}
-
 .title {
-  font-size: 1rem; /* text-4xl */
+  font-size: 1rem;
   text-align: center;
   font-weight: bold;
-  margin-bottom: 1rem; /* mb-4 */
-}
-
-.taskCondition {
-  margin-top: 1rem;
-}
-
-.taskTheory {
-  margin-top: 1rem;
-  background-color: #f9fafb;
-  padding: 1rem;
-  border-radius: 0.5rem; /* rounded-lg */
+  margin-bottom: 1rem;
 }
 
 .taskSolution {
   margin-top: 1.5rem;
   padding: 1rem;
-  border: 1px solid #e5e7eb; /* border-gray-200 */
+  border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   width: 100%;
 }
@@ -59,27 +42,6 @@
   font-size: 1.25rem;
   font-weight: 600;
 }
-.task {
-  margin-bottom: 2rem;
-}
-
-/* HTML стили */
-.number {
-  font-weight: bold;
-  color: #1f2937; /* gray-800 */
-}
-
-.engchars {
-  font-family: 'Courier New', monospace;
-  font-size: 0.9em;
-}
-
-.taskCondition img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin: 1rem 0;
-}
 
 .taskSolution img {
   max-width: 100%;
@@ -88,79 +50,17 @@
   margin: 0.5rem 0;
 }
 
-.pagination {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  justify-content: center;
-  margin-top: 2rem;
-}
-
-.pagination button {
-  padding: 0.5rem 1rem;
-  background: #626263; /* blue-500 */
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background 0.2s;
-}
-
-.pagination button:hover:not(:disabled) {
-  background: #616163; /* blue-600 */
-}
-
-.pagination button:disabled {
-  background: #d1d5db; /* gray-300 */
-  cursor: not-allowed;
-}
-
-.taskTheoryBlock {
-  margin-top: 1rem;
-}
-
-.toggleBtn {
-  background: #f3f4f6;
-  border: 1px solid #d1d5db;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background 0.2s;
-}
-
-.toggleBtn:hover {
-  background: #e5e7eb;
-}
-
-.taskTheory {
-  margin-top: 0.75rem;
-  padding: 1rem;
-  background: #fafafa;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-}
-
 label.input {
   display: flex;
   flex-direction: column;
-  
+  gap: 0.5rem;
 }
 
 label.input input {
-  display: flex;
-  flex-direction: column;
+  padding: 0.5rem;
   border-radius: 0.2rem;
-  border: 1px solid #1f2937;  /* Светлая тема */
-  padding: 0.2rem;
-}
-
-/* Темная тема */
-@media (prefers-color-scheme: dark) {
-  label.input input {
-    border-color: #4b5563;  /* или другой темный цвет */
-    background-color: #1f2937;  /* фон для темной темы */
-    color: #ededed;  /* цвет текста */
-  }
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--foreground);
+  font-size: 1rem;
 }
