@@ -5,7 +5,7 @@ import styles from './page.module.css';
 import { useState } from 'react';
 
 const tasksArray = tasks as Array<{
-  pageTitle:string,
+  pageTitle: string;
   number: number;
   page: number;
   taskIndex: number;
@@ -22,25 +22,20 @@ export default function App() {
 
   const filteredTasks = tasksArray.filter(
     task =>
-      (task.page === Number(currentPage) &&
-        task.part === Number(currentPart) &&
-        (!currentTask ||
-      task.number === Number(currentTask)))
+      task.page === Number(currentPage) &&
+      task.part === Number(currentPart) &&
+      (!currentTask || task.number === Number(currentTask))
   );
   const handleFilteredPart = (part: string) => setCurrentPart(part);
   const handleFilteredPage = (page: string) => setCurrentPage(page);
   const handleFilteredTask = (task: string) => setCurrentTask(task);
 
-
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>
-         {filteredTasks[0]?.pageTitle}
-      </h1>
+      <h1 className={styles.title}>{filteredTasks[0]?.pageTitle}</h1>
 
-      
       <label htmlFor="" className={styles.input}>
-       Часть:
+        Часть:
         <input
           type="number"
           placeholder="Часть учебника"
@@ -63,7 +58,7 @@ export default function App() {
           type="number"
           placeholder="Номер задания"
           value={currentTask}
-          onChange={el =>  handleFilteredTask(el.target.value)}
+          onChange={el => handleFilteredTask(el.target.value)}
         />
       </label>
 

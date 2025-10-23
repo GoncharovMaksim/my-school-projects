@@ -145,4 +145,22 @@
 label.input {
   display: flex;
   flex-direction: column;
+  
+}
+
+label.input input {
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.2rem;
+  border: 1px solid #1f2937;  /* Светлая тема */
+  padding: 0.2rem;
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+  label.input input {
+    border-color: #4b5563;  /* или другой темный цвет */
+    background-color: #1f2937;  /* фон для темной темы */
+    color: #ededed;  /* цвет текста */
+  }
 }
