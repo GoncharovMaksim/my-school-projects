@@ -2,7 +2,8 @@
 import tasks from './moro_matematika_4-klass_tasks.json';
 import parse from 'html-react-parser';
 import styles from './page.module.css';
-import { useState } from 'react';
+
+import useLocalStorage from './useLocalStorage';
 
 const tasksArray = tasks as Array<{
   pageTitle: string;
@@ -16,9 +17,9 @@ const tasksArray = tasks as Array<{
 }>;
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('5');
-  const [currentPart, setCurrentPart] = useState('1');
-  const [currentTask, setCurrentTask] = useState('');
+  const [currentPart, setCurrentPart] = useLocalStorage('currentPart', '1');
+  const [currentPage, setCurrentPage] = useLocalStorage('currentPage', '5');
+  const [currentTask, setCurrentTask] = useLocalStorage('currentTask', '');
 
   const filteredTasks = tasksArray.filter(
     task =>
@@ -26,6 +27,7 @@ export default function App() {
       task.part === Number(currentPart) &&
       (!currentTask || task.number === Number(currentTask))
   );
+  // И обработчики упрощаются:
   const handleFilteredPart = (part: string) => setCurrentPart(part);
   const handleFilteredPage = (page: string) => setCurrentPage(page);
   const handleFilteredTask = (task: string) => setCurrentTask(task);
