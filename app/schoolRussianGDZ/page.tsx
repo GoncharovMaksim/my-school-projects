@@ -1,84 +1,40 @@
-'use client';
-import tasks from './moro_matematika_4-klass_tasks.json';
-import parse from 'html-react-parser';
-import styles from './page.module.css';
-
-import useLocalStorage from './useLocalStorage';
-
-const tasksArray = tasks as Array<{
-  pageTitle: string;
-  number: number;
-  page: number;
-  taskIndex: number;
-  part: number;
-  title: string;
-  condition: { html: string };
-  solutions: Array<{ html: string }>;
-}>;
-
-export default function App() {
-  const [currentPart, setCurrentPart] = useLocalStorage('currentPart', '1');
-  const [currentPage, setCurrentPage] = useLocalStorage('currentPage', '5');
-  const [currentTask, setCurrentTask] = useLocalStorage('currentTask', '');
-
-  const filteredTasks = tasksArray.filter(
-    task =>
-      task.page === Number(currentPage) &&
-      task.part === Number(currentPart) &&
-      (!currentTask || task.number === Number(currentTask))
-  );
-  // И обработчики упрощаются:
-  const handleFilteredPart = (part: string) => setCurrentPart(part);
-  const handleFilteredPage = (page: string) => setCurrentPage(page);
-  const handleFilteredTask = (task: string) => setCurrentTask(task);
-
+import Link from 'next/link';
+export default function Home() {
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>{filteredTasks[0]?.pageTitle}</h1>
+    <div className="min-h-screen flex flex-col ">
+      <div className="container mx-auto px-4 flex flex-col space-y-6 max-w-screen-sm items-center ">
+        <div className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8 items-center">
+          <h3 className="text-2xl text-center font-bold tracking-tight ">
+            ГДЗ по материалам учебников «Школа России»
+          </h3>
+          <hr className="my-4 border-base-content border-2" />
+        </div>
 
-      <label htmlFor="" className={styles.input}>
-        Часть:
-        <input
-          type="number"
-          placeholder="Часть учебника"
-          value={currentPart}
-          onChange={el => handleFilteredPart(el.target.value)}
-        />
-      </label>
-      <label htmlFor="" className={styles.input}>
-        Страница:
-        <input
-          type="number"
-          placeholder="Страница учебника"
-          value={currentPage}
-          onChange={el => handleFilteredPage(el.target.value)}
-        />
-      </label>
-      <label htmlFor="" className={styles.input}>
-        Задание:
-        <input
-          type="number"
-          placeholder="Номер задания"
-          value={currentTask}
-          onChange={el => handleFilteredTask(el.target.value)}
-        />
-      </label>
+        <div className="mx-auto max-w-7xl px-4 py-0 sm:px-6 lg:px-8 flex flex-col items-center space-y-6">
+          <div>
+            <Link href="/schoolRussianGDZ/matematikaGDZ/moroUchebnik">
+              <button className="btn btn-outline min-w-[200px]">
+                МАТЕМАТИКА
+              </button>
+            </Link>
+          </div>
 
-      {filteredTasks.map(task => (
-        <div key={`${task.page}-${task.taskIndex}-${task.part}`}>
-          <h2>{task.title}</h2>
-          {parse(task.condition.html)}
-
-          <div className={styles.taskSolution}>
-            <h3>Решение:</h3>
-            {task.solutions.map((solution, index) => (
-              <div key={`${task.page}-${task.taskIndex}-${task.part}-${index}`}>
-                {parse(solution.html)}
-              </div>
-            ))}
+          <div>
+            <Link href="/schoolRussianGDZ/rusYazGDZ/kanakinaUchebnik">
+              <button className="btn btn-outline min-w-[200px]">
+                РУССКИЙ ЯЗЫК
+              </button>
+            </Link>
           </div>
         </div>
-      ))}
+
+        <h3
+          className="text-3xl text-center font-bold tracking-tight "
+          // style={{ fontFamily: 'var(--font-rubik-doodle-shadow)' }}
+        >
+          school112.ru
+        </h3>
+      </div>
     </div>
   );
 }
