@@ -1,5 +1,5 @@
 /* Task.module.css */
-.container {
+.container, .mathContainer {
   margin-left: auto;
   margin-right: auto;
   padding-left: 1rem;
@@ -13,11 +13,11 @@
 }
 
 /* Изменение вида спарсенного HTML */
-.container p span {
+.mathContainer p span {
   display: block;
 }
 
-.container > div {
+.container, .mathContainer > div {
   width: 100%;
   align-self: stretch;
 }
@@ -31,6 +31,7 @@
 
 .taskSolution {
   margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
   padding: 1rem;
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;

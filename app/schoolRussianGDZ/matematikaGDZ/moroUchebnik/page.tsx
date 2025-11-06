@@ -1,11 +1,9 @@
 'use client';
 import tasks from './moro_matematika_4-klass_tasks.json';
 import parse from 'html-react-parser';
-import styles from '../../page.module.css'; 
+import styles from '../../page.module.css';
 import useLocalStorage from '../../useLocalStorage';
 import { useState } from 'react';
-
-
 
 const tasksArray = tasks as Array<{
   pageTitle: string;
@@ -19,9 +17,15 @@ const tasksArray = tasks as Array<{
 }>;
 
 export default function App() {
-  const [currentPart, setCurrentPart] = useLocalStorage('currentPartMathGDZ', '1');
-  const [currentPage, setCurrentPage] = useLocalStorage('currentPageMathGDZ', '5');
-  const [currentTask, setCurrentTask] =  useState('');
+  const [currentPart, setCurrentPart] = useLocalStorage(
+    'currentPartMathGDZ',
+    '1'
+  );
+  const [currentPage, setCurrentPage] = useLocalStorage(
+    'currentPageMathGDZ',
+    '5'
+  );
+  const [currentTask, setCurrentTask] = useState('');
 
   const filteredTasks = tasksArray.filter(
     task =>
@@ -29,13 +33,13 @@ export default function App() {
       task.part === Number(currentPart) &&
       (!currentTask || task.number === Number(currentTask))
   );
-  
+
   const handleFilteredPart = (part: string) => setCurrentPart(part);
   const handleFilteredPage = (page: string) => setCurrentPage(page);
   const handleFilteredTask = (task: string) => setCurrentTask(task);
 
   return (
-    <div className={styles.container}>
+    <div className={styles.mathContainer}>
       <h1 className={styles.title}>{filteredTasks[0]?.pageTitle}</h1>
 
       <label htmlFor="" className={styles.input}>

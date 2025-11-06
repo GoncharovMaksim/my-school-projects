@@ -15,12 +15,16 @@ const tasksArray = tasks as Array<{
   title: string;
   condition: { html: string };
   solutions: Array<{ html: string }>;
+  subquestions: Array<{
+    question: { html: string; text?: string };
+    answer: { html: string; text?: string; images?: Array<unknown> };
+  }>;
 }>;
 
 export default function App() {
   const [currentPart, setCurrentPart] = useLocalStorage('currentPartRus', '1');
   const [currentPage, setCurrentPage] = useLocalStorage('currentPageRus', '6');
-  const [currentTask, setCurrentTask] =  useState('');
+  const [currentTask, setCurrentTask] = useState('');
 
   const filteredTasks = tasksArray.filter(
     task =>
@@ -78,6 +82,16 @@ export default function App() {
               </div>
             ))}
           </div>
+
+          {task.subquestions.map((subquestion, index) => (
+            <div key={`${task.page}-${task.taskIndex}-${task.part}-${index}`}>
+              <div>{parse(subquestion.question.html)}</div>
+              <div className={styles.taskSolution}>
+                <h3>Ответ:</h3>
+                {parse(subquestion.answer.html)}
+              </div>
+            </div>
+          ))}
         </div>
       ))}
     </div>
