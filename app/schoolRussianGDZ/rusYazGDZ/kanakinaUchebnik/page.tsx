@@ -4,6 +4,7 @@ import parse from 'html-react-parser';
 import styles from '../../page.module.css';
 
 import useLocalStorage from '../../useLocalStorage';
+import { useState } from 'react';
 
 const tasksArray = tasks as Array<{
   pageTitle: string;
@@ -17,9 +18,9 @@ const tasksArray = tasks as Array<{
 }>;
 
 export default function App() {
-  const [currentPart, setCurrentPart] = useLocalStorage('currentPartRus', '');
-  const [currentPage, setCurrentPage] = useLocalStorage('currentPageRus', '');
-  const [currentTask, setCurrentTask] = useLocalStorage('currentTaskRus', '');
+  const [currentPart, setCurrentPart] = useLocalStorage('currentPartRus', '1');
+  const [currentPage, setCurrentPage] = useLocalStorage('currentPageRus', '6');
+  const [currentTask, setCurrentTask] =  useState('');
 
   const filteredTasks = tasksArray.filter(
     task =>
