@@ -71,7 +71,7 @@ export default function App() {
           {parse(task.condition.html)}
 
           <div className={styles.taskSolution}>
-            <h3>Решение:</h3>
+            <h3>Ответ:</h3>
             {task.solutions.map((solution, index) => (
               <div key={`${task.page}-${task.taskIndex}-${task.part}-${index}`}>
                 {parse(solution.html)}
