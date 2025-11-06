@@ -6,114 +6,162 @@ import User from '@/models/User';
 import bcrypt from 'bcrypt';
 
 export const authConfig: AuthOptions = {
-	providers: [
-		GoogleProvider({
-			clientId: process.env.GOOGLE_CLIENT_ID as string,
-			clientSecret: process.env.GOOGLE_SECRET as string,
-		}),
-		CredentialsProvider({
-			credentials: {
-				email: { label: 'Email', type: 'email' },
-				nickName: { label: 'Nick', type: 'text' },
-				password: { label: 'Password', type: 'password' },
-			},
-			async authorize(credentials) {
-				if (!credentials?.email || !credentials?.password) {
-					throw new Error('Email и пароль обязательны.');
-				}
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_SECRET as string,
+    }),
+    CredentialsProvider({
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        nickName: { label: 'Nick', type: 'text' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Email и пароль обязательны.');
+        }
 
-				await connectDB();
+        await connectDB();
 
-				// Проверка, существует ли пользователь с таким email
-				let user = await User.findOne({ email: credentials.email });
+        // Проверка, существует ли пользователь с таким email
+        let user = await User.findOne({ email: credentials.email });
 
-				if (!user) {
-					// Если пользователь не найден, создаем нового
-					const hashedPassword = await bcrypt.hash(credentials.password, 10);
-					user = await User.create({
-						email: credentials.email,
-						password: hashedPassword,
-						name: credentials.email.split('@')[0], // Имя по умолчанию (можно изменить логику)
-						isAdmin: false,
-						nickName: credentials.nickName ? credentials.nickName : '',
-						lastVisit: new Date(),
-					});
-				}
+        if (!user) {
+          // Если пользователь не найден, создаем нового
+          const hashedPassword = await bcrypt.hash(credentials.password, 10);
+          user = await User.create({
+            email: credentials.email,
+            password: hashedPassword,
+            name: credentials.email.split('@')[0], // Имя по умолчанию (можно изменить логику)
+            isAdmin: false,
+            nickName: credentials.nickName ? credentials.nickName : '',
+            lastVisit: new Date(),
+          });
+        }
 
-				// Проверка пароля, если пользователь был найден в базе
-				const isPasswordValid = await bcrypt.compare(
-					credentials.password,
-					user.password
-				);
-				if (!isPasswordValid) {
-					throw new Error('Неверный пароль.');
-				}
+        // Проверка пароля, если пользователь был найден в базе
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+        if (!isPasswordValid) {
+          throw new Error('Неверный пароль.');
+        }
 
-				return {
-					id: user._id.toString(),
-					email: user.email,
-					name: user.name,
-					isAdmin: user.isAdmin,
-					nickName: user.nickName ? user.nickName : credentials.nickName,
-				};
-			},
-		}),
-	],
-	pages: {
-		signIn: '/auth/signin', // Укажите путь к кастомной странице
-	},
-	callbacks: {
-		async signIn({ user }) {
-			try {
-				await connectDB();
-				const existingUser = await User.findOne({ email: user.email });
+        return {
+          id: user._id.toString(),
+          email: user.email,
+          name: user.name,
+          isAdmin: user.isAdmin,
+          nickName: user.nickName ? user.nickName : credentials.nickName,
+        };
+      },
+    }),
+  ],
+  pages: {
+    signIn: '/auth/signin',
+  },
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      // КРИТИЧНО: Проверка наличия email (обязательно для работы с БД)
+      if (!user?.email) {
+        console.error('Ошибка: email отсутствует у пользователя Google', {
+          user,
+          account,
+          profile,
+        });
+        return false;
+      }
 
-				if (existingUser) {
-					existingUser.lastVisit = new Date();
-					existingUser.image = user.image ? user.image : existingUser.image;
-					existingUser.name = existingUser.name ? user.name : '';
-					if (!existingUser.nickName) {
-						existingUser.nickName = user.nickName;
-					}
-					await existingUser.save();
-				} else {
-					await User.create({
-						email: user.email,
-						name: user.name || 'Без имени',
-						image: user.image,
-						lastVisit: new Date(),
-						isAdmin: false,
-						nickName: '',
-						password: bcrypt.hashSync('defaultPassword', 10), // Для Google авторизации (в случае необходимости)
-					});
-				}
+      try {
+        await connectDB();
 
-				return true;
-			} catch (error) {
-				console.error('Ошибка при обработке signIn:', error);
-				return false;
-			}
-		},
-		async session({ session }) {
-			try {
-				await connectDB();
-				if (session.user) {
-					const dbUser = await User.findOne({ email: session.user.email });
+        const existingUser = await User.findOne({ email: user.email });
 
-					if (dbUser) {
-						session.user.id = dbUser._id.toString();
-						session.user.isAdmin = dbUser.isAdmin;
-						session.user.nickName = dbUser.nickName;
-						session.user.name = dbUser.name;
-						session.user.image = dbUser.image || '';
-						session.user.email = dbUser.email;
-					}
-				}
-				return session;
-			} catch (error) {
-				console.error('Ошибка при обновлении session:', error);
-				return session;
-			}
-		},
-	},
+        if (existingUser) {
+          // Обновляем существующего пользователя
+          existingUser.lastVisit = new Date();
+
+          // Обновляем image, если есть новое значение
+          if (user.image) {
+            existingUser.image = user.image;
+          }
+
+          // Обновляем name только если у существующего пользователя его нет
+          if (!existingUser.name && user.name) {
+            existingUser.name = user.name;
+          }
+
+          // Обновляем nickName только если его нет
+          if (!existingUser.nickName && user.nickName) {
+            existingUser.nickName = user.nickName;
+          }
+
+          await existingUser.save();
+        } else {
+          // Создаем нового пользователя (НОВЫЙ ПОЛЬЗОВАТЕЛЬ ЧЕРЕЗ GOOGLE)
+          // Убеждаемся, что name не пустое (обязательное поле в схеме)
+          const userName =
+            user.name || user.email?.split('@')[0] || 'Пользователь';
+
+          await User.create({
+            email: user.email,
+            name: userName, // Гарантированно не пустое
+            image: user.image || undefined,
+            lastVisit: new Date(),
+            isAdmin: false,
+            nickName: user.nickName || undefined, // undefined вместо пустой строки для sparse unique
+            password: bcrypt.hashSync('defaultPassword', 10),
+          });
+        }
+
+        return true;
+      } catch (error: unknown) {
+        console.error('Ошибка при обработке signIn:', error);
+
+        // Детальное логирование для отладки
+        if (
+          error &&
+          typeof error === 'object' &&
+          'code' in error &&
+          error.code === 11000
+        ) {
+          console.error(
+            'Ошибка дубликата (unique constraint):',
+            'keyPattern' in error ? error.keyPattern : undefined
+          );
+        }
+        console.error('Детали ошибки:', {
+          message: error instanceof Error ? error.message : 'Unknown error',
+          name: error instanceof Error ? error.name : 'Unknown',
+          userEmail: user?.email,
+          userName: user?.name,
+        });
+
+        return false;
+      }
+    },
+    async session({ session }) {
+      try {
+        await connectDB();
+        if (session.user?.email) {
+          const dbUser = await User.findOne({ email: session.user.email });
+
+          if (dbUser) {
+            session.user.id = dbUser._id.toString();
+            session.user.isAdmin = dbUser.isAdmin;
+            session.user.nickName = dbUser.nickName;
+            session.user.name = dbUser.name;
+            session.user.image = dbUser.image || '';
+            session.user.email = dbUser.email;
+          }
+        }
+        return session;
+      } catch (error) {
+        console.error('Ошибка при обновлении session:', error);
+        return session;
+      }
+    },
+  },
 };
