@@ -69,21 +69,21 @@ export default function App() {
         />
       </label>
 
-      {filteredTasks.map(task => (
+      {filteredTasks?.map(task => (
         <div key={`${task.page}-${task.taskIndex}-${task.part}`}>
           <h2>{task.title}</h2>
           {parse(task.condition.html)}
 
           <div className={styles.taskSolution}>
             <h3>Ответ:</h3>
-            {task.solutions.map((solution, index) => (
+            {task.solutions?.map((solution, index) => (
               <div key={`${task.page}-${task.taskIndex}-${task.part}-${index}`}>
                 {parse(solution.html)}
               </div>
             ))}
           </div>
 
-          {task.subquestions.map((subquestion, index) => (
+          {task.subquestions?.map((subquestion, index) => (
             <div key={`${task.page}-${task.taskIndex}-${task.part}-${index}`}>
               <div>{parse(subquestion.question.html)}</div>
               <div className={styles.taskSolution}>
